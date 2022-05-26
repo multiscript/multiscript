@@ -1,5 +1,5 @@
 {
-    "app_version": "0.8.0",
+    "app_version": "0.8.1",
     "__object__": {
         "__type__": "Plan",
         "bible_passages": "Gen 1:1-4 + Gen 1:27-31; Mark 1:1-3 + Mark 1:14-19",
