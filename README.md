@@ -2,7 +2,7 @@
 Gather Bible passages in multiple languages for multicultural ministry.
 
 ## Download
-[Download Mac and Windows binaries (or source) from Releases](https://github.com/multiscript/multiscript/releases).
+[Download macOS and Windows binaries (or source) from Releases](https://github.com/multiscript/multiscript/releases).
 
 ## Background
 Multicultural Christian ministries often need to provide printed copies of Bible passages for their members and guests, usually with one or more Bible versions printed in parallel. Typically, the size of each passage is small, but the number of different version combinations is large. This tool simplifies the process of collating the different versions, and inserting them into a template document. The result is a series of files, each containing a different combination of Bible versions, for the same Bible passages. These files can then be printed, subject to copyright and licensing restrictions.
