@@ -1,0 +1,269 @@
+{
+    "app_version": "0.8.0",
+    "__object__": {
+        "__type__": "Plan",
+        "bible_passages": "Gen 1:1-4 + Gen 1:27-31; Mark 1:1-3 + Mark 1:14-19",
+        "bible_versions": [
+            {
+                "__type__": "BibleVersion",
+                "bible_source": {
+                    "__type__": "BibleSource",
+                    "__plugin_id__": "multiscript-builtin",
+                    "__plugin_name__": "Builtin Plugin",
+                    "id": "getbible.net",
+                    "name": "GetBible.net"
+                },
+                "id": "kjv",
+                "user_labels": {
+                    "__type__": "BibleVersionLabels",
+                    "name": "King James Version",
+                    "lang": "English",
+                    "abbrev": "KJV"
+                },
+                "native_labels": {
+                    "__type__": "BibleVersionLabels",
+                    "name": "",
+                    "lang": "",
+                    "abbrev": ""
+                },
+                "output_config": {
+                    "multiscript-builtin/word": {
+                        "__type__": "OutputVersionConfig",
+                        "output": {
+                            "__type__": "BibleOutput",
+                            "__plugin_id__": "multiscript-builtin",
+                            "__plugin_name__": "Builtin Plugin",
+                            "id": "word",
+                            "name": "MS Word"
+                        },
+                        "font_name": null,
+                        "font_size": 0,
+                        "__plugin_id__": "multiscript-builtin",
+                        "__plugin_name__": "Builtin Plugin",
+                        "__bibleoutput_id__": "word",
+                        "__bibleoutput_name__": "MS Word"
+                    }
+                },
+                "copyright_text": "General public license for distribution for any purpose",
+                "__plugin_id__": "multiscript-builtin",
+                "__plugin_name__": "Builtin Plugin",
+                "__biblesource_id__": "getbible.net",
+                "__biblesource_name__": "GetBible.net"
+            },
+            {
+                "__type__": "BibleVersion",
+                "bible_source": {
+                    "__type__": "BibleSource",
+                    "__plugin_id__": "multiscript-builtin",
+                    "__plugin_name__": "Builtin Plugin",
+                    "id": "getbible.net",
+                    "name": "GetBible.net"
+                },
+                "id": "cus",
+                "user_labels": {
+                    "__type__": "BibleVersionLabels",
+                    "name": "Union Simplified",
+                    "lang": "Chinese (Simplified)",
+                    "abbrev": "CUS"
+                },
+                "native_labels": {
+                    "__type__": "BibleVersionLabels",
+                    "name": "",
+                    "lang": "",
+                    "abbrev": ""
+                },
+                "output_config": {
+                    "multiscript-builtin/word": {
+                        "__type__": "OutputVersionConfig",
+                        "output": {
+                            "__type__": "BibleOutput",
+                            "__plugin_id__": "multiscript-builtin",
+                            "__plugin_name__": "Builtin Plugin",
+                            "id": "word",
+                            "name": "MS Word"
+                        },
+                        "font_name": "",
+                        "font_size": 0.0,
+                        "__plugin_id__": "multiscript-builtin",
+                        "__plugin_name__": "Builtin Plugin",
+                        "__bibleoutput_id__": "word",
+                        "__bibleoutput_name__": "MS Word"
+                    }
+                },
+                "copyright_text": "Public Domain",
+                "__plugin_id__": "multiscript-builtin",
+                "__plugin_name__": "Builtin Plugin",
+                "__biblesource_id__": "getbible.net",
+                "__biblesource_name__": "GetBible.net"
+            },
+            {
+                "__type__": "BibleVersion",
+                "bible_source": {
+                    "__type__": "BibleSource",
+                    "__plugin_id__": "multiscript-builtin",
+                    "__plugin_name__": "Builtin Plugin",
+                    "id": "getbible.net",
+                    "name": "GetBible.net"
+                },
+                "id": "korean",
+                "user_labels": {
+                    "__type__": "BibleVersionLabels",
+                    "name": "Korean",
+                    "lang": "Korean",
+                    "abbrev": "KOREAN"
+                },
+                "native_labels": {
+                    "__type__": "BibleVersionLabels",
+                    "name": "",
+                    "lang": "",
+                    "abbrev": ""
+                },
+                "output_config": {
+                    "multiscript-builtin/word": {
+                        "__type__": "OutputVersionConfig",
+                        "output": {
+                            "__type__": "BibleOutput",
+                            "__plugin_id__": "multiscript-builtin",
+                            "__plugin_name__": "Builtin Plugin",
+                            "id": "word",
+                            "name": "MS Word"
+                        },
+                        "font_name": null,
+                        "font_size": 0,
+                        "__plugin_id__": "multiscript-builtin",
+                        "__plugin_name__": "Builtin Plugin",
+                        "__bibleoutput_id__": "word",
+                        "__bibleoutput_name__": "MS Word"
+                    }
+                },
+                "copyright_text": "Public Domain",
+                "__plugin_id__": "multiscript-builtin",
+                "__plugin_name__": "Builtin Plugin",
+                "__biblesource_id__": "getbible.net",
+                "__biblesource_name__": "GetBible.net"
+            },
+            {
+                "__type__": "BibleVersion",
+                "bible_source": {
+                    "__type__": "BibleSource",
+                    "__plugin_id__": "multiscript-builtin",
+                    "__plugin_name__": "Builtin Plugin",
+                    "id": "getbible.net",
+                    "name": "GetBible.net"
+                },
+                "id": "ls1910",
+                "user_labels": {
+                    "__type__": "BibleVersionLabels",
+                    "name": "Louis Segond (1910)",
+                    "lang": "French",
+                    "abbrev": "LS1910"
+                },
+                "native_labels": {
+                    "__type__": "BibleVersionLabels",
+                    "name": "",
+                    "lang": "",
+                    "abbrev": ""
+                },
+                "output_config": {
+                    "multiscript-builtin/word": {
+                        "__type__": "OutputVersionConfig",
+                        "output": {
+                            "__type__": "BibleOutput",
+                            "__plugin_id__": "multiscript-builtin",
+                            "__plugin_name__": "Builtin Plugin",
+                            "id": "word",
+                            "name": "MS Word"
+                        },
+                        "font_name": null,
+                        "font_size": 0,
+                        "__plugin_id__": "multiscript-builtin",
+                        "__plugin_name__": "Builtin Plugin",
+                        "__bibleoutput_id__": "word",
+                        "__bibleoutput_name__": "MS Word"
+                    }
+                },
+                "copyright_text": "Permission to distribute granted to CrossWire",
+                "__plugin_id__": "multiscript-builtin",
+                "__plugin_name__": "Builtin Plugin",
+                "__biblesource_id__": "getbible.net",
+                "__biblesource_name__": "GetBible.net"
+            }
+        ],
+        "version_selection": [
+            [
+                true,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                true,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                true,
+                true
+            ]
+        ],
+        "template_path": {
+            "__type__": "Path",
+            "__path__": "."
+        },
+        "output_dir_path": {
+            "__type__": "Path",
+            "__path__": "."
+        },
+        "config": {
+            "__type__": "PlanConfigGroup",
+            "general": {
+                "__type__": "GeneralPlanConfig",
+                "allow_confirmations": false,
+                "confirm_after_template_expansion": false
+            },
+            "sources": {},
+            "outputs": {
+                "multiscript-builtin/word": {
+                    "__type__": "OutputPlanConfig",
+                    "bible_output": {
+                        "__type__": "BibleOutput",
+                        "__plugin_id__": "multiscript-builtin",
+                        "__plugin_name__": "Builtin Plugin",
+                        "id": "word",
+                        "name": "MS Word"
+                    },
+                    "join_passage_text": "\n[...]\n",
+                    "all_tables_insert_blank_paras": true,
+                    "generate_pdf": false,
+                    "__plugin_id__": "multiscript-builtin",
+                    "__plugin_name__": "Builtin Plugin",
+                    "__bibleoutput_id__": "word",
+                    "__bibleoutput_name__": "MS Word"
+                },
+                "multiscript-builtin/plain_text": {
+                    "__type__": "OutputPlanConfig",
+                    "bible_output": {
+                        "__type__": "BibleOutput",
+                        "__plugin_id__": "multiscript-builtin",
+                        "__plugin_name__": "Builtin Plugin",
+                        "id": "plain_text",
+                        "name": "Plain Text"
+                    },
+                    "join_passage_text": "\n[...]\n",
+                    "tab_text": "\t",
+                    "after_para_text": "",
+                    "insert_para_tab": true,
+                    "skip_initial_para": false,
+                    "use_poetry_tabs": true,
+                    "__plugin_id__": "multiscript-builtin",
+                    "__plugin_name__": "Builtin Plugin",
+                    "__bibleoutput_id__": "plain_text",
+                    "__bibleoutput_name__": "Plain Text"
+                }
+            }
+        }
+    }
+}

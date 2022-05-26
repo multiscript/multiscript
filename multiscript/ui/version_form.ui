@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VersionForm</class>
+ <widget class="QWidget" name="VersionForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>370</width>
+    <height>493</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="13" column="0" colspan="2">
+    <widget class="QTabWidget" name="outputsTabWidget"/>
+   </item>
+   <item row="10" column="1">
+    <widget class="QLineEdit" name="userAbbrevLineEdit"/>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLabel" name="userAbbrevLabel">
+     <property name="text">
+      <string>Abbreviation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="nativeSectionLabel">
+     <property name="text">
+      <string>Labels in Native Language</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="sourceLineEdit">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="nativeAbbrevLabel">
+     <property name="text">
+      <string>Abbreviation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1">
+    <widget class="QLabel" name="outputSectionLabel">
+     <property name="text">
+      <string>Output Settings
+</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="nativeAbbrevLineEdit"/>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="nativeNameLineEdit"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="sourceLabel">
+     <property name="text">
+      <string>Source</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="11" column="1">
+    <widget class="QLineEdit" name="userLangLineEdit"/>
+   </item>
+   <item row="8" column="1">
+    <widget class="QLabel" name="userSectionLabel">
+     <property name="text">
+      <string>Labels in User Language</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="idLineEdit"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="idLabel">
+     <property name="text">
+      <string>Version ID</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLineEdit" name="userNameLineEdit"/>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLineEdit" name="nativeLangLineEdit"/>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="userNameLabel">
+     <property name="text">
+      <string>Version Name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="nativeNameLabel">
+     <property name="text">
+      <string>Version Name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
+    <widget class="QLabel" name="userLangLabel">
+     <property name="text">
+      <string>Language</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="nativeLangLabel">
+     <property name="text">
+      <string>Language</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>sourceLineEdit</tabstop>
+  <tabstop>idLineEdit</tabstop>
+  <tabstop>nativeNameLineEdit</tabstop>
+  <tabstop>nativeAbbrevLineEdit</tabstop>
+  <tabstop>nativeLangLineEdit</tabstop>
+  <tabstop>userNameLineEdit</tabstop>
+  <tabstop>userAbbrevLineEdit</tabstop>
+  <tabstop>userLangLineEdit</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
