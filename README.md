@@ -9,7 +9,7 @@ Multicultural Christian ministries often need to provide printed copies of Bible
 
 Multiscript is designed to be easy to use, while also being highly flexible in the output it produces. A basic plugin system allows for further customisation.
 
-This code is in active use, but please note it's currently a very part-time project, and the code is pre-release only. If you have skills that would benefit the project, we'd love to hear from you! In particular, we'd like to extend the range of free Bible version sources available.
+The code is currently pre-release, so expect some bugs. If you have skills that would benefit the project, we'd love to hear from you! In particular, we'd like to extend the range of free Bible version sources available.
 
 ## Build Instructions
 Multiscript has been developed and tested mostly on macOS Mojave. We've done some very basic testing on Windows 10.
