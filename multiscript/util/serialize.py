@@ -304,6 +304,12 @@ def _deserialize(file_app_version, error_list, obj_type, input_dict):
 
     elif obj_type == "BibleVersionLabels":
         new_obj = BibleVersionLabels()
+        if input_dict.get("name") is None:
+            input_dict["name"] = ""
+        if input_dict.get("lang") is None:
+            input_dict["lang"] = ""
+        if input_dict.get("abbrev") is None:
+            input_dict["abbrev"] = ""    
 
     elif obj_type == "BibleOutput":
         try:

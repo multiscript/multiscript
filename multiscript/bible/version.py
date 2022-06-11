@@ -8,7 +8,7 @@ class BibleVersion:
     '''Class to hold information about a particular Bible version from a particular
     BibleSource.
     '''
-    def __init__(self, source=None, id=None, name="", lang="", abbrev=""):
+    def __init__(self, source=None, id=None, name=None, lang=None, abbrev=None):
         self.bible_source = source
         self.id = id
         self.user_labels = BibleVersionLabels()
@@ -41,7 +41,7 @@ class BibleVersion:
     # Shortcut for setting user version name
     @name.setter
     def name(self, value):
-        self.user_labels.name = value
+        self.user_labels.name = value if value is not None else ""
 
     # Returns combined native and user version lang
     @property
@@ -55,7 +55,7 @@ class BibleVersion:
     # Shortcut for setting user version lang
     @lang.setter
     def lang(self, value):
-        self.user_labels.lang = value
+        self.user_labels.lang = value if value is not None else ""
 
     # Returns combined native and user version abbrev
     @property
@@ -69,7 +69,7 @@ class BibleVersion:
     # Shortcut for setting user version abbrev
     @abbrev.setter
     def abbrev(self, value):
-        self.user_labels.abbrev = value
+        self.user_labels.abbrev = value if value is not None else ""
 
     def load_content(self, bible_range, bible_content):
         pass        
@@ -82,10 +82,10 @@ class BibleVersion:
 class BibleVersionLabels:
     '''Class to hold display labels for a BibleVersion.
     '''
-    def __init__(self, name="", lang="", abbrev=""):
-        self.name = name
-        self.lang = lang
-        self.abbrev = abbrev
+    def __init__(self, name=None, lang=None, abbrev=None):
+        self.name = name if name is not None else ""
+        self.lang = lang if lang is not None else ""
+        self.abbrev = abbrev if abbrev is not None else ""
 
     def __repr__(self):
         return f"{self.__class__.__name__}" + "\n" + \
