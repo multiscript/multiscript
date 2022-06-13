@@ -477,7 +477,7 @@ class Ui_MainWindow(object):
         self.planConfigAction.setText(QCoreApplication.translate("MainWindow", u"Plan Options...", None))
         self.restartAction.setText(QCoreApplication.translate("MainWindow", u"Restart Multiscript", None))
         self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"Multiscript", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Gather Bible passages in multiple languages for multicultural ministry.", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Combine Bible versions for multicultural ministry.", None))
         self.appIconLabel.setText(QCoreApplication.translate("MainWindow", u"IconLabel", None))
         self.passagesLabel.setText(QCoreApplication.translate("MainWindow", u"Bible Passages", None))
         self.passagesLineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"For example: Gen 1:1-5, Gen 1:26-27; John 1:1-18, John 2:1-11", None))
