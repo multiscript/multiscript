@@ -359,12 +359,31 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         # needs to have *finished* initialising before we start creating QWidgets like windows.
 
         self.main_window = MainWindow()
-        if len(sys.argv) > 1:
-            path = Path(sys.argv[1])
-            if path.suffix == plan.PLAN_FILE_EXTENSION:
-                self.main_window.load_plan(path)
-            elif path.suffix == PLUGIN_FILE_EXTENSION:
-                self.add_plugin(path)
+        # There may be multiple command-line arguments, but we only use the first plan file and first
+        # plugin file we find.
+        plan_path = None
+        plugin_path = None
+        for arg in sys.argv[1:]:
+            path = Path(arg)
+            if plan_path is None and path.suffix == plan.PLAN_FILE_EXTENSION:
+                # First argument that is a plan file
+                plan_path = path
+            elif plugin_path is None and path.suffix == PLUGIN_FILE_EXTENSION:
+                plugin_path = path
+            
+            if plan_path is not None and plugin_path is not None:
+                # Ignore any remaining command-line arguments
+                break
+        
+        print("Plan:", plan_path)
+        print("Plugin:", plugin_path)
+        # Load any plugin first, in case the plan depends on it
+        if plugin_path is not None:
+            print("Adding plugin")
+            self.add_plugin(plugin_path)
+            print("Added plugin")
+        if plan_path is not None:
+            self.main_window.load_plan(plan_path)
 
         self.main_window.show()
 
