@@ -14,7 +14,7 @@ Use these instructions if you’re building from the source. Multiscript has bee
 Mojave. We've done some very basic testing on Windows 10.
 1. Install Python (we've only tested with Python 3.7)
 1. Install git
-1. `git clone https://github.com/jamesbcd/multiscript/`
+1. `git clone https://github.com/multiscript/multiscript/`
 1. `cd multiscript`
 1. `python3 -m venv venv` (Create a virtual environment.)
    * On Windows: `python -m venv venv`
