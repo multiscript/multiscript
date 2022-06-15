@@ -1,10 +1,10 @@
 # Multiscript
 Combine Bible versions for multicultural ministry.
 
-To read more about the application, see the project website at [multiscript.github.io](https://multiscript.github.io/).
+To learn more, see the project website at [multiscript.github.io](https://multiscript.github.io/).
 
 ## Download
-[Download macOS and Windows binaries (or source) from Releases](https://github.com/multiscript/multiscript/releases).
+[Download latest binaries and source from Releases](https://github.com/multiscript/multiscript/releases).
 
 The code is currently pre-release, so you should expect bugs. If you have skills that would benefit the project, we'd
 love to hear from you! In particular, we'd like to extend the range of free Bible version sources available.
