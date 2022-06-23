@@ -340,6 +340,10 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         super().__init__(*args, **kwargs)
         MultiscriptBaseApplication.__init__(self) # Necessary because QApplication doesn't call super().__init__
         
+        # Cmd-line arguments we also expect to receive as FileOpen events. See self.event() below.
+        self._expected_open_file_event_args = set(sys.argv[1:])
+        print("Expected:", self._expected_open_file_event_args)
+
         self.restart_requested = False # True if a restart should occur after the event loop ends
 
         # We use a Qt.QueuedConnection to ensure that restarts requested before the event loop starts
@@ -349,16 +353,14 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         self._restart_arg_list = None # Command-line arguments to be passed to the restart
         
         self.main_window = None
-        self.received_first_file_open_event = False
-
         self.setApplicationName("Multiscript")
         self.setWindowIcon(self.icon)
 
     def ui_init(self):
         # Note that we can't include this code in the __init__ method, as the QApplication
         # needs to have *finished* initialising before we start creating QWidgets like windows.
-
         self.main_window = MainWindow()
+
         # There may be multiple command-line arguments, but we only use the first plan file and first
         # plugin file we find.
         plan_path = None
@@ -383,7 +385,9 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
             self.add_plugin(plugin_path)
             print("Added plugin")
         if plan_path is not None:
+            print("Loading plan")
             self.main_window.load_plan(plan_path)
+            print("Loaded plan")
 
         self.main_window.show()
 
@@ -423,32 +427,32 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         return result
 
     def event(self, e):
+        #
         # On Mac only, files are opened via AppleEvents, which Qt exposes as a (Mac-only) FileOpen
-        # Qt event. However, we package our app using pyinstaller, which can optionally enable
-        # argv-emulation. When this is turned on:
-        #   1. pyinstaller catches the first open AppleEvent and supplies the same info as a
-        #      command-line arg. The advantage of this is that we can immediately open
-        #      the file at startup, rather than waiting for the first event.
-        #   2. The event pyinstaller catches is still received here as our first Qt FileOpen event.
-        #      This means that on Mac with argv-emulation enabled, we potentially receive twice
-        #      the same file to open: once via the command-line and once as a FileOpen event.
-        # To prevent opening the same file twice, we only process this FileOpen event if:
-        #   - We've already created the main window, and
-        #   - We've already received our first FileOpen event. If instead this *is* our first
-        #         FileOpen event, we only process it if it's different from the command-line arg
-        #         (which would suggest we've been packaged with something other than pyinstaller).
+        # Qt event. However, it's possible that some of these FileOpen events are duplicates
+        # of the files passed to the app as commmand line arguments. This can happen:
+        #   1. When running unfrozen (i.e. from source), with command-line arguments.
+        #   2. When running frozen with pyinstaller if pyinstaller's argv-emulation is turned
+        #      on. In this case, pyinstaller catches the initial open event and supplies the
+        #      same info as a command-line argument. One advantage of this is that we can
+        #      immediately open the file at startup, rather than waiting for our code to process
+        #      an event.
+        #
+        # All of this means that it's possible be notified twice about opening a file: once on the
+        # command-line, and once as a FileOpen event. Therefore, at startup, we create a set of
+        # the command-line args in self._expected_open_file_event_args. When we receive a FileOpen
+        # event, if the path is already in this set, we ignore the event, and remove the path
+        # from the set. Otherwise we process the event as normal.
         #
         if e.type() == QtCore.QEvent.FileOpen:
-            path = Path(e.file())
-            this_is_first_file_open_event = not self.received_first_file_open_event
+            path_str = e.file()
+            if path_str in self._expected_open_file_event_args:
+                # Duplicate file open notification
+                self._expected_open_file_event_args.remove(path_str)
+                print("Ignoring", path_str)
+                return super().event(e)
 
-            if multiscript.ARGV_EMULATION:
-                if this_is_first_file_open_event and \
-                    (len(sys.argv) == 1 or (path == Path(sys.argv[1]))):
-                    self.received_first_file_open_event = True
-                    # We ignore this first event            
-                    return super().event(e) 
-
+            path = Path(path_str)
             if path.suffix == plan.PLAN_FILE_EXTENSION:
                 self.main_window.load_plan(path)
                 return True
