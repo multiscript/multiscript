@@ -21,6 +21,9 @@ from multiscript.ui.progress_dialog import ProgressDialog
 from multiscript.ui.plan_errors_dialog import PlanErrorsDialog
 from multiscript.util.util import launch_file
 
+# TODO: Rewrite default plan loading so that errors are reported as normal.
+# TODO: Allow easy restarting when adding or removing plugins/paths in Plugin config dialog.
+# TODO: Display some kind of dialog when starting time-consuming part of loading a plugin.
 # TODO: Write some new BibleSources that use free APIs
 # TODO: Allow templates to be attached (embedded in) the plan.
 
