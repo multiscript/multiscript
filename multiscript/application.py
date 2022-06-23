@@ -46,7 +46,7 @@ class MultiscriptBaseApplication:
         self.replace_missing_templates()
 
         self._known_plugins = {}    # Needed by plugin-loading architecture
-        self._plugins = []          # Current set of loaded plugins
+        self._plugins = []          # Current list of loaded plugins
         self._plugins_by_id = {}
 
         self._sources = []
@@ -199,13 +199,6 @@ class MultiscriptBaseApplication:
         self._outputs.extend(plugin_outputs)
         self._outputs_by_long_id.update({output.long_id: output for output in plugin_outputs})
 
-        # _logger.debug(f"plugins={[type(plugin) for plugin in self._plugins]}\n")
-        # _logger.debug(f"plugins_by_id={ {id:type(plugin) for id, plugin in self._plugins_by_id.items()} }\n")
-        # _logger.debug(f"sources={[type(source) for source in self._sources]}\n")
-        # _logger.debug(f"sources_by_long_id={ {id:type(source) for id, source in self._sources_by_long_id.items()} }\n")
-        # _logger.debug(f"outputs={[type(output) for output in self._outputs]}\n")
-        # _logger.debug(f"outputs_by_long_id={ {id:type(output) for id, output in self._outputs_by_long_id.items()} }\n")
-
     def _get_new_plugin_list(self, plugin_class, **plugin_loader_args):
         '''Returns a simple list of newly loaded plugins which are subclasses of plugin_class
         
@@ -350,7 +343,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         # are not forgotten, and restarts requested from within a dialog still allow the dialog
         # to close cleanly before all other windows close and the restart occurs.
         self._restart_request.connect(self._on_restart_request, type=Qt.QueuedConnection)
-        self._restart_arg_list = None # Command-line arguments to be passed to the restart
+        self._restart_arg_list = [] # Command-line arguments to be passed to the restart
         
         self.main_window = None
         self.setApplicationName("Multiscript")
@@ -379,11 +372,21 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         
         print("Plan:", plan_path)
         print("Plugin:", plugin_path)
+
         # Load any plugin first, in case the plan depends on it
         if plugin_path is not None:
+            # Before loading the plugin, save any command-line plan arg in the restart
+            # args, so that if adding the plugin causes a restart, we don't forget the plan
+            if plan_path is not None:
+                self._restart_arg_list = [plan_path]
             print("Adding plugin")
             self.add_plugin(plugin_path)
             print("Added plugin")
+            # We've made it to here without a restart, so we remove any plan from the restart
+            # arg list.
+            if plan_path is not None:
+                self._restart_arg_list = []
+
         if plan_path is not None:
             print("Loading plan")
             self.main_window.load_plan(plan_path)
@@ -617,7 +620,17 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         self._restart_request.emit(restart_arg_list)
 
     def _on_restart_request(self, restart_arg_list=None):
-        self._restart_arg_list = restart_arg_list
+        if restart_arg_list is None:
+            restart_arg_list = []
+        # Note that the restart arg list may already contain the path to a yet-to-be-opened plan.
+        self._restart_arg_list.extend(restart_arg_list)
+
+        # If instead there is an open plan, add it's path to the restart args, so we'll reopen it upon
+        # restart.
+        if self.main_window is not None and self.main_window.plan is not None:
+            plan = self.main_window.plan
+            if not plan.new: # If plan isn't new, it must have a path
+                self._restart_arg_list.append(plan.path)
         self.closeAllWindows() # After closing all windows this will end the event loop.
 
     def execute_restart(self):
