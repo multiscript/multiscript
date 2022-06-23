@@ -1,7 +1,7 @@
 # Multiscript
 Combine Bible versions for multicultural ministry.
 
-To learn more, see the project website at [multiscript.github.io](https://multiscript.github.io/).
+To learn more, see the project website at [multiscript.app](https://multiscript.app).
 
 ## Download
 [Download latest binaries and source from Releases](https://github.com/multiscript/multiscript/releases).
