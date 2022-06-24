@@ -21,7 +21,6 @@ from multiscript.ui.progress_dialog import ProgressDialog
 from multiscript.ui.plan_errors_dialog import PlanErrorsDialog
 from multiscript.util.util import launch_file
 
-# TODO: Allow easy restarting when adding or removing plugins/paths in Plugin config dialog.
 # TODO: Display some kind of dialog when starting time-consuming part of loading a plugin.
 # TODO: Write some new BibleSources that use free APIs
 # TODO: Allow templates to be attached (embedded in) the plan.
@@ -557,12 +556,25 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def on_app_config_triggered(self):
         app_config_group = multiscript.app().app_config_group
         app_config_dialog = AppConfigDialog(None, app_config_group)
-        # Record existing list of plugins, to detect any changes
+        # Record existing list of plugins and paths, to detect any changes
         plugins_before = set(multiscript.app().all_plugins)
+        plugins_altpath_before = app_config_group.plugins.altPluginsPath
+        
         result = app_config_dialog.exec_()
         if result == QtWidgets.QDialog.Accepted:
             app_config_group.save()
+        
         plugins_after = set(multiscript.app().all_plugins)
+        plugins_altpath_after = app_config_group.plugins.altPluginsPath
+        if (plugins_altpath_before != plugins_altpath_after) and not multiscript.app().restart_requested:
+            result = multiscript.app().msg_box(self.tr(f"The Alternate Plugins Folder has changed. " +
+                        f"Would you like to restart Multiscript to process the changes?"),
+                        self.tr(f"Restart Multiscript?"),
+                        standard_buttons=(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
+                        default_button=QtWidgets.QMessageBox.Yes)
+            if result == QtWidgets.QMessageBox.Yes:
+                multiscript.app().request_restart()
+
         if (plugins_before != plugins_after) and not multiscript.app().restart_requested:
             self.offer_plan_reload()
 

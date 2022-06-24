@@ -127,9 +127,12 @@ class MultiscriptBaseApplication:
             plugin_base_paths.append(alt_plugins_path)
         
         for base_path in plugin_base_paths:
-            _logger.debug(f"Searching for plugins in base path {base_path}")
-            for sub_path in base_path.iterdir():
-                self._load_plugin_at_path(sub_path)
+            self._load_plugins_at_base_path(base_path)
+
+    def _load_plugins_at_base_path(self, base_path):
+        _logger.debug(f"Searching for plugins in base path {base_path}")
+        for sub_path in Path(base_path).iterdir():
+            self._load_plugin_at_path(sub_path)
 
     def _load_plugin_at_path(self, path):
         '''Load any available plugin at the specified path. Returns the plugin instance if successful,
@@ -137,6 +140,7 @@ class MultiscriptBaseApplication:
 
         Can be safely called multiple times to discover any newly added plugins at the path.
         '''
+        path = Path(path) # Ensure we have a path object, and not just a str
         # Ignore the path if it's not a directory, or it's hidden
         if not path.is_dir() or path.name[0] == '.':
             return None
@@ -165,7 +169,7 @@ class MultiscriptBaseApplication:
             sys.path.remove(str(search_path))
         num_new_plugins = len(new_plugins)
         if num_new_plugins == 0:
-            _logger.debug(f"\t\tNo new plugins found in {search_path.name}")
+            _logger.debug(f"\t\tNo new plugins found in directory: {search_path.name}")
             return None
         elif num_new_plugins > 1:
             _logger.debug(f"\t\tToo many plugin classes ({num_new_plugins}) found in {search_path.name}. Ignoring path")

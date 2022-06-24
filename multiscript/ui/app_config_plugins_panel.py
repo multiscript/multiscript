@@ -39,10 +39,14 @@ class PluginsAppConfigPanel(ConfigWidget, Ui_PluginsAppConfigPanel):
             AttributeColumn(self.tr("Location"),lambda plugin: str(plugin.base_path)),
         ])
         self.pluginTableModel.set_all_columns_editable(False)
-        self.pluginTableModel.append_items(multiscript.app().all_plugins)
         self.pluginsTableView.setModel(self.pluginTableModel)
+        self.reload_plugin_table()
+
+    def reload_plugin_table(self):
+        self.pluginTableModel.clear_items()
+        self.pluginTableModel.append_items(multiscript.app().all_plugins)
         self.pluginsTableView.refresh(resize_cols=True)
-    
+
     def load_config(self, config):
         '''Load the contents of config into this widget.
         '''
