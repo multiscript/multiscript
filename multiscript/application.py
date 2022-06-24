@@ -565,9 +565,9 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                     self.request_restart([path]) # Pass the plugin zip file as an argument to the restart.
                     return None
 
-
             if show_ui:
-                # Using Python to extract a zip file can be quite slow, so we show a progress dialog.                progress_dialog = QtWidgets.QProgressDialog(self.activeWindow())
+                # Using Python to extract a zip file can be quite slow, so we show a progress dialog.
+                progress_dialog = QtWidgets.QProgressDialog(self.activeWindow())
                 progress_dialog.setWindowTitle(self.tr('Installing Plugin'))
                 progress_dialog.setLabelText(self.tr(f"Installing plugin '{plugin_id}'..."))
                 progress_dialog.setMinimum(0)

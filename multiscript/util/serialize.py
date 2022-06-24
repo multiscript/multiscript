@@ -189,6 +189,7 @@ def _serialize(orig_obj, output_dict):
         del output_dict["path"]
         del output_dict["changed"]
         del output_dict["new"]
+        del output_dict["_orig_path"]
     elif isinstance(orig_obj, BibleSource):
         obj_type = "BibleSource"
         # obj_subtype = orig_obj.id
