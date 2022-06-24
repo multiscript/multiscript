@@ -17,7 +17,6 @@ PLAN_FILE_FILTER = "*" + PLAN_FILE_EXTENSION
 UNTITLED_PLAN_NAME = "Untitled Plan" + PLAN_FILE_EXTENSION
 DEFAULT_PLAN_FILENAME = "Default Plan" + PLAN_FILE_EXTENSION
 
-_default_plan = None
 
 class Plan:
     def __init__(self):
@@ -110,26 +109,14 @@ def load(path, error_list=None):
 
     return plan
 
-def get_default_plan():
-    global _default_plan
-    if _default_plan is None:
-        # Load default plan from file
-        _default_plan = load(get_default_plan_path())
-
-        # If loading from file didn't work, create a new default plan
-        if _default_plan is None:
-            _default_plan = new_default_plan()
-            _default_plan.save()
-        
-    return _default_plan
-
-def new_default_plan():
-    global _default_plan
-    _default_plan = Plan()
-    _default_plan.path = get_default_plan_path()
-    return _default_plan
-
 def get_default_plan_path():
-    return multiscript.app().app_docs_path / DEFAULT_PLAN_FILENAME
+    path = multiscript.app().app_docs_path / DEFAULT_PLAN_FILENAME
+    if not path.exists():
+        # Create a new default plan
+        default_plan = Plan()
+        default_plan.path = path
+        default_plan.save()
+    return path
+
 
 

@@ -21,7 +21,6 @@ from multiscript.ui.progress_dialog import ProgressDialog
 from multiscript.ui.plan_errors_dialog import PlanErrorsDialog
 from multiscript.util.util import launch_file
 
-# TODO: Rewrite default plan loading so that errors are reported as normal.
 # TODO: Allow easy restarting when adding or removing plugins/paths in Plugin config dialog.
 # TODO: Display some kind of dialog when starting time-consuming part of loading a plugin.
 # TODO: Write some new BibleSources that use free APIs
@@ -31,13 +30,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi()
+        # Calling code should next call load_plan()
 
     def tr(self, str):
         return QtWidgets.QApplication.translate(self.__class__.__name__, str, None, -1)
 
     def setupUi(self):
         super().setupUi(self)
-        
+        self.plan = None
+
         self.appIconLabel.setIcon(self.windowIcon())
 
         # Mac style leaves too much vertical space, so we remove it
@@ -97,13 +98,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.versionTable.horizontalHeader().setSectionsMovable(True)
         self.versionTable.verticalHeader().setSectionsMovable(True)
         self.versionTable.doubleClicked.connect(self.on_version_table_double_clicked)
-
-        #
-        # Load default plan
-        #
-        self.plan = plan.get_default_plan() # Load default plan
-        self.copy_plan_to_window()
-        self.clear_plan_changed()
 
     #
     # Version table methods
@@ -269,7 +263,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def load_plan(self, path=None, new_plan=False):
         # Check if we need to save the existing plan
         cancel = False
-        if self.plan.changed:
+        if self.plan is not None and self.plan.changed:
             result = self.check_for_save()
             if result == QtWidgets.QMessageBox.Save:
                 self.save_plan()

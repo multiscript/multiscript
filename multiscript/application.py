@@ -2,7 +2,6 @@ from collections import Counter
 from pathlib import Path, PurePosixPath
 import logging
 import os
-import site
 import shutil
 import sys
 import traceback
@@ -335,7 +334,6 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         
         # Cmd-line arguments we also expect to receive as FileOpen events. See self.event() below.
         self._expected_open_file_event_args = set(sys.argv[1:])
-        print("Expected:", self._expected_open_file_event_args)
 
         self.restart_requested = False # True if a restart should occur after the event loop ends
 
@@ -370,27 +368,23 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                 # Ignore any remaining command-line arguments
                 break
         
-        print("Plan:", plan_path)
-        print("Plugin:", plugin_path)
-
         # Load any plugin first, in case the plan depends on it
         if plugin_path is not None:
             # Before loading the plugin, save any command-line plan arg in the restart
             # args, so that if adding the plugin causes a restart, we don't forget the plan
             if plan_path is not None:
                 self._restart_arg_list = [plan_path]
-            print("Adding plugin")
             self.add_plugin(plugin_path)
-            print("Added plugin")
             # We've made it to here without a restart, so we remove any plan from the restart
             # arg list.
             if plan_path is not None:
                 self._restart_arg_list = []
 
         if plan_path is not None:
-            print("Loading plan")
             self.main_window.load_plan(plan_path)
-            print("Loaded plan")
+        else:
+            # Load default plan
+            self.main_window.load_plan(plan.get_default_plan_path())
 
         self.main_window.show()
 
