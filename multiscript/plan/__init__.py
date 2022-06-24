@@ -1,12 +1,7 @@
 
 from pprint import pformat
 from pathlib import Path
-import shutil
 import traceback
-
-from PySide2 import QtCore, QtWidgets
-from PySide2.QtCore import Qt
-from PySide2.QtCore import QStandardPaths
 
 import multiscript
 from multiscript.config.plan import PlanConfigGroup
@@ -24,6 +19,8 @@ class Plan:
         self.path = multiscript.app().app_docs_path / UNTITLED_PLAN_NAME
         self.changed = False    # Classes using Plan should set to True if plan has been modified and not yet saved.
         self.new = True         # True until the plan is saved or loaded for the first time.
+        self._orig_path = None  # If the path renamed due to missing plugins, store the original path here, but only
+                                # until the plan is saved, when _orig_path is reset to None.
 
         self.bible_passages = None
         self.bible_versions = []          # A list of all the BibleVersions in the plan.
@@ -45,6 +42,7 @@ class Plan:
         serialize.save(self, self.path)
         self.changed = False
         self.new = False
+        self._orig_path = None
 
     def __repr__(self): 
         return f"{self.__class__.__name__}" + "\n" + \
@@ -95,6 +93,7 @@ def load(path, error_list=None):
         # from the plan on disk. To avoid saving over the plan on disk, we modify the plan
         # path, and mark it as modified.
         plan.changed = True
+        plan._orig_path = plan.path
         plan.path = plan.path.with_name(plan.path.stem + " copy" + plan.path.suffix)
 
     # Handle any paths parameters that don't exist.

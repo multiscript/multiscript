@@ -329,6 +329,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.plan.save()
         self.update_read_only_widgets_from_plan()
 
+    def offer_plan_reload(self):
+        '''If the current plan was modified due to missing plugins, offer to reload the plan.
+        '''
+        if self.plan is not None and self.plan._orig_path is not None:
+            # The current plan was modified due to missing plugins. Offer to reload
+            result = multiscript.app().msg_box(self.tr(f"Would you like to reload the current plan?"),
+                        self.tr(f"Reload Plan?"),
+                        standard_buttons=(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
+                        default_button=QtWidgets.QMessageBox.Yes)
+            if result == QtWidgets.QMessageBox.Yes:
+                self.load_plan(self.plan._orig_path)
+
     #
     # Window update methods
     # 
@@ -545,9 +557,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def on_app_config_triggered(self):
         app_config_group = multiscript.app().app_config_group
         app_config_dialog = AppConfigDialog(None, app_config_group)
+        # Record existing list of plugins, to detect any changes
+        plugins_before = set(multiscript.app().all_plugins)
         result = app_config_dialog.exec_()
         if result == QtWidgets.QDialog.Accepted:
             app_config_group.save()
+        plugins_after = set(multiscript.app().all_plugins)
+        if (plugins_before != plugins_after) and not multiscript.app().restart_requested:
+            self.offer_plan_reload()
 
     #
     # Help Menu methods

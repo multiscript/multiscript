@@ -446,7 +446,6 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
             if path_str in self._expected_open_file_event_args:
                 # Duplicate file open notification
                 self._expected_open_file_event_args.remove(path_str)
-                print("Ignoring", path_str)
                 return super().event(e)
 
             path = Path(path_str)
@@ -455,6 +454,8 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                 return True
             elif path.suffix == PLUGIN_FILE_EXTENSION:
                 self.add_plugin(path)
+                if self.main_window is not None:
+                    self.main_window.offer_plan_reload()
                 return True
         
         return super().event(e)
@@ -551,6 +552,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
 
             self.msg_box(self.tr(f"The plugin '{new_plugin_instance.name}' was successfully installed"),
                                   self.tr("Plugin Installed"))
+
             return new_plugin_instance
 
     def remove_plugin(self, plugin_id):
@@ -624,7 +626,11 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         if self.main_window is not None and self.main_window.plan is not None:
             plan = self.main_window.plan
             if not plan.new: # If plan isn't new, it must have a path
-                self._restart_arg_list.append(plan.path)
+                path = plan.path
+                if plan._orig_path is not None:
+                    # Plan was modified due to missing plugins and not yet saved. Use orig path instead
+                    path = plan._orig_path
+                self._restart_arg_list.append(path)
         self.closeAllWindows() # After closing all windows this will end the event loop.
 
     def execute_restart(self):
