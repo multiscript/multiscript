@@ -330,7 +330,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
     any of our QWidgets. Otherwise, we will crash.
     '''
 
-    _restart_request = QtCore.Signal(list) # Internal signal to allowed queued restart requests
+    _restart_request = QtCore.Signal() # Internal signal to allowed queued restart requests
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -378,19 +378,19 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
             # args, so that if adding the plugin causes a restart, we don't forget the plan
             if plan_path is not None:
                 self._restart_arg_list = [plan_path]
-            self.add_plugin(plugin_path)
-            # We've made it to here without a restart, so we remove any plan from the restart
-            # arg list.
-            if plan_path is not None:
+            self.add_plugin(plugin_path) # Note this could result in a restart request
+            # If no restart is needed, remove any plan from the restart arg list.
+            if not self.restart_requested:
                 self._restart_arg_list = []
 
-        if plan_path is not None:
-            self.main_window.load_plan(plan_path)
-        else:
-            # Load default plan
-            self.main_window.load_plan(plan.get_default_plan_path())
+        if not self.restart_requested:
+            if plan_path is not None:
+                self.main_window.load_plan(plan_path)
+            else:
+                # Load default plan
+                self.main_window.load_plan(plan.get_default_plan_path())
 
-        self.main_window.show()
+            self.main_window.show()
 
     def exec_(self):
         '''If we're not running as a 'frozen' pyinstaller bundle, this calls exec_() in our superclass
@@ -399,6 +399,10 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         If we *are* running as a 'frozen' pyinstaller bundle, we still call exec_() in the superclass,
         but we ensure that any unhandled exceptions are caught raised to the caller.
         '''
+        if self.restart_requested:
+            # Since a restart has already been requested, just exit straightaway.
+            return 0
+
         if not self.is_frozen():
             return super().exec_()
         else:
@@ -417,6 +421,10 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         If we *are* running as a 'frozen' pyinstaller bundle, we still call exec_() in the superclass,
         but we ensure that any unhandled exceptions are caught and displayed in a dialog.
         '''
+        if self.restart_requested:
+            # Since a restart has already been requested, just exit straightaway.
+            return 0
+
         result = 0
         try:
             result = self.exec_()
@@ -464,14 +472,20 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         
         return super().event(e)
 
-    def add_plugin(self, path=None):
+    def add_plugin(self, path=None, show_ui=True):
         '''Installs a plugin, given the path to the .mplugin file. If path is None,
         the user will be prompted for the .mplugin file.
+
+        If show_ui is True, prompts and dialogs will be shown. Set to false for a silent install.
+        If show_ui is False, path must not be None.
         
         If the plugin is succesfully installed, returns the plugin instance. Otherwise returns None.
         '''
         if path is None:
             # Prompt for plugin to add
+            if not show_ui:
+                return None
+
             # TODO: Set the default loading directory for the dialog to something like the documents folder
             path_str, selected_filter = QtWidgets.QFileDialog.getOpenFileName(None, self.tr("Select Plugin"),
                                                                                 None, PLUGIN_FILE_FILTER)
@@ -481,13 +495,15 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
             path = Path(path_str)
         
         if not zipfile.is_zipfile(path):
-            self.msg_box(self.tr('This file is not a valid plugin.'), self.tr("Plugin Error"))
+            if show_ui:
+                self.msg_box(self.tr('This file is not a valid plugin.'), self.tr("Plugin Error"))
             return None
         
         try:
             file = zipfile.ZipFile(path)
         except BaseException as e:
-            self.msg_box(self.tr('There was an error loading this plugin.'), self.tr("Plugin Error"))
+            if show_ui:
+                self.msg_box(self.tr('There was an error loading this plugin.'), self.tr("Plugin Error"))
             return None
 
         with file:
@@ -508,16 +524,18 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
             root_names_count = Counter([info.root_name for info in extra_infos])
 
             if len(root_names_count) != 1:
-                self.msg_box(self.tr('The plugin was not loaded as it contains more than one top-level file/folder.'),
-                                      self.tr("Plugin Error"))
+                if show_ui:
+                    self.msg_box(self.tr('The plugin was not loaded as it contains more than one top-level file/folder.'),
+                                 self.tr("Plugin Error"))
                 return None
 
             plugin_id = list(root_names_count)[0]
             
             # There should be an entry for the top-level folder and at least one file/folder under it.
             if root_names_count[plugin_id] < 2:
-                self.msg_box(self.tr('The plugin was not loaded as it appears to be empty.'),
-                                      self.tr("Plugin Error"))
+                if show_ui:
+                    self.msg_box(self.tr('The plugin was not loaded as it appears to be empty.'),
+                                 self.tr("Plugin Error"))
                 return None
             
             new_plugin_path = self.app_plugin_dir_path / plugin_id
@@ -527,11 +545,16 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                 for existing_plugin in self.all_plugins:
                     if existing_plugin.base_path == new_plugin_path:
                         existing_plugin_name = existing_plugin.name
-                result = self.msg_box(self.tr(f"There is an existing plugin with id '{plugin_id}' named '{existing_plugin_name}'. ") + 
-                                               self.tr("Do you wish to replace it?\n\n") + 
-                                               self.tr("This will require restarting Multiscript."),
-                                               self.tr("Replace Plugin?"),
-                                               QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Ok)
+                if show_ui:
+                    result = self.msg_box(self.tr(f"There is an existing plugin with id '{plugin_id}' named '{existing_plugin_name}'. ") + 
+                                          self.tr("Do you wish to replace it?\n\n") + 
+                                          self.tr("This will require restarting Multiscript."),
+                                          self.tr("Replace Plugin?"),
+                                          QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Ok)
+                else:
+                    # For silent install, just go ahead and overwrite the plugin
+                    result = QtWidgets.QMessageBox.Ok
+
                 if result == QtWidgets.QMessageBox.Cancel:
                     return None
                 else:
@@ -542,20 +565,36 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                     self.request_restart([path]) # Pass the plugin zip file as an argument to the restart.
                     return None
 
-            for extra_info in extra_infos:
+
+            if show_ui:
+                # Using Python to extract a zip file can be quite slow, so we show a progress dialog.                progress_dialog = QtWidgets.QProgressDialog(self.activeWindow())
+                progress_dialog.setWindowTitle(self.tr('Installing Plugin'))
+                progress_dialog.setLabelText(self.tr(f"Installing plugin '{plugin_id}'..."))
+                progress_dialog.setMinimum(0)
+                progress_dialog.setMaximum(len(extra_infos))
+                progress_dialog.setMinimumDuration(0)
+                progress_dialog.setCancelButton(None)
+                progress_dialog.open()
+            for i in range(len(extra_infos)):
+                extra_info = extra_infos[i]
                 dest_path = file.extract(extra_info.info, path=self.app_plugin_dir_path)
-                # _logger.debug(f'Extracted {dest_path}')
-            
+                if show_ui:
+                    progress_dialog.setValue(i)
+            if show_ui:
+                progress_dialog.close()
+
             # Now we've extracted the plugin, try to import it.
             new_plugin_instance = self._load_plugin_at_path(new_plugin_path)
             if new_plugin_instance is None:
-                self.msg_box(self.tr(f"The plugin with '{plugin_id}' id could not be loaded."),
-                                      self.tr("Plugin Error"))
+                if show_ui:
+                    self.msg_box(self.tr(f"The plugin with '{plugin_id}' id could not be loaded."),
+                                 self.tr("Plugin Error"))
                 shutil.rmtree(new_plugin_path)
                 return None
 
-            self.msg_box(self.tr(f"The plugin '{new_plugin_instance.name}' was successfully installed"),
-                                  self.tr("Plugin Installed"))
+            if show_ui:
+                self.msg_box(self.tr(f"The plugin '{new_plugin_instance.name}' was successfully installed"),
+                             self.tr("Plugin Installed"))
 
             return new_plugin_instance
 
@@ -591,6 +630,8 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
 
     def msg_box(self, message_text, window_title=None, standard_buttons=None, default_button=None,
                          inform_text=None, detail_text=None):
+        '''Convenience method for showing a message box.
+       '''
         if window_title is None:
             window_title = self.tr("Multiscript")
         if standard_buttons is None:
@@ -614,12 +655,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         completes.
         '''
         self.restart_requested = True
-        # We use a signal with a queued connection to ensure that restarts requested before the event
-        # loop starts are not forgotten, and restarts requested from within a dialog still allow the
-        # dialog to close cleanly before all other windows close and the restart occurs.
-        self._restart_request.emit(restart_arg_list)
 
-    def _on_restart_request(self, restart_arg_list=None):
         if restart_arg_list is None:
             restart_arg_list = []
         # Note that the restart arg list may already contain the path to a yet-to-be-opened plan.
@@ -635,6 +671,13 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                     # Plan was modified due to missing plugins and not yet saved. Use orig path instead
                     path = plan._orig_path
                 self._restart_arg_list.append(path)
+
+        # We use a signal with a queued connection to ensure that restarts requested before the event
+        # loop starts are not forgotten, and restarts requested from within a dialog still allow the
+        # dialog to close cleanly before all other windows close and the restart occurs.
+        self._restart_request.emit()
+
+    def _on_restart_request(self):
         self.closeAllWindows() # After closing all windows this will end the event loop.
 
     def execute_restart(self):

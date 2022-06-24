@@ -21,7 +21,6 @@ from multiscript.ui.progress_dialog import ProgressDialog
 from multiscript.ui.plan_errors_dialog import PlanErrorsDialog
 from multiscript.util.util import launch_file
 
-# TODO: Display some kind of dialog when starting time-consuming part of loading a plugin.
 # TODO: Write some new BibleSources that use free APIs
 # TODO: Allow templates to be attached (embedded in) the plan.
 
