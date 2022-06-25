@@ -28,13 +28,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi()
+        # Calling code should next call load_plan()
 
     def tr(self, str):
         return QtWidgets.QApplication.translate(self.__class__.__name__, str, None, -1)
 
     def setupUi(self):
         super().setupUi(self)
-        
+        self.plan = None
+
         self.appIconLabel.setIcon(self.windowIcon())
 
         # Mac style leaves too much vertical space, so we remove it
@@ -94,13 +96,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.versionTable.horizontalHeader().setSectionsMovable(True)
         self.versionTable.verticalHeader().setSectionsMovable(True)
         self.versionTable.doubleClicked.connect(self.on_version_table_double_clicked)
-
-        #
-        # Load default plan
-        #
-        self.plan = plan.get_default_plan() # Load default plan
-        self.copy_plan_to_window()
-        self.clear_plan_changed()
 
     #
     # Version table methods
@@ -266,7 +261,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def load_plan(self, path=None, new_plan=False):
         # Check if we need to save the existing plan
         cancel = False
-        if self.plan.changed:
+        if self.plan is not None and self.plan.changed:
             result = self.check_for_save()
             if result == QtWidgets.QMessageBox.Save:
                 self.save_plan()
@@ -331,6 +326,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.copy_window_to_plan()
         self.plan.save()
         self.update_read_only_widgets_from_plan()
+
+    def offer_plan_reload(self):
+        '''If the current plan was modified due to missing plugins, offer to reload the plan.
+        '''
+        if self.plan is not None and self.plan._orig_path is not None:
+            # The current plan was modified due to missing plugins. Offer to reload
+            result = multiscript.app().msg_box(self.tr(f"Would you like to reload the current plan?"),
+                        self.tr(f"Reload Plan?"),
+                        standard_buttons=(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
+                        default_button=QtWidgets.QMessageBox.Yes)
+            if result == QtWidgets.QMessageBox.Yes:
+                self.load_plan(self.plan._orig_path)
 
     #
     # Window update methods
@@ -548,9 +555,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def on_app_config_triggered(self):
         app_config_group = multiscript.app().app_config_group
         app_config_dialog = AppConfigDialog(None, app_config_group)
+        # Record existing list of plugins and paths, to detect any changes
+        plugins_before = set(multiscript.app().all_plugins)
+        plugins_altpath_before = app_config_group.plugins.altPluginsPath
+        
         result = app_config_dialog.exec_()
         if result == QtWidgets.QDialog.Accepted:
             app_config_group.save()
+        
+        plugins_after = set(multiscript.app().all_plugins)
+        plugins_altpath_after = app_config_group.plugins.altPluginsPath
+        if (plugins_altpath_before != plugins_altpath_after) and not multiscript.app().restart_requested:
+            result = multiscript.app().msg_box(self.tr(f"The Alternate Plugins Folder has changed. " +
+                        f"Would you like to restart Multiscript to process the changes?"),
+                        self.tr(f"Restart Multiscript?"),
+                        standard_buttons=(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
+                        default_button=QtWidgets.QMessageBox.Yes)
+            if result == QtWidgets.QMessageBox.Yes:
+                multiscript.app().request_restart()
+
+        if (plugins_before != plugins_after) and not multiscript.app().restart_requested:
+            self.offer_plan_reload()
 
     #
     # Help Menu methods

@@ -1,12 +1,7 @@
 
 from pprint import pformat
 from pathlib import Path
-import shutil
 import traceback
-
-from PySide2 import QtCore, QtWidgets
-from PySide2.QtCore import Qt
-from PySide2.QtCore import QStandardPaths
 
 import multiscript
 from multiscript.config.plan import PlanConfigGroup
@@ -17,7 +12,6 @@ PLAN_FILE_FILTER = "*" + PLAN_FILE_EXTENSION
 UNTITLED_PLAN_NAME = "Untitled Plan" + PLAN_FILE_EXTENSION
 DEFAULT_PLAN_FILENAME = "Default Plan" + PLAN_FILE_EXTENSION
 
-_default_plan = None
 
 class Plan:
     def __init__(self):
@@ -25,6 +19,8 @@ class Plan:
         self.path = multiscript.app().app_docs_path / UNTITLED_PLAN_NAME
         self.changed = False    # Classes using Plan should set to True if plan has been modified and not yet saved.
         self.new = True         # True until the plan is saved or loaded for the first time.
+        self._orig_path = None  # If the path renamed due to missing plugins, store the original path here, but only
+                                # until the plan is saved, when _orig_path is reset to None.
 
         self.bible_passages = None
         self.bible_versions = []          # A list of all the BibleVersions in the plan.
@@ -46,6 +42,7 @@ class Plan:
         serialize.save(self, self.path)
         self.changed = False
         self.new = False
+        self._orig_path = None
 
     def __repr__(self): 
         return f"{self.__class__.__name__}" + "\n" + \
@@ -96,6 +93,7 @@ def load(path, error_list=None):
         # from the plan on disk. To avoid saving over the plan on disk, we modify the plan
         # path, and mark it as modified.
         plan.changed = True
+        plan._orig_path = plan.path
         plan.path = plan.path.with_name(plan.path.stem + " copy" + plan.path.suffix)
 
     # Handle any paths parameters that don't exist.
@@ -110,26 +108,14 @@ def load(path, error_list=None):
 
     return plan
 
-def get_default_plan():
-    global _default_plan
-    if _default_plan is None:
-        # Load default plan from file
-        _default_plan = load(get_default_plan_path())
-
-        # If loading from file didn't work, create a new default plan
-        if _default_plan is None:
-            _default_plan = new_default_plan()
-            _default_plan.save()
-        
-    return _default_plan
-
-def new_default_plan():
-    global _default_plan
-    _default_plan = Plan()
-    _default_plan.path = get_default_plan_path()
-    return _default_plan
-
 def get_default_plan_path():
-    return multiscript.app().app_docs_path / DEFAULT_PLAN_FILENAME
+    path = multiscript.app().app_docs_path / DEFAULT_PLAN_FILENAME
+    if not path.exists():
+        # Create a new default plan
+        default_plan = Plan()
+        default_plan.path = path
+        default_plan.save()
+    return path
+
 
 
