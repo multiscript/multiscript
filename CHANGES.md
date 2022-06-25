@@ -1,3 +1,10 @@
+- 0.9.0
+  - Better plugin installation and removal experience
+    - Both a plugin and a plan can be loaded from the command-line.
+    - The current plan will reload when the app restarts.
+    - The app prompts for plan reloads or app restart when plugin settings change.
+    - Progress bar shown for plugin installation.
+    - More reliable app restart on Windows.
 - 0.8.5
   - Handle null labels in saved plans
   - Better project descriptions.
