@@ -3,6 +3,7 @@ from pathlib import Path, PurePosixPath
 import logging
 import os
 import shutil
+import subprocess
 import sys
 import traceback
 import zipfile
@@ -569,6 +570,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                 # Using Python to extract a zip file can be quite slow, so we show a progress dialog.
                 progress_dialog = QtWidgets.QProgressDialog(self.activeWindow())
                 progress_dialog.setWindowTitle(self.tr('Installing Plugin'))
+                progress_dialog.setMinimumWidth(300)
                 progress_dialog.setLabelText(self.tr(f"Installing plugin '{plugin_id}'..."))
                 progress_dialog.setMinimum(0)
                 progress_dialog.setMaximum(len(extra_infos))
@@ -687,12 +689,22 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         '''
         # It seems we need to manually add the current directory to the python path
         env = os.environ
+        current_dir_path = str(Path('.'))
+        path_sep = ";" if multiscript.on_windows() else ":"
         if 'PYTHONPATH' not in env:
-            env['PYTHONPATH'] = './'
+            env['PYTHONPATH'] = current_dir_path
         else:
-            env['PYTHONPATH'] = './:' + env['PYTHONPATH']
+            env['PYTHONPATH'] = current_dir_path + path_sep + env['PYTHONPATH']
+        
         if self._restart_arg_list is None:
             self._restart_arg_list = []
+        self._restart_arg_list = [str(arg) for arg in self._restart_arg_list] # Ensure all args are strings
+        if multiscript.on_windows():
+            # On Windows, the os.exec* functions seem to require us to further escape cmd-line arguments, in case
+            # they have any spaces etc. The simplest way to do this is to use an undocumented function in
+            # the subprocess module named list2cmdline. It returns all the arguments as one giant escaped string.
+            self._restart_arg_list = [subprocess.list2cmdline(self._restart_arg_list)]
+        
         args = ['-m', 'multiscript', *self._restart_arg_list]
         os.execvpe(sys.executable, args, env)
 
