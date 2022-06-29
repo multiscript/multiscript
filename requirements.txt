@@ -1,5 +1,5 @@
 # Pinned requirements
-PySide2==5.15.2.1
+PySide6-Essentials==6.3.1
 beautifulsoup4==4.11.1
 dmgbuild==1.5.2
 pluginlib==0.9

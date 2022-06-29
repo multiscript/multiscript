@@ -12,7 +12,7 @@ _logger = logging.getLogger(_logger_name)
 
 virtual_env_path = Path(os.environ['VIRTUAL_ENV'])
 project_path = virtual_env_path.parent # assumes virtual env is a top-level subdir of the project
-pyside2_uic_path = virtual_env_path / Path('bin/pyside2-uic')
+pyside2_uic_path = virtual_env_path / Path('bin/pyside6-uic')
 mod_times_path = Path(__file__).parent / Path('.ui_mod_times.json')
 
 # Exclude any ui files in the virutal environment

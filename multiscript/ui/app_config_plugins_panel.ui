@@ -129,14 +129,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ItemListTableView</class>
-   <extends>QTableView</extends>
-   <header>multiscript.qt_custom.views</header>
-  </customwidget>
-  <customwidget>
    <class>IconLabel</class>
    <extends>QLabel</extends>
    <header>multiscript.qt_custom.widgets</header>
+  </customwidget>
+  <customwidget>
+   <class>ItemListTableView</class>
+   <extends>QTableView</extends>
+   <header>multiscript.qt_custom.views</header>
   </customwidget>
  </customwidgets>
  <resources/>
