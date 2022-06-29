@@ -211,7 +211,7 @@ class ItemListFilterSortProxyModel(QtCore.QSortFilterProxyModel):
                 self.setFilterKeyColumn(-1)
 
     def setLineEditWidget(self, lineEditWidget):
-        self.setFilterRegExp(lineEditWidget.text())
+        self.setFilterRegularExpression(lineEditWidget.text())
         self.setFilterCaseSensitivity(Qt.CaseInsensitive)
         lineEditWidget.textChanged.connect(self.on_filterLineEdit_textChanged)
 

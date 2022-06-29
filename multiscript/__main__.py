@@ -7,8 +7,6 @@ import traceback
 
 
 def main():
-    QtCore.QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-
     # On Windows, the Fusion style looks better than the native style
     if multiscript.on_windows():
         QtWidgets.QApplication.setStyle("Fusion")
