@@ -1,3 +1,4 @@
+- 0.10.0
 - 0.9.0
   - Better plugin installation and removal experience
     - Both a plugin and a plan can be loaded from the command-line.
