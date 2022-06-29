@@ -1,7 +1,6 @@
 from pathlib import Path
 import unittest
 
-from multiscript.plugins import BUILTIN_PLUGIN_ID
 from test.application import TEST_APP
 
 TEST_PLUGIN_ID = "app_multiscript_test_plugin"
