@@ -69,7 +69,13 @@ class MultiscriptBaseApplication:
         return self._plugins
 
     def plugin(self, id):
-        return self._plugins_by_id[id]
+        '''Returns the plugin instance with the given id, or None if there is no loaded
+        plugin with that id.
+        '''
+        if id in self._plugins_by_id:
+            return self._plugins_by_id[id]
+        else:
+            return None
 
     @property
     def all_sources(self):
@@ -600,27 +606,29 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
 
             return new_plugin_instance
 
-    def remove_plugin(self, plugin_id):
+    def remove_plugin(self, plugin_id, show_ui=True):
         '''Deletes the plugin on disk with the given id. If there is no plugin with the given id, this
         method does nothing.
         
+        If show_ui is True, prompts and dialogs will be shown. Set to false for a silent removal.
+
         Returns True if the plugin was deleted, otherwise False. This method requests a restart, which
         is necessary to completely remove the plugin from memory.
         '''
-        try:
-            plugin = self.plugin(plugin_id)
-        except KeyError:
+        plugin = self.plugin(plugin_id)
+        if plugin is None:
             return False
         
         id = plugin.id
         name = plugin.name
         path = plugin.base_path
-        result = self.msg_box(self.tr(f"Are you sure you want to remove the plugin '{name}' with id '{id}' and restart Multiscript?"),
-                                       self.tr("Remove Plugin?"),
-                                       QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Ok,
-                                       QtWidgets.QMessageBox.Cancel, self.tr(f"This will delete the folder {path}"))
-        if result == QtWidgets.QMessageBox.Cancel:
-            return False
+        if show_ui:
+            result = self.msg_box(self.tr(f"Are you sure you want to remove the plugin '{name}' with id '{id}' and restart Multiscript?"),
+                                  self.tr("Remove Plugin?"),
+                                  QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Ok,
+                                  QtWidgets.QMessageBox.Cancel, self.tr(f"This will delete the folder {path}"))
+            if result == QtWidgets.QMessageBox.Cancel:
+                return False
 
         try:
             shutil.rmtree(path)
