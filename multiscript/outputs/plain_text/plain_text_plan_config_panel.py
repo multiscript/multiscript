@@ -1,7 +1,7 @@
 
 import ast
 
-from PySide2.QtCore import Qt
+from PySide6.QtCore import Qt
 
 from multiscript.qt_custom.widgets import ConfigWidget
 from multiscript.outputs.plain_text.plain_text_plan_config_panel_generated import Ui_PlainTextPlanConfigPanel

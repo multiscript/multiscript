@@ -1,5 +1,5 @@
 
-from PySide2.QtCore import Qt
+from PySide6.QtCore import Qt
 
 from multiscript.qt_custom.widgets import ConfigWidget
 from multiscript.ui.plan_config_general_panel_generated import Ui_GeneralPlanConfigPanel

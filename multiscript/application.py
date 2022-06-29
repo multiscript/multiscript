@@ -9,8 +9,8 @@ import traceback
 import zipfile
 
 import pluginlib
-from PySide2 import QtCore, QtWidgets, QtGui
-from PySide2.QtCore import Qt, QStandardPaths
+from PySide6 import QtCore, QtWidgets, QtGui
+from PySide6.QtCore import Qt, QStandardPaths
 
 import multiscript
 from multiscript import plan
