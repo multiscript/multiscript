@@ -58,8 +58,8 @@ class Ui_ExceptionDialog(object):
         self.detailsTextEdit = QPlainTextEdit(ExceptionDialog)
         self.detailsTextEdit.setObjectName(u"detailsTextEdit")
         self.detailsTextEdit.setReadOnly(True)
+        self.detailsTextEdit.setTabStopDistance(20.000000000000000)
         self.detailsTextEdit.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        self.detailsTextEdit.setProperty("tabStopWidth", 20)
 
         self.verticalLayout.addWidget(self.detailsTextEdit)
 
