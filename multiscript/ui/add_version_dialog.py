@@ -126,14 +126,3 @@ class AddVersionDialog(QtWidgets.QDialog, Ui_AddVersionDialog):
 
     def on_edit_button_toggled(self, checked):
         self.sidebarForm.setVisible(checked)
-
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
-
-    dialog = AddVersionDialog()
-    dialog.open()
-    app.exec_()
-    wait_for_nonblock_threads()
-    print("Versions added:")
-    print(dialog.get_versions_to_add())

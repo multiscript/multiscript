@@ -399,11 +399,11 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
 
             self.main_window.show()
 
-    def exec_(self):
-        '''If we're not running as a 'frozen' pyinstaller bundle, this calls exec_() in our superclass
+    def exec(self):
+        '''If we're not running as a 'frozen' pyinstaller bundle, this calls exec() in our superclass
         as normal.
 
-        If we *are* running as a 'frozen' pyinstaller bundle, we still call exec_() in the superclass,
+        If we *are* running as a 'frozen' pyinstaller bundle, we still call exec() in the superclass,
         but we ensure that any unhandled exceptions are caught raised to the caller.
         '''
         if self.restart_requested:
@@ -411,21 +411,21 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
             return 0
 
         if not self.is_frozen():
-            return super().exec_()
+            return super().exec()
         else:
             result = 0
             with catch_unhandled_exceptions(self):
-                result = super().exec_()                  
+                result = super().exec()                  
             return result
 
     def exec_catches_exceptions(self):
-        '''Same as exec_(), but rather than reraising unhandled exceptions, we catch them here
+        '''Same as exec(), but rather than reraising unhandled exceptions, we catch them here
         and display them in a dialog.
 
-        If we're not running as a 'frozen' pyinstaller bundle, this calls exec_() in our superclass
+        If we're not running as a 'frozen' pyinstaller bundle, this calls exec() in our superclass
         as normal.
 
-        If we *are* running as a 'frozen' pyinstaller bundle, we still call exec_() in the superclass,
+        If we *are* running as a 'frozen' pyinstaller bundle, we still call exec() in the superclass,
         but we ensure that any unhandled exceptions are caught and displayed in a dialog.
         '''
         if self.restart_requested:
@@ -434,7 +434,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
 
         result = 0
         try:
-            result = self.exec_()
+            result = self.exec()
         except BaseException as exception:
             detail_text = "".join(traceback.format_exception(type(exception), exception, exception.__traceback__))
             self.msg_box(self.tr("We're sorry, but an unexpected error has occurred and Multiscript needs to close."),
@@ -658,7 +658,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         box.setIconPixmap(self.windowIcon().pixmap(64, 64))
         box.setStandardButtons(standard_buttons)
         box.setDefaultButton(default_button)
-        return box.exec_()
+        return box.exec()
 
     def request_restart(self, restart_arg_list=None):
         '''Request the app to restart. Note that the restart will only occur once the main event loop

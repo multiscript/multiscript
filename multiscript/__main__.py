@@ -16,7 +16,7 @@ def main():
     try:
         app.load_plugins()
         app.ui_init()
-        app.exec_()
+        app.exec()
     except BaseException as exception:
         detail_text = "".join(traceback.format_exception(type(exception), exception, exception.__traceback__))
         app.msg_box(app.tr("We're sorry, but an unexpected error has occurred and Multiscript needs to close."),
