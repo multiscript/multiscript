@@ -10,8 +10,7 @@ The code is currently pre-release, so you should expect bugs. If you have skills
 love to hear from you! In particular, we'd like to extend the range of free Bible version sources available.
 
 ## Build Instructions
-Use these instructions if you’re building from the source. Multiscript has been developed and tested mostly on macOS
-Mojave. We've done some very basic testing on Windows 10 and Linux.
+Use these instructions if you’re building from the source. Multiscript has been developed and tested mostly on macOS Mojave. We've done some very basic testing on Windows 10 and Linux.
 1. Install Python
    * On macOS you'll need Python 3.7 as a minimum.
    * On Windows you'll need Python 3.8 as a minimum.
