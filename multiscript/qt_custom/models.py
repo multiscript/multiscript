@@ -128,7 +128,12 @@ class ItemListTableModel(QtCore.QAbstractTableModel):
                 return data
         elif role == Qt.CheckStateRole:
             if type(data) is bool:
-                return Qt.Checked if data else Qt.Unchecked
+                result = Qt.Checked if data else Qt.Unchecked
+                # PySide6 6.3 contains a bug, where PySide doesn't correctly
+                # convert from the Python enum Qt.Checked or Qt.Unchecked to a
+                # value recognised by the Qt C++ code. We get around this by
+                # manually converting the Python enum to its int value here.
+                return int(result)
         elif role == ItemListTableModel.SORT_ROLE:
             if type(data) is bool:
                 # When sorting ascending, put True before False

@@ -1,8 +1,5 @@
 # Pinned requirements
-PySide6==6.2.1
-# Note: There are bugs in PySide6 6.2.2 to 6.2.4
-#       PySide 6.3 has changes that seems to affect our checkbox column handling.
-#       So for now, PySide6 6.2.1 is the latest version we're compatible with.
+PySide6-Essentials==6.3.1
 beautifulsoup4==4.11.1
 dmgbuild==1.5.2
 pluginlib==0.9
