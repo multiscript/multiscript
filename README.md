@@ -12,7 +12,9 @@ love to hear from you! In particular, we'd like to extend the range of free Bibl
 ## Build Instructions
 Use these instructions if you’re building from the source. Multiscript has been developed and tested mostly on macOS
 Mojave. We've done some very basic testing on Windows 10 and Linux.
-1. Install Python (we've only tested with Python 3.7)
+1. Install Python
+   * On macOS you'll need Python 3.7 as a minimum.
+   * On Windows you'll need Python 3.8 as a minimum.
 1. Install git
 1. `git clone https://github.com/multiscript/multiscript/`
 1. `cd multiscript`
