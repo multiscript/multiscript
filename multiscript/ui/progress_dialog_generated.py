@@ -103,9 +103,9 @@ class Ui_ProgressDialog(object):
         self.detailsTextEdit.setObjectName(u"detailsTextEdit")
         self.detailsTextEdit.setEnabled(True)
         self.detailsTextEdit.setReadOnly(True)
+        self.detailsTextEdit.setTabStopDistance(20.000000000000000)
         self.detailsTextEdit.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
         self.detailsTextEdit.setBackgroundVisible(False)
-        self.detailsTextEdit.setProperty("tabStopWidth", 20)
 
         self.verticalLayout.addWidget(self.detailsTextEdit)
 
