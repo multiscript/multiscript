@@ -128,7 +128,8 @@ class MultiscriptBaseApplication:
 
         # Load plugins from base plugin folders
         plugin_base_paths = []
-        plugin_base_paths.append(self.app_plugin_dir_path)
+        if self.app_plugin_dir_path is not None and self.app_plugin_dir_path.is_dir():
+            plugin_base_paths.append(self.app_plugin_dir_path)
         alt_plugins_path = self.app_config_group.plugins.altPluginsPath
         if alt_plugins_path is not None and alt_plugins_path.is_dir():
             plugin_base_paths.append(alt_plugins_path)
@@ -151,6 +152,10 @@ class MultiscriptBaseApplication:
         # Ignore the path if it's not a directory, or it's hidden
         if not path.is_dir() or path.name[0] == '.':
             return None
+        # Ignore any source code for test plugin in the alt plugins directory
+        if path.name == 'app_multiscript_test_plugin' and \
+           path.parent == self.app_config_group.plugins.altPluginsPath:
+           return None
         # Make sure we have the required directory structure
         plugin_id = path.name
         if not (path / "plugin/").is_dir() or not (path / "plugin" / plugin_id).is_dir():
