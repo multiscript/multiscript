@@ -2,8 +2,8 @@
 import pathlib
 import sys
 
-from PySide2 import QtCore, QtWidgets
-from PySide2.QtCore import Qt
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Qt
 
 import multiscript
 from multiscript.bible.reference import BibleRangeList
@@ -161,7 +161,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def on_add_rows_button_clicked(self):
         add_version_dialog = AddVersionDialog(None)
-        add_version_dialog.exec_()
+        add_version_dialog.exec()
         versions_to_add = add_version_dialog.get_versions_to_add()
         if len(versions_to_add) > 0:
             self.versionModel.append_items(versions_to_add)
@@ -194,7 +194,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def edit_version(self, item_index):
         version = self.versionModel.items[item_index]
         edit_version_dialog = EditVersionDialog(None, version)
-        result = edit_version_dialog.exec_()
+        result = edit_version_dialog.exec()
         if result == QtWidgets.QDialog.Accepted:
             self.set_plan_changed()
 
@@ -256,7 +256,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.save_plan()
 
         progress_dialog = ProgressDialog(None, self.plan)
-        progress_dialog.exec_()
+        progress_dialog.exec()
 
     def load_plan(self, path=None, new_plan=False):
         # Check if we need to save the existing plan
@@ -434,7 +434,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         msg_box.setIconPixmap(self.windowIcon().pixmap(64, 64))
         msg_box.setStandardButtons(QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
         msg_box.setDefaultButton(QtWidgets.QMessageBox.Save)
-        return msg_box.exec_()
+        return msg_box.exec()
 
     def report_plan_errors(self, plan, error_list):
         if plan is None:
@@ -448,7 +448,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         plan_errors_dialog = PlanErrorsDialog(None)
         plan_errors_dialog.setMessageText(msg_text)
         plan_errors_dialog.setDetailsText(details_text)
-        return plan_errors_dialog.exec_()
+        return plan_errors_dialog.exec()
 
 
     #
@@ -548,7 +548,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def on_plan_config_triggered(self):
         plan_config_dialog = PlanConfigDialog(None, self.plan)
-        result = plan_config_dialog.exec_()
+        result = plan_config_dialog.exec()
         if result == QtWidgets.QDialog.Accepted:
             self.set_plan_changed()
 
@@ -559,7 +559,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         plugins_before = set(multiscript.app().all_plugins)
         plugins_altpath_before = app_config_group.plugins.altPluginsPath
         
-        result = app_config_dialog.exec_()
+        result = app_config_dialog.exec()
         if result == QtWidgets.QDialog.Accepted:
             app_config_group.save()
         
@@ -583,7 +583,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def on_about_triggered(self):
         about_dialog = AboutDialog(None)
-        about_dialog.exec_()
+        about_dialog.exec()
 
 
 

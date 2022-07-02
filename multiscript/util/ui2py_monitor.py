@@ -12,7 +12,7 @@ _logger = logging.getLogger(_logger_name)
 
 virtual_env_path = Path(os.environ['VIRTUAL_ENV'])
 project_path = virtual_env_path.parent # assumes virtual env is a top-level subdir of the project
-pyside2_uic_path = virtual_env_path / Path('bin/pyside2-uic')
+pyside_uic_path = virtual_env_path / Path('bin/pyside6-uic')
 mod_times_path = Path(__file__).parent / Path('.ui_mod_times.json')
 
 # Exclude any ui files in the virutal environment
@@ -73,7 +73,7 @@ def main():
 
 def reconvert(ui_path, py_path):
     _logger.info("Reconverting " + str(ui_path.name) + " to " + str(py_path.name))
-    args = [str(pyside2_uic_path), '-o', str(py_path), str(ui_path)]
+    args = [str(pyside_uic_path), '-o', str(py_path), str(ui_path)]
     subprocess.run(args)
 
 def cache_mod_times(mod_times, mod_times_path):

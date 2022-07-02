@@ -1,8 +1,8 @@
 
 from pathlib import Path
 
-from PySide2 import QtCore, QtWidgets
-from PySide2.QtCore import Qt
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Qt
 
 import multiscript
 from multiscript.plugins import BUILTIN_PLUGIN_ID

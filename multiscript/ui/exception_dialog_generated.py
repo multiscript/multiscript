@@ -3,17 +3,23 @@
 ################################################################################
 ## Form generated from reading UI file 'exception_dialog.ui'
 ##
-## Created by: Qt User Interface Compiler version 5.15.2
+## Created by: Qt User Interface Compiler version 6.3.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
+    QHBoxLayout, QLabel, QPlainTextEdit, QSizePolicy,
+    QVBoxLayout, QWidget)
 
 from multiscript.qt_custom.widgets import IconLabel
-
 
 class Ui_ExceptionDialog(object):
     def setupUi(self, ExceptionDialog):
@@ -52,7 +58,7 @@ class Ui_ExceptionDialog(object):
         self.detailsTextEdit = QPlainTextEdit(ExceptionDialog)
         self.detailsTextEdit.setObjectName(u"detailsTextEdit")
         self.detailsTextEdit.setReadOnly(True)
-        self.detailsTextEdit.setTabStopWidth(20)
+        self.detailsTextEdit.setTabStopDistance(20.000000000000000)
         self.detailsTextEdit.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         self.verticalLayout.addWidget(self.detailsTextEdit)

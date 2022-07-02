@@ -54,7 +54,6 @@
              <property name="font">
               <font>
                <pointsize>22</pointsize>
-               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -123,7 +122,6 @@
         <widget class="QLabel" name="passagesLabel">
          <property name="font">
           <font>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -143,7 +141,6 @@
         <widget class="QLabel" name="versionsTableLabel">
          <property name="font">
           <font>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -267,7 +264,6 @@ Bible Versions</string>
           <widget class="QLabel" name="outputLabel">
            <property name="font">
             <font>
-             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -281,7 +277,6 @@ Output Folder</string>
           <widget class="QLabel" name="templateLabel">
            <property name="font">
             <font>
-             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -695,14 +690,14 @@ Template</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ItemListTableView</class>
-   <extends>QTableView</extends>
-   <header>multiscript.qt_custom.views</header>
-  </customwidget>
-  <customwidget>
    <class>IconLabel</class>
    <extends>QLabel</extends>
    <header>multiscript.qt_custom.widgets</header>
+  </customwidget>
+  <customwidget>
+   <class>ItemListTableView</class>
+   <extends>QTableView</extends>
+   <header>multiscript.qt_custom.views</header>
   </customwidget>
  </customwidgets>
  <resources/>

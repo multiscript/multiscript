@@ -1,6 +1,6 @@
 
-from PySide2 import QtCore, QtWidgets
-from PySide2.QtCore import Qt, Signal, Slot
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Qt, Signal, Slot
 
 from multiscript.qt_custom.views import get_underlying_model_and_selection
 from multiscript.qt_custom.models import ItemListTableModel

@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
-from PySide2 import QtCore, QtWidgets
-from PySide2.QtCore import Qt
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Qt
 
 from multiscript.qt_custom.delegates import EnhancedCheckedDelegate
 from multiscript.util.exception import MultiscriptException

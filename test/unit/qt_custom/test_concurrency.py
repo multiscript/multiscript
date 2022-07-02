@@ -1,8 +1,8 @@
 import unittest
 import time
 
-from PySide2.QtCore import QThread
-from PySide2.QtGui import QWindow
+from PySide6.QtCore import QThread
+from PySide6.QtGui import QWindow
 
 from multiscript.qt_custom.concurrency import *
 from multiscript.util.exception_catcher import catch_unhandled_exceptions

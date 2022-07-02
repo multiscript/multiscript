@@ -1,14 +1,12 @@
 
-from PySide2 import QtCore, QtWidgets
-from PySide2.QtCore import Qt
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Qt
 
 import multiscript
 import traceback
 
 
 def main():
-    QtCore.QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-
     # On Windows, the Fusion style looks better than the native style
     if multiscript.on_windows():
         QtWidgets.QApplication.setStyle("Fusion")
@@ -18,7 +16,7 @@ def main():
     try:
         app.load_plugins()
         app.ui_init()
-        app.exec_()
+        app.exec()
     except BaseException as exception:
         detail_text = "".join(traceback.format_exception(type(exception), exception, exception.__traceback__))
         app.msg_box(app.tr("We're sorry, but an unexpected error has occurred and Multiscript needs to close."),

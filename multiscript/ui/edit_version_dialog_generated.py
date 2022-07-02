@@ -3,23 +3,28 @@
 ################################################################################
 ## Form generated from reading UI file 'edit_version_dialog.ui'
 ##
-## Created by: Qt User Interface Compiler version 5.15.2
+## Created by: Qt User Interface Compiler version 6.3.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
+    QSizePolicy, QVBoxLayout, QWidget)
 
 from multiscript.ui.version_form import VersionForm
-
 
 class Ui_EditVersionDialog(object):
     def setupUi(self, EditVersionDialog):
         if not EditVersionDialog.objectName():
             EditVersionDialog.setObjectName(u"EditVersionDialog")
-        EditVersionDialog.resize(363, 533)
+        EditVersionDialog.resize(394, 533)
         self.verticalLayout = QVBoxLayout(EditVersionDialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.versionForm = VersionForm(EditVersionDialog)
