@@ -22,7 +22,7 @@ def get_all_version_combos(version_columns):
     version_combos = []
     sorted_cols = sorted(version_columns, key=lambda version_column: len(version_column))
 
-    if version_columns is None or len(version_columns) is 0:
+    if version_columns is None or len(version_columns) == 0:
         return []
 
     if len(sorted_cols[-1]) == 0:
