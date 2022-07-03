@@ -1,4 +1,7 @@
 - 0.10.0
+  - Upgrade to Qt 6 (PySide6 6.3.1)
+  - Start building binaries using Python 3.10 (3.10.5 currently)
+  - Update other python dependencies
 - 0.9.0
   - Better plugin installation and removal experience
     - Both a plugin and a plan can be loaded from the command-line.
