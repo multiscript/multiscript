@@ -7,8 +7,8 @@ import semver
 from multiscript.application import MultiscriptApplication
 
 
-# Flag to turn pyinstaller argv-emulation on mac on (True) or off (False)
-ARGV_EMULATION = False
+# Flag to turn pyinstaller argv-emulation on macOS on (True) or off (False)
+ARGV_EMULATION = True
 
 
 _app = None
