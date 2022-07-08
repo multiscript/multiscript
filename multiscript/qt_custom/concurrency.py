@@ -13,13 +13,13 @@ from multiscript.util.exception import MultiscriptException
 
 
 def call_nonblock(callable, *args, callback=None, **kwargs):
-    """Execute the callable without blocking, using threads.
+    """Execute the callable without blocking, by executing it on a separate thread.
     Returns a FutureResult, which will receive the result of the callable.
     
     If supplied, the callback is executed when the callable completes or raises
     an exception. The callback is executed on the main event loop thread, and
     receives one argument: the same FutureResult, which now contains the result
-    of the callable and any error that occurred:
+    of the callable or any error that occurred:
         def callback(future_result):
             pass
 
@@ -97,7 +97,7 @@ class _Call_NonBlock_Thread(QThread):
             if self.callback is not None:
                 call_main_thread(self.callback, self.future_result)
             if exception is not None:
-                # We don't want to re-raise the exception (which, if caught at a global
+                # We don't want to re-raise the exception (which, if not caught at a global
                 # level might result in termination of the program). Instead, it's up
                 # to the callback to decide what to do with the exception. However,
                 # we do print the exception to the console, to assist with debugging.
@@ -132,7 +132,7 @@ class FutureResult():
         self._is_cancelled = False  # Access controlled by self._result_condition
         
         self._paused_condition = threading.Condition()
-        self._is_paused = False # Accesss controlleb by self._paused_condition
+        self._is_paused = False # Accesss controlled by self._paused_condition
     
     @property
     def value(self):
@@ -222,6 +222,8 @@ def wait_for_nonblock_threads():
     While Python automatically waits for its own non-daemon Python threads,
     we have to manually wait to any unfinished QThreads. It's therefore wise to
     call this method after the completion of the main thread event loop.
+
+    A QApplication instance must exist before calling this function.
     """
     _Call_NonBlock_Thread.wait_for_all()
 
@@ -231,7 +233,9 @@ def call_main_thread(callable, *args, **kwargs):
     
     While Qt signals and slots are generally thread-safe, this method is a
     simpler way to invoke a function on the main thread without having to set up
-    extra signals and slots. Internally, it relies onQMetaObject.invokeMethod().
+    extra signals and slots. Internally, it relies on QMetaObject.invokeMethod().
+
+    A QApplication instance must exist before calling this function.
     """
     future_call = _FutureCall(callable, *args, **kwargs)
     QMetaObject.invokeMethod(future_call, "call")
@@ -245,10 +249,24 @@ def wait_main_thread(callable, *args, **kwargs):
     While Qt signals and slots are generally thread-safe, this method is a
     simpler way to invoke a function on the mainloop without having to set up
     extra signals and slots. Internally, it relies on QMetaObject.invokeMethod().
+
+    A QApplication instance must exist before calling this function.
      """
     future_result = call_main_thread(callable, *args, **kwargs)
     future_result.wait()
     return future_result
+
+def call_main_thread_later(callable, *args, **kwargs):
+    """Execute the callable on the main event loop thread later, by posting the call
+    to the event loop. Returns a FutureResult immediately without waiting for the
+    callable to executed. The callable will only be executed if there is an event
+    loop running. Internally, this method relies onQMetaObject.invokeMethod().
+
+    A QApplication instance must exist before calling this function.
+    """
+    future_call = _FutureCall(callable, *args, **kwargs)
+    QMetaObject.invokeMethod(future_call, "call", Qt.ConnectionType.QueuedConnection)
+    return future_call.future_result
 
 
 class _FutureCall(QObject):

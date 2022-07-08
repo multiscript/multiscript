@@ -14,6 +14,7 @@ from PySide6.QtCore import Qt, QStandardPaths
 
 import multiscript
 from multiscript import plan
+from multiscript.qt_custom.concurrency import call_main_thread_later
 from multiscript.ui.main_window import MainWindow
 from multiscript.util.exception_catcher import catch_unhandled_exceptions
 
@@ -477,19 +478,32 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                 self.main_window.load_plan(path)
                 return True
             elif path.suffix == PLUGIN_FILE_EXTENSION:
-                self.add_plugin(path)
-                if self.main_window is not None:
-                    self.main_window.offer_plan_reload()
+                # If the user launches the app by double-clicking on a file, it seems
+                # we can receive a FileOpenEvent even before we've completed showing
+                # our main_window. If they double-clicked on a plugin, and there's no argv
+                # emulation in place, we can end up here trying to add a plugin before
+                # the main window is ready. This can result in a crash, especially if the
+                # user agrees to reload the plan after the plugin is added.
+                #
+                # To avoid this potential crash, we wrap the call to add_plugin()
+                # using call_main_thread_later(). This posts the add_plugin() call
+                # onto the event loop, to be executed once any other pending events
+                # have been handled. This allows the main window to finish showing
+                # before the execution of add_plugin().
+                call_main_thread_later(self.add_plugin, path, offer_plan_reload=True)
                 return True
         
         return super().event(e)
 
-    def add_plugin(self, path=None, show_ui=True):
+    def add_plugin(self, path=None, show_ui=True, offer_plan_reload=False):
         '''Installs a plugin, given the path to the .mplugin file. If path is None,
         the user will be prompted for the .mplugin file.
 
         If show_ui is True, prompts and dialogs will be shown. Set to false for a silent install.
         If show_ui is False, path must not be None.
+        If show_ui is True and offer_plan_reload is True, then after the plugin is successfully
+        installed, the main window will offer for the open plan to be reloaded (provided the main
+        window exists.) 
         
         If the plugin is succesfully installed, returns the plugin instance. Otherwise returns None.
         '''
@@ -573,7 +587,6 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                     # Remove the existing plugin. We therefore need to restart, and we'll
                     # save installing the plugin for the restart.
                     shutil.rmtree(new_plugin_path)
-                    # TODO: On restart, reopen the current plan file, rather than the default plan.
                     self.request_restart([path]) # Pass the plugin zip file as an argument to the restart.
                     return None
 
@@ -606,8 +619,10 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                 return None
 
             if show_ui:
-                self.msg_box(self.tr(f"The plugin '{new_plugin_instance.name}' was successfully installed"),
+                self.msg_box(self.tr(f"The plugin '{new_plugin_instance.name}' was successfully installed."),
                              self.tr("Plugin Installed"))
+                if offer_plan_reload and self.main_window is not None:
+                    self.main_window.offer_plan_reload()
 
             return new_plugin_instance
 
