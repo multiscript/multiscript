@@ -259,8 +259,8 @@ def wait_main_thread(callable, *args, **kwargs):
 def call_main_thread_later(callable, *args, **kwargs):
     """Execute the callable on the main event loop thread later, by posting the call
     to the event loop. Returns a FutureResult immediately without waiting for the
-    callable to executed. The callable will only be executed if there is an event
-    loop running. Internally, this method relies onQMetaObject.invokeMethod().
+    callable to execute. The callable will only be executed if there is an event
+    loop running. Internally, this method relies on QMetaObject.invokeMethod().
 
     A QApplication instance must exist before calling this function.
     """
@@ -310,13 +310,17 @@ class _FutureCall(QObject):
 
 def main_thread(orig_function=None, *, some_arg=None):
     """Function decorator that ensures a function executes on the main event loop thread.
+
+    Typically used to decorate functions that don't return a value. However, the decorated
+    function will return a FutureResult immediately, that can be used to obtain the return
+    value of the wrapped function.
     """
     # Note that writing the decorator with the signature above allows us to easily add
     # arguments to the decorator if we wish to later on
     def decorate(function):
         @functools.wraps(function)
         def wrapper(*args, **kwargs):
-            call_main_thread(function, *args, **kwargs)
+            return call_main_thread(function, *args, **kwargs)
         return wrapper
 
     if orig_function:
