@@ -249,6 +249,8 @@ def wait_main_thread(callable, *args, **kwargs):
     While Qt signals and slots are generally thread-safe, this method is a
     simpler way to invoke a function on the mainloop without having to set up
     extra signals and slots. Internally, it relies on QMetaObject.invokeMethod().
+    This should only be called from a secondary thread. If called from the main
+    thread, the wait will cause deadlock.
 
     A QApplication instance must exist before calling this function.
      """
@@ -261,6 +263,7 @@ def call_main_thread_later(callable, *args, **kwargs):
     to the event loop. Returns a FutureResult immediately without waiting for the
     callable to execute. The callable will only be executed if there is an event
     loop running. Internally, this method relies on QMetaObject.invokeMethod().
+    This can be called from the main thread or a secondary thread.
 
     A QApplication instance must exist before calling this function.
     """
@@ -303,9 +306,15 @@ class _FutureCall(QObject):
         with _FutureCall.instances_lock:
             _FutureCall.instances.remove(self)
         
-        # TODO: Trap any exception the callable raises, and store it in the future result.
-        result = self.callable(*self.args, **self.kwargs)
-        self.future_result.set(result)
+        result = None
+        exception = None
+        try:
+            result = self.callable(*self.args, **self.kwargs)
+        except BaseException as e:
+            # Save the exception, for when e goes out of scope
+            exception = e
+        finally:
+            self.future_result.set(result, exception)
 
 
 def main_thread(orig_function=None, *, some_arg=None):
@@ -314,9 +323,11 @@ def main_thread(orig_function=None, *, some_arg=None):
     Typically used to decorate functions that don't return a value. However, the decorated
     function will return a FutureResult immediately, that can be used to obtain the return
     value of the wrapped function.
+
+    The decorator currently takes no arguments, but the slightly strange method signature
+    above will allow us to easily add keyword arguments to the decorator if we wish to
+    later on. (The some_arg argument above is just an example placeholder.)
     """
-    # Note that writing the decorator with the signature above allows us to easily add
-    # arguments to the decorator if we wish to later on
     def decorate(function):
         @functools.wraps(function)
         def wrapper(*args, **kwargs):

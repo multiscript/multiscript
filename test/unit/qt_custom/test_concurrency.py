@@ -131,6 +131,12 @@ class TestConcurrency(unittest.TestCase):
             if future_result.value != self.MAIN_THREAD_NAME:
                 return "wait_main_thread didn't work!"
 
+            # Test exceptions raised during main thread call
+            future_result = wait_main_thread(self.raise_exception_during_main_thread_call)
+            if future_result.value is not None or \
+               not isinstance(future_result.error, ConcurrencyTestException):
+                return "wait_main_thread didn't detect extension"
+
             # Test using main_thread decorator
             decorated_result = self.decorated_for_main_thread()
             if not isinstance(decorated_result, FutureResult):
@@ -138,6 +144,7 @@ class TestConcurrency(unittest.TestCase):
             if decorated_result.wait() != self.MAIN_THREAD_NAME:
                 return "main_thread decorated didn't work!"
 
+            # Test call_main_thread_later()
             change_future_result = wait_main_thread(self.change_string)
             reset_future_result = change_future_result.value
             # Make sure the event loop keeps running long enough for the reset to occur
@@ -145,6 +152,8 @@ class TestConcurrency(unittest.TestCase):
 
             # By making it to this point, we're passing so far.
             return None
+        except Exception as e:
+            return f"Exception raised: {e}"
         finally:
             # End the event loop
             app.quit()
@@ -170,3 +179,10 @@ class TestConcurrency(unittest.TestCase):
 
     def reset_string(self):
         self.call_later_test_string = CALL_LATER_TEST_STRING
+    
+    def raise_exception_during_main_thread_call(self):
+        raise ConcurrencyTestException("Exception on main thread!")
+
+
+class ConcurrencyTestException(Exception):
+    pass
