@@ -1,3 +1,4 @@
+- 0.11.0
 - 0.10.0
   - Upgrade to Qt 6 (PySide6 6.3.1)
   - Start building binaries using Python 3.10 (3.10.5 currently)
