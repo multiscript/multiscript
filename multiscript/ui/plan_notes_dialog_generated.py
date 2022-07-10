@@ -16,7 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
-    QSizePolicy, QTextEdit, QVBoxLayout, QWidget)
+    QPlainTextEdit, QSizePolicy, QTabWidget, QTextEdit,
+    QVBoxLayout, QWidget)
 
 class Ui_PlanNotesDialog(object):
     def setupUi(self, PlanNotesDialog):
@@ -25,10 +26,33 @@ class Ui_PlanNotesDialog(object):
         PlanNotesDialog.resize(527, 372)
         self.verticalLayout = QVBoxLayout(PlanNotesDialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.planNotesTextEdit = QTextEdit(PlanNotesDialog)
-        self.planNotesTextEdit.setObjectName(u"planNotesTextEdit")
+        self.tabWidget = QTabWidget(PlanNotesDialog)
+        self.tabWidget.setObjectName(u"tabWidget")
+        self.viewPlanNotesWidget = QWidget()
+        self.viewPlanNotesWidget.setObjectName(u"viewPlanNotesWidget")
+        self.verticalLayout_3 = QVBoxLayout(self.viewPlanNotesWidget)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.richNotesTextEdit = QTextEdit(self.viewPlanNotesWidget)
+        self.richNotesTextEdit.setObjectName(u"richNotesTextEdit")
+        self.richNotesTextEdit.setReadOnly(True)
 
-        self.verticalLayout.addWidget(self.planNotesTextEdit)
+        self.verticalLayout_3.addWidget(self.richNotesTextEdit)
+
+        self.tabWidget.addTab(self.viewPlanNotesWidget, "")
+        self.editPlanNotesWidget = QWidget()
+        self.editPlanNotesWidget.setObjectName(u"editPlanNotesWidget")
+        self.verticalLayout_2 = QVBoxLayout(self.editPlanNotesWidget)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.plainNotesTextEdit = QPlainTextEdit(self.editPlanNotesWidget)
+        self.plainNotesTextEdit.setObjectName(u"plainNotesTextEdit")
+
+        self.verticalLayout_2.addWidget(self.plainNotesTextEdit)
+
+        self.tabWidget.addTab(self.editPlanNotesWidget, "")
+
+        self.verticalLayout.addWidget(self.tabWidget)
 
         self.buttonBox = QDialogButtonBox(PlanNotesDialog)
         self.buttonBox.setObjectName(u"buttonBox")
@@ -42,10 +66,15 @@ class Ui_PlanNotesDialog(object):
         self.buttonBox.accepted.connect(PlanNotesDialog.accept)
         self.buttonBox.rejected.connect(PlanNotesDialog.reject)
 
+        self.tabWidget.setCurrentIndex(1)
+
+
         QMetaObject.connectSlotsByName(PlanNotesDialog)
     # setupUi
 
     def retranslateUi(self, PlanNotesDialog):
-        PlanNotesDialog.setWindowTitle(QCoreApplication.translate("PlanNotesDialog", u"Edit Plan Description", None))
+        PlanNotesDialog.setWindowTitle(QCoreApplication.translate("PlanNotesDialog", u"Plan Notes", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.viewPlanNotesWidget), QCoreApplication.translate("PlanNotesDialog", u"View Notes", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.editPlanNotesWidget), QCoreApplication.translate("PlanNotesDialog", u"Edit Notes - Markdown", None))
     # retranslateUi
 

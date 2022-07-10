@@ -17,6 +17,7 @@ from multiscript.ui.edit_version_dialog import EditVersionDialog
 from multiscript.ui.about_dialog import AboutDialog
 from multiscript.ui.plan_config_dialog import PlanConfigDialog
 from multiscript.ui.app_config_dialog import AppConfigDialog
+from multiscript.ui.plan_notes_dialog import PlanNotesDialog
 from multiscript.ui.progress_dialog import ProgressDialog
 from multiscript.ui.plan_errors_dialog import PlanErrorsDialog
 from multiscript.util.util import launch_file
@@ -65,6 +66,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.appConfigAction.triggered.connect(self.on_app_config_triggered)
         self.aboutAction.triggered.connect(self.on_about_triggered)
  
+        self.morePlanNotesButton.clicked.connect(self.edit_plan_notes)
         self.addRowsButton.clicked.connect(self.on_add_rows_button_clicked)
         self.removeRowsButton.clicked.connect(self.on_remove_rows_button_clicked)
         self.editButton.clicked.connect(self.on_edit_button_clicked)
@@ -96,6 +98,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.versionTable.horizontalHeader().setSectionsMovable(True)
         self.versionTable.verticalHeader().setSectionsMovable(True)
         self.versionTable.doubleClicked.connect(self.on_version_table_double_clicked)
+
+    #
+    # Plan notes methods
+    #
+
+    def edit_plan_notes(self):
+        plan_notes_dialog = PlanNotesDialog(None)
+        plan_notes_dialog.setNotes(self.plan.notes)
+        result = plan_notes_dialog.exec()
+        if result == QtWidgets.QDialog.Accepted:
+            self.plan.notes = plan_notes_dialog.getNotes()
+            self.set_plan_changed()
 
     #
     # Version table methods
@@ -406,6 +420,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(self.plan.path.stem + "[*]")
         self.setWindowModified(self.plan.changed)
 
+        self.planNotesTextEdit.setMarkdown(self.plan.notes)
         self.rowSummaryLabel.setText(self.tr("{0} version(s) in the set".format(self.versionModel.rowCount())))
         self.columnSummaryLabel.setText(self.tr("{0} version(s) per Bible passage".format(
                                         len(self.get_all_version_columns()))))
