@@ -41,6 +41,7 @@ class MultiscriptBaseApplication:
     It contains most of the application-specific code, but omits most of the
     Qt-related functionality.
     '''
+    
     def __init__(self):
         self._app_config_group = None
         self._attribution_contents = None
@@ -343,8 +344,6 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
     any of our QWidgets. Otherwise, we will crash.
     '''
 
-    _restart_request = QtCore.Signal() # Internal signal to allowed queued restart requests
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         MultiscriptBaseApplication.__init__(self) # Necessary because QApplication doesn't call super().__init__
@@ -353,12 +352,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         self._expected_open_file_event_args = set(sys.argv[1:])
 
         self.restart_requested = False # True if a restart should occur after the event loop ends
-
-        # We use a Qt.QueuedConnection to ensure that restarts requested before the event loop starts
-        # are not forgotten, and restarts requested from within a dialog still allow the dialog
-        # to close cleanly before all other windows close and the restart occurs.
-        self._restart_request.connect(self._on_restart_request, type=Qt.QueuedConnection)
-        self._restart_arg_list = [] # Command-line arguments to be passed to the restart
+        self._restart_arg_list = [] # Command-line arguments to be passed to any restart
         
         self.main_window = None
         self.setApplicationName("Multiscript")
@@ -702,13 +696,12 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                     path = plan._orig_path
                 self._restart_arg_list.append(path)
 
-        # We use a signal with a queued connection to ensure that restarts requested before the event
-        # loop starts are not forgotten, and restarts requested from within a dialog still allow the
-        # dialog to close cleanly before all other windows close and the restart occurs.
-        self._restart_request.emit()
-
-    def _on_restart_request(self):
-        self.closeAllWindows() # After closing all windows this will end the event loop.
+        # Closing all windows will end the event loop, which in turn allows the restart to occur.
+        # We use call_main_thread_later() to post the call to closeAllWindows() to the event loop.
+        # This ensures restarts requested before the event loop begins re not forgotten, and that
+        # restarts requested from within a dialog still allow the dialog to close cleanly before
+        # all other windows close and the restart occurs.
+        call_main_thread_later(self.closeAllWindows)
 
     def execute_restart(self):
         '''This will execute a hard restart of the application. It should only be called from
