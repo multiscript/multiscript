@@ -97,8 +97,6 @@ class TestConcurrency(unittest.TestCase):
         main thread. 
         '''
         self.call_later_test_string = CALL_LATER_TEST_STRING
-        # Use a custom app instance, so that we have our own mainloop, and don't
-        # affect other tests.
         app = multiscript.app()
         future_result = call_nonblock(self.runs_on_own_thread_and_calls_main_thread, app)
         app.exec()
