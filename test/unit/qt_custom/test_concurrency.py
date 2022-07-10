@@ -153,8 +153,11 @@ class TestConcurrency(unittest.TestCase):
         except Exception as e:
             return f"Exception raised: {e}"
         finally:
-            # End the event loop
-            app.quit()
+            # End the event loop. For some reason, on Windows, calling app.quit() here from
+            # a secondary thread doesn't work. So we have to post the quit call back to the
+            # main thread. (Of course, if call_main_thread_later isn't working, then
+            # this test process itself won't work, but if everything works, the test works!)
+            call_main_thread_later(app.quit)
 
     def should_run_on_main_thread(self):
         '''Returns name of thread the method executes on.
