@@ -162,7 +162,7 @@ class Ui_MainWindow(object):
         self.mainAreaWidget.setObjectName(u"mainAreaWidget")
         self.mainAreaWidgetLayout = QVBoxLayout(self.mainAreaWidget)
         self.mainAreaWidgetLayout.setObjectName(u"mainAreaWidgetLayout")
-        self.mainAreaWidgetLayout.setContentsMargins(-1, 0, -1, 0)
+        self.mainAreaWidgetLayout.setContentsMargins(-1, 0, -1, -1)
         self.passagesLabel = QLabel(self.mainAreaWidget)
         self.passagesLabel.setObjectName(u"passagesLabel")
         font1 = QFont()
