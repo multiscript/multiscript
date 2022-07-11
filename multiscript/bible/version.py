@@ -16,6 +16,7 @@ class BibleVersion:
         self.name = name                    # Shortcut to set user version name
         self.lang = lang                    # Shortcut to set user version lang
         self.abbrev = abbrev                # Shortcut to set user version abbrev
+        self.notes = ""                     # Plain text of version notes
         self.output_config = {}             # Dict of OutputVersionConfig by output long_id
 
         for output in multiscript.app().all_outputs:

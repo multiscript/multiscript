@@ -90,7 +90,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             AttributeColumn(self.tr("Abbrev"),           "abbrev"),
             AttributeColumn(self.tr("Version Name"),     "name"),
             AttributeColumn(self.tr("Language"),         "lang"),
-            AttributeColumn(self.tr("Source"),           lambda version: version.bible_source.name)
+            AttributeColumn(self.tr("Source"),           lambda version: version.bible_source.name),
+            AttributeColumn(self.tr("Notes"),            "notes")
         ])
         self.versionModel.set_all_columns_editable(False)
 

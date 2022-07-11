@@ -57,6 +57,9 @@ class Form(QtWidgets.QWidget):
         else:
             self.mapper.setSubmitPolicy(QtWidgets.QDataWidgetMapper.ManualSubmit)
 
+    def getAutoSubmit(self):
+        return self.mapper.submitPolicy() == QtWidgets.QDataWidgetMapper.AutoSubmit
+
     @Slot()
     def submit(self):
         '''Calls submit() on the underlying QDataWidgetMapper, and returns the result.
@@ -82,6 +85,10 @@ class Form(QtWidgets.QWidget):
             widget.textEdited.connect(self._on_data_widget_text_edited)
         elif isinstance(widget, QtWidgets.QComboBox):
             widget.editTextChanged.connect(self._on_data_widget_text_edited)
+        elif isinstance(widget, QtWidgets.QPlainTextEdit):
+            widget.textChanged.connect(self._on_data_widget_text_changed)
+        elif isinstance(widget, QtWidgets.QTextEdit):
+            widget.textChanged.connect(self._on_data_widget_text_changed)
         elif isinstance(widget, QtWidgets.QAbstractSpinBox):
             widget.valueChanged.connect(self._on_data_widget_value_changed)
         elif isinstance(widget, QtWidgets.QAbstractButton):
@@ -93,6 +100,10 @@ class Form(QtWidgets.QWidget):
                 widget.clear()
             elif isinstance(widget, QtWidgets.QComboBox):
                 widget.clearEditText()
+            elif isinstance(widget, QtWidgets.QPlainTextEdit):
+                widget.clear()
+            elif isinstance(widget, QtWidgets.QTextEdit):
+                widget.clear()
             elif isinstance(widget, QtWidgets.QAbstractSpinBox):
                 widget.clear()
             elif isinstance(widget, QtWidgets.QAbstractButton):
@@ -115,15 +126,22 @@ class Form(QtWidgets.QWidget):
             self.mapper.setCurrentIndex(-1)
             self.clear_widgets()
     
-    def _on_button_data_widget_toggled(self, checked):
-        self.mapper.submit()
-    
     def _on_data_widget_text_edited(self, text):
+        # If we wanted to submit on every keystroke, we would do so here.
+        # self.mapper.submit()
+        pass
+    
+    def _on_data_widget_text_changed(self):
         # If we wanted to submit on every keystroke, we would do so here.
         # self.mapper.submit()
         pass
     
     def _on_data_widget_value_changed(self, value):
         # If we wanted to submit on every keystroke, we would do so here.
+        # self.mapper.submit()
+        pass
+
+    def _on_button_data_widget_toggled(self, checked):
+        # If we wanted to submit on every button toggle, we would do so here.
         # self.mapper.submit()
         pass
