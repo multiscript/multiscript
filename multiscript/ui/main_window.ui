@@ -20,7 +20,7 @@
    <string>Multiscript</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0,0">
+   <layout class="QVBoxLayout" name="centralWidgetLayout" stretch="0,1,0,0">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -38,7 +38,7 @@
       <property name="autoFillBackground">
        <bool>false</bool>
       </property>
-      <layout class="QVBoxLayout" name="titleAreaVerticalLayout">
+      <layout class="QVBoxLayout" name="titleAreaWidgetLayout">
        <property name="leftMargin">
         <number>12</number>
        </property>
@@ -319,7 +319,7 @@ Bible Versions</string>
         </layout>
        </item>
        <item>
-        <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,1">
+        <layout class="QGridLayout" name="pathsLayout" columnstretch="1,1">
          <item row="0" column="1">
           <widget class="QLabel" name="outputLabel">
            <property name="font">
@@ -511,56 +511,49 @@ Template</string>
     </item>
     <item>
      <widget class="QWidget" name="footerAreaWidget" native="true">
-      <layout class="QVBoxLayout" name="verticalLayout_6">
-       <property name="topMargin">
-        <number>0</number>
-       </property>
+      <layout class="QHBoxLayout" name="footerLayout">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="closeButton">
-           <property name="text">
-            <string>Close</string>
-           </property>
-           <property name="autoDefault">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="planConfigButton">
-           <property name="text">
-            <string>Plan Options...</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="startButton">
-           <property name="text">
-            <string>Start...</string>
-           </property>
-           <property name="autoDefault">
-            <bool>true</bool>
-           </property>
-           <property name="default">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="closeButton">
+         <property name="text">
+          <string>Close</string>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="planConfigButton">
+         <property name="text">
+          <string>Plan Options...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="startButton">
+         <property name="text">
+          <string>Start...</string>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+         <property name="default">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
