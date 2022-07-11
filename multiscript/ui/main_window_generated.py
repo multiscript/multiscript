@@ -104,6 +104,7 @@ class Ui_MainWindow(object):
         font.setPointSize(22)
         font.setBold(True)
         self.titleLabel.setFont(font)
+        self.titleLabel.setMargin(6)
 
         self.verticalLayout_5.addWidget(self.titleLabel)
 
