@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(715, 709)
+        MainWindow.resize(715, 720)
         sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
@@ -80,12 +80,9 @@ class Ui_MainWindow(object):
         self.titleAreaWidget = QWidget(self.centralwidget)
         self.titleAreaWidget.setObjectName(u"titleAreaWidget")
         self.titleAreaWidget.setAutoFillBackground(False)
-        self.verticalLayout_2 = QVBoxLayout(self.titleAreaWidget)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(12, -1, -1, 0)
-        self.verticalLayout_9 = QVBoxLayout()
-        self.verticalLayout_9.setSpacing(0)
-        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.titleAreaVerticalLayout = QVBoxLayout(self.titleAreaWidget)
+        self.titleAreaVerticalLayout.setObjectName(u"titleAreaVerticalLayout")
+        self.titleAreaVerticalLayout.setContentsMargins(12, -1, -1, 0)
         self.horizontalLayout_9 = QHBoxLayout()
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
         self.verticalLayout_4 = QVBoxLayout()
@@ -128,7 +125,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_9.addWidget(self.planNotesTextEdit)
 
 
-        self.verticalLayout_9.addLayout(self.horizontalLayout_9)
+        self.titleAreaVerticalLayout.addLayout(self.horizontalLayout_9)
 
         self.horizontalLayout_10 = QHBoxLayout()
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
@@ -156,10 +153,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.addWidget(self.morePlanNotesButton)
 
 
-        self.verticalLayout_9.addLayout(self.horizontalLayout_10)
-
-
-        self.verticalLayout_2.addLayout(self.verticalLayout_9)
+        self.titleAreaVerticalLayout.addLayout(self.horizontalLayout_10)
 
 
         self.verticalLayout.addWidget(self.titleAreaWidget)
