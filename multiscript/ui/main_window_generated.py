@@ -515,7 +515,7 @@ class Ui_MainWindow(object):
         self.planConfigAction.setText(QCoreApplication.translate("MainWindow", u"Plan Options...", None))
         self.restartAction.setText(QCoreApplication.translate("MainWindow", u"Restart Multiscript", None))
         self.appIconLabel.setText(QCoreApplication.translate("MainWindow", u"IconLabel", None))
-        self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"  Multiscript  ", None))
+        self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"Multiscript", None))
         self.planNotesTextEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Plan Notes", None))
         self.morePlanNotesButton.setText(QCoreApplication.translate("MainWindow", u"More/Edit...", None))
         self.passagesLabel.setText(QCoreApplication.translate("MainWindow", u"Bible Passages", None))
