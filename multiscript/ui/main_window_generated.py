@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(715, 740)
+        MainWindow.resize(706, 748)
         sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
@@ -102,21 +102,22 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.planNotesTextEdit)
 
-        self.horizontalLayout_10 = QHBoxLayout()
-        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
-        self.horizontalSpacer = QSpacerItem(10, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.moreButtonLayout = QHBoxLayout()
+        self.moreButtonLayout.setObjectName(u"moreButtonLayout")
+        self.moreButtonLayout.setContentsMargins(-1, 6, -1, -1)
+        self.horizontalSpacer = QSpacerItem(40, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout_10.addItem(self.horizontalSpacer)
+        self.moreButtonLayout.addItem(self.horizontalSpacer)
 
         self.morePlanNotesButton = QPushButton(self.titleAreaWidget)
         self.morePlanNotesButton.setObjectName(u"morePlanNotesButton")
         self.morePlanNotesButton.setMaximumSize(QSize(16777215, 16777215))
         self.morePlanNotesButton.setFlat(False)
 
-        self.horizontalLayout_10.addWidget(self.morePlanNotesButton)
+        self.moreButtonLayout.addWidget(self.morePlanNotesButton)
 
 
-        self.verticalLayout.addLayout(self.horizontalLayout_10)
+        self.verticalLayout.addLayout(self.moreButtonLayout)
 
 
         self.horizontalLayout_9.addLayout(self.verticalLayout)
@@ -427,7 +428,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 715, 22))
+        self.menubar.setGeometry(QRect(0, 0, 706, 22))
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
         self.menuEdit = QMenu(self.menubar)

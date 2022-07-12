@@ -48,7 +48,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             left, top, right, bottom = self.footerLayout.getContentsMargins()
             self.footerLayout.setContentsMargins(left, 12, right, bottom)
             self.titleAreaWidgetLayout.setSpacing(0)
-            # self.titleLabel.setMargin(0)
+            left, top, right, bottom = self.moreButtonLayout.getContentsMargins()
+            self.moreButtonLayout.setContentsMargins(left, 6, right, bottom)
+            
             self.mainAreaWidgetLayout.setSpacing(6)
             left, top, right, bottom = self.mainAreaWidgetLayout.getContentsMargins()
             self.mainAreaWidgetLayout.setContentsMargins(left, top, right, 0)
