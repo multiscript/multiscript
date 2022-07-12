@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(715, 720)
+        MainWindow.resize(715, 740)
         sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
@@ -84,65 +84,27 @@ class Ui_MainWindow(object):
         self.titleAreaWidgetLayout.setObjectName(u"titleAreaWidgetLayout")
         self.titleAreaWidgetLayout.setContentsMargins(12, -1, -1, 0)
         self.horizontalLayout_9 = QHBoxLayout()
+        self.horizontalLayout_9.setSpacing(0)
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
-        self.verticalLayout_4 = QVBoxLayout()
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.appIconLabel = IconLabel(self.titleAreaWidget)
-        self.appIconLabel.setObjectName(u"appIconLabel")
-        self.appIconLabel.setMinimumSize(QSize(64, 64))
-
-        self.verticalLayout_4.addWidget(self.appIconLabel)
-
-
-        self.horizontalLayout_9.addLayout(self.verticalLayout_4)
-
-        self.verticalLayout_5 = QVBoxLayout()
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.titleLabel = QLabel(self.titleAreaWidget)
-        self.titleLabel.setObjectName(u"titleLabel")
-        font = QFont()
-        font.setPointSize(22)
-        font.setBold(True)
-        self.titleLabel.setFont(font)
-        self.titleLabel.setMargin(6)
-
-        self.verticalLayout_5.addWidget(self.titleLabel)
-
-
-        self.horizontalLayout_9.addLayout(self.verticalLayout_5)
-
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setObjectName(u"verticalLayout")
         self.planNotesTextEdit = QTextEdit(self.titleAreaWidget)
         self.planNotesTextEdit.setObjectName(u"planNotesTextEdit")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Ignored)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.planNotesTextEdit.sizePolicy().hasHeightForWidth())
         self.planNotesTextEdit.setSizePolicy(sizePolicy1)
-        self.planNotesTextEdit.setMaximumSize(QSize(16777215, 16777215))
+        self.planNotesTextEdit.setMaximumSize(QSize(16777215, 60))
         self.planNotesTextEdit.setReadOnly(True)
         self.planNotesTextEdit.setTabStopDistance(20.000000000000000)
         self.planNotesTextEdit.setTextInteractionFlags(Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
 
-        self.horizontalLayout_9.addWidget(self.planNotesTextEdit)
-
-
-        self.titleAreaWidgetLayout.addLayout(self.horizontalLayout_9)
+        self.verticalLayout.addWidget(self.planNotesTextEdit)
 
         self.horizontalLayout_10 = QHBoxLayout()
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
-        self.line = QFrame(self.titleAreaWidget)
-        self.line.setObjectName(u"line")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.line.sizePolicy().hasHeightForWidth())
-        self.line.setSizePolicy(sizePolicy2)
-        self.line.setFrameShape(QFrame.HLine)
-        self.line.setFrameShadow(QFrame.Sunken)
-
-        self.horizontalLayout_10.addWidget(self.line)
-
-        self.horizontalSpacer = QSpacerItem(10, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        self.horizontalSpacer = QSpacerItem(10, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_10.addItem(self.horizontalSpacer)
 
@@ -154,7 +116,52 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.addWidget(self.morePlanNotesButton)
 
 
-        self.titleAreaWidgetLayout.addLayout(self.horizontalLayout_10)
+        self.verticalLayout.addLayout(self.horizontalLayout_10)
+
+
+        self.horizontalLayout_9.addLayout(self.verticalLayout)
+
+        self.horizontalSpacer_6 = QSpacerItem(6, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+
+        self.horizontalLayout_9.addItem(self.horizontalSpacer_6)
+
+        self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setSpacing(0)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setSpacing(0)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.appIconLabel = IconLabel(self.titleAreaWidget)
+        self.appIconLabel.setObjectName(u"appIconLabel")
+        self.appIconLabel.setMinimumSize(QSize(64, 64))
+
+        self.horizontalLayout_3.addWidget(self.appIconLabel)
+
+        self.horizontalSpacer_5 = QSpacerItem(6, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+
+        self.horizontalLayout_3.addItem(self.horizontalSpacer_5)
+
+        self.titleLabel = QLabel(self.titleAreaWidget)
+        self.titleLabel.setObjectName(u"titleLabel")
+        font = QFont()
+        font.setPointSize(22)
+        font.setBold(True)
+        self.titleLabel.setFont(font)
+
+        self.horizontalLayout_3.addWidget(self.titleLabel)
+
+
+        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+
+        self.verticalSpacer = QSpacerItem(20, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_3.addItem(self.verticalSpacer)
+
+
+        self.horizontalLayout_9.addLayout(self.verticalLayout_3)
+
+
+        self.titleAreaWidgetLayout.addLayout(self.horizontalLayout_9)
 
 
         self.centralWidgetLayout.addWidget(self.titleAreaWidget)
@@ -208,11 +215,11 @@ class Ui_MainWindow(object):
 
         self.rowSummaryLabel = QLabel(self.mainAreaWidget)
         self.rowSummaryLabel.setObjectName(u"rowSummaryLabel")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy3.setHorizontalStretch(1)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.rowSummaryLabel.sizePolicy().hasHeightForWidth())
-        self.rowSummaryLabel.setSizePolicy(sizePolicy3)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy2.setHorizontalStretch(1)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.rowSummaryLabel.sizePolicy().hasHeightForWidth())
+        self.rowSummaryLabel.setSizePolicy(sizePolicy2)
         self.rowSummaryLabel.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
         self.horizontalLayout_6.addWidget(self.rowSummaryLabel)
@@ -224,11 +231,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.versionTable = ItemListTableView(self.mainAreaWidget)
         self.versionTable.setObjectName(u"versionTable")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(1)
-        sizePolicy4.setHeightForWidth(self.versionTable.sizePolicy().hasHeightForWidth())
-        self.versionTable.setSizePolicy(sizePolicy4)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(1)
+        sizePolicy3.setHeightForWidth(self.versionTable.sizePolicy().hasHeightForWidth())
+        self.versionTable.setSizePolicy(sizePolicy3)
         self.versionTable.horizontalHeader().setHighlightSections(False)
         self.versionTable.horizontalHeader().setStretchLastSection(True)
         self.versionTable.verticalHeader().setStretchLastSection(False)
@@ -253,8 +260,8 @@ class Ui_MainWindow(object):
 
         self.columnSummaryLabel = QLabel(self.mainAreaWidget)
         self.columnSummaryLabel.setObjectName(u"columnSummaryLabel")
-        sizePolicy3.setHeightForWidth(self.columnSummaryLabel.sizePolicy().hasHeightForWidth())
-        self.columnSummaryLabel.setSizePolicy(sizePolicy3)
+        sizePolicy2.setHeightForWidth(self.columnSummaryLabel.sizePolicy().hasHeightForWidth())
+        self.columnSummaryLabel.setSizePolicy(sizePolicy2)
 
         self.horizontalLayout_2.addWidget(self.columnSummaryLabel)
 
@@ -285,11 +292,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.templateIconLabel = IconLabel(self.mainAreaWidget)
         self.templateIconLabel.setObjectName(u"templateIconLabel")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.templateIconLabel.sizePolicy().hasHeightForWidth())
-        self.templateIconLabel.setSizePolicy(sizePolicy5)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.templateIconLabel.sizePolicy().hasHeightForWidth())
+        self.templateIconLabel.setSizePolicy(sizePolicy4)
         self.templateIconLabel.setMinimumSize(QSize(0, 32))
         self.templateIconLabel.setFrameShape(QFrame.NoFrame)
         self.templateIconLabel.setScaledContents(False)
@@ -298,8 +305,8 @@ class Ui_MainWindow(object):
 
         self.templatePathLabel = QLabel(self.mainAreaWidget)
         self.templatePathLabel.setObjectName(u"templatePathLabel")
-        sizePolicy3.setHeightForWidth(self.templatePathLabel.sizePolicy().hasHeightForWidth())
-        self.templatePathLabel.setSizePolicy(sizePolicy3)
+        sizePolicy2.setHeightForWidth(self.templatePathLabel.sizePolicy().hasHeightForWidth())
+        self.templatePathLabel.setSizePolicy(sizePolicy2)
         self.templatePathLabel.setFrameShape(QFrame.NoFrame)
 
         self.horizontalLayout_4.addWidget(self.templatePathLabel)
@@ -342,8 +349,8 @@ class Ui_MainWindow(object):
 
         self.outputDirPathLabel = QLabel(self.mainAreaWidget)
         self.outputDirPathLabel.setObjectName(u"outputDirPathLabel")
-        sizePolicy3.setHeightForWidth(self.outputDirPathLabel.sizePolicy().hasHeightForWidth())
-        self.outputDirPathLabel.setSizePolicy(sizePolicy3)
+        sizePolicy2.setHeightForWidth(self.outputDirPathLabel.sizePolicy().hasHeightForWidth())
+        self.outputDirPathLabel.setSizePolicy(sizePolicy2)
 
         self.horizontalLayout_7.addWidget(self.outputDirPathLabel)
 
@@ -515,10 +522,10 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(shortcut)
         self.planConfigAction.setText(QCoreApplication.translate("MainWindow", u"Plan Options...", None))
         self.restartAction.setText(QCoreApplication.translate("MainWindow", u"Restart Multiscript", None))
-        self.appIconLabel.setText(QCoreApplication.translate("MainWindow", u"IconLabel", None))
-        self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"Multiscript", None))
         self.planNotesTextEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Plan Notes", None))
         self.morePlanNotesButton.setText(QCoreApplication.translate("MainWindow", u"More/Edit...", None))
+        self.appIconLabel.setText(QCoreApplication.translate("MainWindow", u"IconLabel", None))
+        self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"Multiscript", None))
         self.passagesLabel.setText(QCoreApplication.translate("MainWindow", u"Bible Passages", None))
         self.passagesLineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"For example: Gen 1:1-5, Gen 1:26-27; John 1:1-18, John 2:1-11", None))
         self.versionsTableLabel.setText(QCoreApplication.translate("MainWindow", u"\n"
