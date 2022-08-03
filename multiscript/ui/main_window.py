@@ -42,14 +42,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Mac style leaves too much vertical space, so we reduce it
         if multiscript.on_mac():
-            self.centralWidgetLayout.setSpacing(0)
+            # self.centralWidgetLayout.setSpacing(0)
             left, top, right, bottom = self.pathsLayout.getContentsMargins()
             self.pathsLayout.setContentsMargins(left, top, right, 6)
             left, top, right, bottom = self.footerLayout.getContentsMargins()
             self.footerLayout.setContentsMargins(left, 12, right, bottom)
             self.titleAreaWidgetLayout.setSpacing(0)
-            left, top, right, bottom = self.moreButtonLayout.getContentsMargins()
-            self.moreButtonLayout.setContentsMargins(left, 6, right, bottom)
             
             self.mainAreaWidgetLayout.setSpacing(6)
             left, top, right, bottom = self.mainAreaWidgetLayout.getContentsMargins()
@@ -77,7 +75,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.appConfigAction.triggered.connect(self.on_app_config_triggered)
         self.aboutAction.triggered.connect(self.on_about_triggered)
  
-        self.morePlanNotesButton.clicked.connect(self.edit_plan_notes)
         self.addRowsButton.clicked.connect(self.on_add_rows_button_clicked)
         self.removeRowsButton.clicked.connect(self.on_remove_rows_button_clicked)
         self.editButton.clicked.connect(self.on_edit_button_clicked)
