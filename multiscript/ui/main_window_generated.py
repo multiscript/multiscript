@@ -150,7 +150,7 @@ class Ui_MainWindow(object):
         self.mainAreaWidget.setObjectName(u"mainAreaWidget")
         self.mainAreaWidgetLayout = QVBoxLayout(self.mainAreaWidget)
         self.mainAreaWidgetLayout.setObjectName(u"mainAreaWidgetLayout")
-        self.mainAreaWidgetLayout.setContentsMargins(0, 0, 0, 0)
+        self.mainAreaWidgetLayout.setContentsMargins(0, 0, 0, 12)
         self.passagesLabel = QLabel(self.mainAreaWidget)
         self.passagesLabel.setObjectName(u"passagesLabel")
         font1 = QFont()
@@ -379,7 +379,7 @@ class Ui_MainWindow(object):
         self.footerAreaWidget.setObjectName(u"footerAreaWidget")
         self.footerLayout = QHBoxLayout(self.footerAreaWidget)
         self.footerLayout.setObjectName(u"footerLayout")
-        self.footerLayout.setContentsMargins(0, 0, 0, 18)
+        self.footerLayout.setContentsMargins(0, 12, 0, 18)
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.footerLayout.addItem(self.horizontalSpacer_2)
