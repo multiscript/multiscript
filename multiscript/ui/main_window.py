@@ -44,7 +44,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Mac style leaves too much vertical space, so we reduce it
         if multiscript.on_mac():
-            pass
             self.titleAreaWidgetLayout.setSpacing(0)
             self.mainAreaWidgetLayout.setSpacing(6)
             self.pathsLayout.setSpacing(6)
