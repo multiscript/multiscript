@@ -43,6 +43,12 @@
       </property>
       <widget class="QWidget" name="verticalLayoutWidget">
        <layout class="QVBoxLayout" name="mainLayout">
+        <property name="leftMargin">
+         <number>12</number>
+        </property>
+        <property name="rightMargin">
+         <number>12</number>
+        </property>
         <item>
          <widget class="QWidget" name="titleAreaWidget" native="true">
           <property name="autoFillBackground">
@@ -50,10 +56,13 @@
           </property>
           <layout class="QVBoxLayout" name="titleAreaWidgetLayout">
            <property name="leftMargin">
-            <number>12</number>
+            <number>0</number>
            </property>
            <property name="topMargin">
-            <number>6</number>
+            <number>12</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
            </property>
            <property name="bottomMargin">
             <number>0</number>
@@ -151,18 +160,27 @@
          </widget>
         </item>
         <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QWidget" name="mainAreaWidget" native="true">
           <layout class="QVBoxLayout" name="mainAreaWidgetLayout">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
            <property name="topMargin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="Line" name="line">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QLabel" name="passagesLabel">
              <property name="font">
@@ -490,19 +508,31 @@ Template</string>
              </item>
             </layout>
            </item>
-           <item>
-            <widget class="Line" name="line_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QWidget" name="footerAreaWidget" native="true">
           <layout class="QHBoxLayout" name="footerLayout">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>18</number>
+           </property>
            <item>
             <spacer name="horizontalSpacer_2">
              <property name="orientation">

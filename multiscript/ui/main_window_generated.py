@@ -86,13 +86,13 @@ class Ui_MainWindow(object):
         self.verticalLayoutWidget.setObjectName(u"verticalLayoutWidget")
         self.mainLayout = QVBoxLayout(self.verticalLayoutWidget)
         self.mainLayout.setObjectName(u"mainLayout")
-        self.mainLayout.setContentsMargins(0, 0, 0, 0)
+        self.mainLayout.setContentsMargins(12, 0, 12, 0)
         self.titleAreaWidget = QWidget(self.verticalLayoutWidget)
         self.titleAreaWidget.setObjectName(u"titleAreaWidget")
         self.titleAreaWidget.setAutoFillBackground(False)
         self.titleAreaWidgetLayout = QVBoxLayout(self.titleAreaWidget)
         self.titleAreaWidgetLayout.setObjectName(u"titleAreaWidgetLayout")
-        self.titleAreaWidgetLayout.setContentsMargins(12, 6, -1, 0)
+        self.titleAreaWidgetLayout.setContentsMargins(0, 12, 0, 0)
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setSpacing(0)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
@@ -139,18 +139,18 @@ class Ui_MainWindow(object):
 
         self.mainLayout.addWidget(self.titleAreaWidget)
 
-        self.mainAreaWidget = QWidget(self.verticalLayoutWidget)
-        self.mainAreaWidget.setObjectName(u"mainAreaWidget")
-        self.mainAreaWidgetLayout = QVBoxLayout(self.mainAreaWidget)
-        self.mainAreaWidgetLayout.setObjectName(u"mainAreaWidgetLayout")
-        self.mainAreaWidgetLayout.setContentsMargins(-1, 0, -1, -1)
-        self.line = QFrame(self.mainAreaWidget)
+        self.line = QFrame(self.verticalLayoutWidget)
         self.line.setObjectName(u"line")
         self.line.setFrameShape(QFrame.HLine)
         self.line.setFrameShadow(QFrame.Sunken)
 
-        self.mainAreaWidgetLayout.addWidget(self.line)
+        self.mainLayout.addWidget(self.line)
 
+        self.mainAreaWidget = QWidget(self.verticalLayoutWidget)
+        self.mainAreaWidget.setObjectName(u"mainAreaWidget")
+        self.mainAreaWidgetLayout = QVBoxLayout(self.mainAreaWidget)
+        self.mainAreaWidgetLayout.setObjectName(u"mainAreaWidgetLayout")
+        self.mainAreaWidgetLayout.setContentsMargins(0, 0, 0, 0)
         self.passagesLabel = QLabel(self.mainAreaWidget)
         self.passagesLabel.setObjectName(u"passagesLabel")
         font1 = QFont()
@@ -365,20 +365,21 @@ class Ui_MainWindow(object):
 
         self.mainAreaWidgetLayout.addLayout(self.pathsLayout)
 
-        self.line_2 = QFrame(self.mainAreaWidget)
+
+        self.mainLayout.addWidget(self.mainAreaWidget)
+
+        self.line_2 = QFrame(self.verticalLayoutWidget)
         self.line_2.setObjectName(u"line_2")
         self.line_2.setFrameShape(QFrame.HLine)
         self.line_2.setFrameShadow(QFrame.Sunken)
 
-        self.mainAreaWidgetLayout.addWidget(self.line_2)
-
-
-        self.mainLayout.addWidget(self.mainAreaWidget)
+        self.mainLayout.addWidget(self.line_2)
 
         self.footerAreaWidget = QWidget(self.verticalLayoutWidget)
         self.footerAreaWidget.setObjectName(u"footerAreaWidget")
         self.footerLayout = QHBoxLayout(self.footerAreaWidget)
         self.footerLayout.setObjectName(u"footerLayout")
+        self.footerLayout.setContentsMargins(0, 0, 0, 18)
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.footerLayout.addItem(self.horizontalSpacer_2)
