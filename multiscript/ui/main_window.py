@@ -17,7 +17,6 @@ from multiscript.ui.edit_version_dialog import EditVersionDialog
 from multiscript.ui.about_dialog import AboutDialog
 from multiscript.ui.plan_config_dialog import PlanConfigDialog
 from multiscript.ui.app_config_dialog import AppConfigDialog
-from multiscript.ui.plan_notes_dialog import PlanNotesDialog
 from multiscript.ui.progress_dialog import ProgressDialog
 from multiscript.ui.plan_errors_dialog import PlanErrorsDialog
 from multiscript.util.util import launch_file
