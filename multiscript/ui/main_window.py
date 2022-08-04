@@ -39,6 +39,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.plan = None
 
         self.appIconLabel.setIcon(self.windowIcon())
+        self.splitter.setStretchFactor(0,1)
+        self.splitter.setStretchFactor(1,0)
+        self.update_plan_notes_visibility(self.togglePlanNotesButton.isChecked())
 
         # Mac style leaves too much vertical space, so we reduce it
         if multiscript.on_mac():
@@ -75,6 +78,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.appConfigAction.triggered.connect(self.on_app_config_triggered)
         self.aboutAction.triggered.connect(self.on_about_triggered)
  
+        self.togglePlanNotesButton.clicked.connect(self.update_plan_notes_visibility)
         self.addRowsButton.clicked.connect(self.on_add_rows_button_clicked)
         self.removeRowsButton.clicked.connect(self.on_remove_rows_button_clicked)
         self.editButton.clicked.connect(self.on_edit_button_clicked)
@@ -111,14 +115,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     #
     # Plan notes methods
     #
-
-    def edit_plan_notes(self):
-        plan_notes_dialog = PlanNotesDialog(None)
-        plan_notes_dialog.setNotes(self.plan.notes)
-        result = plan_notes_dialog.exec()
-        if result == QtWidgets.QDialog.Accepted:
-            self.plan.notes = plan_notes_dialog.getNotes()
-            self.set_plan_changed()
+    
+    def update_plan_notes_visibility(self, toggle_button_checked):
+        self.sidePanelWidget.setVisible(toggle_button_checked)
+        if toggle_button_checked:
+            self.togglePlanNotesButton.setText(self.tr("Hide Plan Notes"))
+        else:
+            self.togglePlanNotesButton.setText(self.tr("Show Plan Notes"))
 
     #
     # Version table methods

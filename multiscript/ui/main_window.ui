@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>752</width>
-    <height>720</height>
+    <height>743</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,7 +41,7 @@
       <property name="childrenCollapsible">
        <bool>false</bool>
       </property>
-      <widget class="QWidget" name="verticalLayoutWidget">
+      <widget class="QWidget" name="mainLayoutWidget">
        <layout class="QVBoxLayout" name="mainLayout">
         <property name="leftMargin">
          <number>12</number>
@@ -132,7 +132,10 @@
                <item>
                 <widget class="QPushButton" name="togglePlanNotesButton">
                  <property name="text">
-                  <string>Toggle Plan Notes</string>
+                  <string>Show Plan Notes</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -581,82 +584,86 @@ Template</string>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="verticalLayoutWidget_2">
-       <layout class="QVBoxLayout" name="sidePanelLayout">
+      <widget class="QWidget" name="sidePanelWidget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>100</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <widget class="QWidget" name="sidePanelWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="toggleSourceButton">
+            <property name="text">
+             <string>View Source</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="planNotesTextEdit">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="minimumSize">
+          <property name="maximumSize">
            <size>
-            <width>150</width>
-            <height>100</height>
+            <width>16777215</width>
+            <height>16777215</height>
            </size>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout">
-             <item>
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="toggleSourceButton">
-               <property name="text">
-                <string>Toggle Source</string>
-               </property>
-               <property name="flat">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QTextEdit" name="planNotesTextEdit">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="tabStopDistance">
-              <double>20.000000000000000</double>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-             </property>
-             <property name="placeholderText">
-              <string>Plan Notes</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPlainTextEdit" name="planNotesPlainTextEdit"/>
-           </item>
-          </layout>
+          <property name="autoFormatting">
+           <set>QTextEdit::AutoAll</set>
+          </property>
+          <property name="readOnly">
+           <bool>false</bool>
+          </property>
+          <property name="tabStopDistance">
+           <double>20.000000000000000</double>
+          </property>
+          <property name="textInteractionFlags">
+           <set>Qt::LinksAccessibleByMouse|Qt::TextEditable|Qt::TextEditorInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+          </property>
+          <property name="placeholderText">
+           <string>Plan Notes</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPlainTextEdit" name="planNotesPlainTextEdit">
+          <property name="tabStopDistance">
+           <double>20.000000000000000</double>
+          </property>
          </widget>
         </item>
        </layout>

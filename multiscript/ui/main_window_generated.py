@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(752, 720)
+        MainWindow.resize(752, 743)
         sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
@@ -82,12 +82,12 @@ class Ui_MainWindow(object):
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
         self.splitter.setChildrenCollapsible(False)
-        self.verticalLayoutWidget = QWidget(self.splitter)
-        self.verticalLayoutWidget.setObjectName(u"verticalLayoutWidget")
-        self.mainLayout = QVBoxLayout(self.verticalLayoutWidget)
+        self.mainLayoutWidget = QWidget(self.splitter)
+        self.mainLayoutWidget.setObjectName(u"mainLayoutWidget")
+        self.mainLayout = QVBoxLayout(self.mainLayoutWidget)
         self.mainLayout.setObjectName(u"mainLayout")
         self.mainLayout.setContentsMargins(12, 0, 12, 0)
-        self.titleAreaWidget = QWidget(self.verticalLayoutWidget)
+        self.titleAreaWidget = QWidget(self.mainLayoutWidget)
         self.titleAreaWidget.setObjectName(u"titleAreaWidget")
         self.titleAreaWidget.setAutoFillBackground(False)
         self.titleAreaWidgetLayout = QVBoxLayout(self.titleAreaWidget)
@@ -123,6 +123,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.togglePlanNotesButton = QPushButton(self.titleAreaWidget)
         self.togglePlanNotesButton.setObjectName(u"togglePlanNotesButton")
+        self.togglePlanNotesButton.setCheckable(True)
 
         self.verticalLayout.addWidget(self.togglePlanNotesButton)
 
@@ -139,14 +140,14 @@ class Ui_MainWindow(object):
 
         self.mainLayout.addWidget(self.titleAreaWidget)
 
-        self.line = QFrame(self.verticalLayoutWidget)
+        self.line = QFrame(self.mainLayoutWidget)
         self.line.setObjectName(u"line")
         self.line.setFrameShape(QFrame.HLine)
         self.line.setFrameShadow(QFrame.Sunken)
 
         self.mainLayout.addWidget(self.line)
 
-        self.mainAreaWidget = QWidget(self.verticalLayoutWidget)
+        self.mainAreaWidget = QWidget(self.mainLayoutWidget)
         self.mainAreaWidget.setObjectName(u"mainAreaWidget")
         self.mainAreaWidgetLayout = QVBoxLayout(self.mainAreaWidget)
         self.mainAreaWidgetLayout.setObjectName(u"mainAreaWidgetLayout")
@@ -368,14 +369,14 @@ class Ui_MainWindow(object):
 
         self.mainLayout.addWidget(self.mainAreaWidget)
 
-        self.line_2 = QFrame(self.verticalLayoutWidget)
+        self.line_2 = QFrame(self.mainLayoutWidget)
         self.line_2.setObjectName(u"line_2")
         self.line_2.setFrameShape(QFrame.HLine)
         self.line_2.setFrameShadow(QFrame.Sunken)
 
         self.mainLayout.addWidget(self.line_2)
 
-        self.footerAreaWidget = QWidget(self.verticalLayoutWidget)
+        self.footerAreaWidget = QWidget(self.mainLayoutWidget)
         self.footerAreaWidget.setObjectName(u"footerAreaWidget")
         self.footerLayout = QHBoxLayout(self.footerAreaWidget)
         self.footerLayout.setObjectName(u"footerLayout")
@@ -404,13 +405,8 @@ class Ui_MainWindow(object):
 
         self.mainLayout.addWidget(self.footerAreaWidget)
 
-        self.splitter.addWidget(self.verticalLayoutWidget)
-        self.verticalLayoutWidget_2 = QWidget(self.splitter)
-        self.verticalLayoutWidget_2.setObjectName(u"verticalLayoutWidget_2")
-        self.sidePanelLayout = QVBoxLayout(self.verticalLayoutWidget_2)
-        self.sidePanelLayout.setObjectName(u"sidePanelLayout")
-        self.sidePanelLayout.setContentsMargins(0, 0, 0, 0)
-        self.sidePanelWidget = QWidget(self.verticalLayoutWidget_2)
+        self.splitter.addWidget(self.mainLayoutWidget)
+        self.sidePanelWidget = QWidget(self.splitter)
         self.sidePanelWidget.setObjectName(u"sidePanelWidget")
         sizePolicy4 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         sizePolicy4.setHorizontalStretch(0)
@@ -428,6 +424,7 @@ class Ui_MainWindow(object):
 
         self.toggleSourceButton = QPushButton(self.sidePanelWidget)
         self.toggleSourceButton.setObjectName(u"toggleSourceButton")
+        self.toggleSourceButton.setCheckable(True)
         self.toggleSourceButton.setFlat(True)
 
         self.horizontalLayout.addWidget(self.toggleSourceButton)
@@ -443,21 +440,20 @@ class Ui_MainWindow(object):
         sizePolicy5.setHeightForWidth(self.planNotesTextEdit.sizePolicy().hasHeightForWidth())
         self.planNotesTextEdit.setSizePolicy(sizePolicy5)
         self.planNotesTextEdit.setMaximumSize(QSize(16777215, 16777215))
-        self.planNotesTextEdit.setReadOnly(True)
+        self.planNotesTextEdit.setAutoFormatting(QTextEdit.AutoAll)
+        self.planNotesTextEdit.setReadOnly(False)
         self.planNotesTextEdit.setTabStopDistance(20.000000000000000)
-        self.planNotesTextEdit.setTextInteractionFlags(Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
+        self.planNotesTextEdit.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextEditable|Qt.TextEditorInteraction|Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
 
         self.verticalLayout_5.addWidget(self.planNotesTextEdit)
 
         self.planNotesPlainTextEdit = QPlainTextEdit(self.sidePanelWidget)
         self.planNotesPlainTextEdit.setObjectName(u"planNotesPlainTextEdit")
+        self.planNotesPlainTextEdit.setTabStopDistance(20.000000000000000)
 
         self.verticalLayout_5.addWidget(self.planNotesPlainTextEdit)
 
-
-        self.sidePanelLayout.addWidget(self.sidePanelWidget)
-
-        self.splitter.addWidget(self.verticalLayoutWidget_2)
+        self.splitter.addWidget(self.sidePanelWidget)
 
         self.verticalLayout_3.addWidget(self.splitter)
 
@@ -561,7 +557,7 @@ class Ui_MainWindow(object):
         self.restartAction.setText(QCoreApplication.translate("MainWindow", u"Restart Multiscript", None))
         self.appIconLabel.setText(QCoreApplication.translate("MainWindow", u"IconLabel", None))
         self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"Multiscript", None))
-        self.togglePlanNotesButton.setText(QCoreApplication.translate("MainWindow", u"Toggle Plan Notes", None))
+        self.togglePlanNotesButton.setText(QCoreApplication.translate("MainWindow", u"Show Plan Notes", None))
         self.passagesLabel.setText(QCoreApplication.translate("MainWindow", u"Bible Passages", None))
         self.passagesLineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"For example: Gen 1:1-5, Gen 1:26-27; John 1:1-18, John 2:1-11", None))
         self.versionsTableLabel.setText(QCoreApplication.translate("MainWindow", u"\n"
@@ -588,7 +584,7 @@ class Ui_MainWindow(object):
         self.closeButton.setText(QCoreApplication.translate("MainWindow", u"Close", None))
         self.planConfigButton.setText(QCoreApplication.translate("MainWindow", u"Plan Options...", None))
         self.startButton.setText(QCoreApplication.translate("MainWindow", u"Start...", None))
-        self.toggleSourceButton.setText(QCoreApplication.translate("MainWindow", u"Toggle Source", None))
+        self.toggleSourceButton.setText(QCoreApplication.translate("MainWindow", u"View Source", None))
         self.planNotesTextEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Plan Notes", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuEdit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))
