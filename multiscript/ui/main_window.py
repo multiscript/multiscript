@@ -47,11 +47,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.mainAreaWidgetLayout.setSpacing(6)
             self.pathsLayout.setSpacing(6)
             self.versionsVerticalLayout.setSpacing(0)
-            # left, top, right, bottom = self.pathsLayout.getContentsMargins()
-            # self.pathsLayout.setContentsMargins(left, top, right, 6)
-
+            left, top, right, bottom = self.titleAreaWidgetLayout.getContentsMargins()
+            self.titleAreaWidgetLayout.setContentsMargins(left, top, right, 0)
             left, top, right, bottom = self.mainAreaWidgetLayout.getContentsMargins()
-            self.mainAreaWidgetLayout.setContentsMargins(left, top, right, 0)
+            self.mainAreaWidgetLayout.setContentsMargins(left, 0, right, 0)
             left, top, right, bottom = self.footerLayout.getContentsMargins()
             self.footerLayout.setContentsMargins(left, 0, right, bottom)
 
