@@ -40,7 +40,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.appIconLabel.setIcon(self.windowIcon())
         self.splitter.setStretchFactor(0,1)
         self.splitter.setStretchFactor(1,0)
+        self._in_plan_notes_sync = False
+        self._programmatic_plan_notes_change = False
         self.update_plan_notes_visibility(self.togglePlanNotesButton.isChecked())
+        self.update_plan_notes_source_visibility(self.togglePlanNotesSourceButton.isChecked())
 
         # Mac style leaves too much vertical space, so we reduce it
         if multiscript.on_mac():
@@ -77,6 +80,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.aboutAction.triggered.connect(self.on_about_triggered)
  
         self.togglePlanNotesButton.clicked.connect(self.update_plan_notes_visibility)
+        self.togglePlanNotesSourceButton.clicked.connect(self.update_plan_notes_source_visibility)
         self.addRowsButton.clicked.connect(self.on_add_rows_button_clicked)
         self.removeRowsButton.clicked.connect(self.on_remove_rows_button_clicked)
         self.editButton.clicked.connect(self.on_edit_button_clicked)
@@ -91,6 +95,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.startButton.clicked.connect(self.on_start_button_clicked)
   
         self.passagesLineEdit.textEdited.connect(self.set_plan_changed)
+        self.planNotesTextEdit.textChanged.connect(self.on_plan_notes_source_text_changed)
+        self.planNotesPlainTextEdit.textChanged.connect(self.on_plan_notes_rich_text_changed)
 
         #
         # Set up models and views
@@ -115,11 +121,46 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     #
     
     def update_plan_notes_visibility(self, toggle_button_checked):
-        self.sidePanelWidget.setVisible(toggle_button_checked)
         if toggle_button_checked:
             self.togglePlanNotesButton.setText(self.tr("Hide Plan Notes"))
+            self.sidePanelWidget.setVisible(toggle_button_checked)
         else:
             self.togglePlanNotesButton.setText(self.tr("Show Plan Notes"))
+            self.sidePanelWidget.setVisible(toggle_button_checked)
+
+    def update_plan_notes_source_visibility(self, toggle_button_checked):
+        self.planNotesTextEdit.setVisible(not toggle_button_checked)
+        self.planNotesPlainTextEdit.setVisible(toggle_button_checked)
+        if toggle_button_checked:
+            self.togglePlanNotesSourceButton.setText(self.tr("Hide Markdown"))
+            self._programmatic_plan_notes_change = True
+            self.on_plan_notes_source_text_changed()
+            self._programmatic_plan_notes_change = False
+        else:
+            self.togglePlanNotesSourceButton.setText(self.tr("Show Markdown"))
+            self._programmatic_plan_notes_change = True
+            self.on_plan_notes_rich_text_changed()
+            self._programmatic_plan_notes_change = False
+
+    def on_plan_notes_source_text_changed(self):
+        if not self._programmatic_plan_notes_change:
+            self.set_plan_changed()
+        if not self._in_plan_notes_sync:
+            self._in_plan_notes_sync = True
+            self._programmatic_plan_notes_change = True
+            self.planNotesPlainTextEdit.setPlainText(self.planNotesTextEdit.toMarkdown())
+            self._programmatic_plan_notes_change = False
+            self._in_plan_notes_sync = False
+    
+    def on_plan_notes_rich_text_changed(self):
+        if not self._programmatic_plan_notes_change:
+            self.set_plan_changed()
+        if not self._in_plan_notes_sync:
+            self._in_plan_notes_sync = True
+            self._programmatic_plan_notes_change = True
+            self.planNotesTextEdit.setMarkdown(self.planNotesPlainTextEdit.toPlainText())
+            self._programmatic_plan_notes_change = False
+            self._in_plan_notes_sync = False
 
     #
     # Version table methods
@@ -376,7 +417,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.update_read_only_widgets_from_plan()
 
     def copy_window_to_plan(self):
+        self.plan.notes = self.planNotesTextEdit.toMarkdown()
         self.plan.bible_passages = self.passagesLineEdit.text().strip()
+
         # We need to save both the versions and the boolean columns in our model. (The boolean
         # columns hold the version checkbox/radio-button selection.)
         # We also want to save these values out in the display order of the rows, rather
@@ -396,6 +439,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def copy_plan_to_window(self):
         self.update_read_only_widgets_from_plan()
+
+        self._programmatic_plan_notes_change = True
+        self.planNotesTextEdit.setMarkdown(self.plan.notes)
+        self._programmatic_plan_notes_change = False
 
         if self.plan.bible_passages is None:
             self.passagesLineEdit.setText("")
@@ -430,7 +477,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(self.plan.path.stem + "[*]")
         self.setWindowModified(self.plan.changed)
 
-        self.planNotesTextEdit.setMarkdown(self.plan.notes)
         self.rowSummaryLabel.setText(self.tr("{0} version(s) in the set".format(self.versionModel.rowCount())))
         self.columnSummaryLabel.setText(self.tr("{0} version(s) per Bible passage".format(
                                         len(self.get_all_version_columns()))))
