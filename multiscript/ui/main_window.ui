@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>788</width>
+    <width>748</width>
     <height>747</height>
    </rect>
   </property>
@@ -141,6 +141,9 @@
                   <string>Show Plan Notes</string>
                  </property>
                  <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="checked">
                   <bool>true</bool>
                  </property>
                  <property name="flat">
@@ -692,7 +695,7 @@ Template</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>788</width>
+     <width>748</width>
      <height>22</height>
     </rect>
    </property>

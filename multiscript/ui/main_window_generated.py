@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(788, 747)
+        MainWindow.resize(748, 747)
         sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
@@ -129,6 +129,7 @@ class Ui_MainWindow(object):
         self.togglePlanNotesButton = QPushButton(self.titleAreaWidget)
         self.togglePlanNotesButton.setObjectName(u"togglePlanNotesButton")
         self.togglePlanNotesButton.setCheckable(True)
+        self.togglePlanNotesButton.setChecked(True)
         self.togglePlanNotesButton.setFlat(True)
 
         self.verticalLayout.addWidget(self.togglePlanNotesButton)
@@ -465,7 +466,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 788, 22))
+        self.menubar.setGeometry(QRect(0, 0, 748, 22))
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
         self.menuEdit = QMenu(self.menubar)

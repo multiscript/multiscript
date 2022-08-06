@@ -9,6 +9,7 @@ import multiscript
 from multiscript.bible.reference import BibleRangeList
 from multiscript import plan
 from multiscript.plan.symbols import column_symbols
+from multiscript.qt_custom.concurrency import call_main_thread_later
 from multiscript.qt_custom.models import ItemListTableModel
 from multiscript.qt_custom.model_columns import ModelColumnType, AttributeColumn, BooleanColumn
 from multiscript.ui.main_window_generated import Ui_MainWindow
@@ -38,12 +39,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.plan = None
 
         self.appIconLabel.setIcon(self.windowIcon())
-        self.splitter.setStretchFactor(0,1)
-        self.splitter.setStretchFactor(1,0)
-        self._in_plan_notes_sync = False
-        self._programmatic_plan_notes_change = False
-        self.update_plan_notes_visibility(self.togglePlanNotesButton.isChecked())
-        self.update_plan_notes_source_visibility(self.togglePlanNotesSourceButton.isChecked())
 
         # Mac style leaves too much vertical space, so we reduce it
         if multiscript.on_mac():
@@ -116,6 +111,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.versionTable.verticalHeader().setSectionsMovable(True)
         self.versionTable.doubleClicked.connect(self.on_version_table_double_clicked)
 
+        #
+        # Set up plan notes
+        #
+        self.splitter.setStretchFactor(0,1)
+        self.splitter.setStretchFactor(1,0)
+        self._in_plan_notes_sync = False
+        self._programmatic_plan_notes_change = False
+        # The ui file initially sets the sidepanel visible. To ensure consistent
+        # button state and window widths, we have to called update_plan_notes_visibility()
+        # with False first, then the true value.
+        self.update_plan_notes_visibility(False)
+        self.update_plan_notes_visibility(self.togglePlanNotesButton.isChecked())
+        self.update_plan_notes_source_visibility(self.togglePlanNotesSourceButton.isChecked())
+
     #
     # Plan notes methods
     #
@@ -124,9 +133,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if toggle_button_checked:
             self.togglePlanNotesButton.setText(self.tr("Hide Plan Notes"))
             self.sidePanelWidget.setVisible(toggle_button_checked)
+            self.resize(self.width() + self.splitter.handleWidth() +
+                self.sidePanelWidget.width(), self.height())
         else:
+            # For some reason, when we hide the notes sidepanel, Qt calculates the minimum
+            # window width as though the sidepanel is still visible. The easiest workaround is
+            # to manually override the minimum width here to a small number, resize the window,
+            # then clear the minimum size override, by setting it to QSize(0, 0).
+            # We add an extra amount to the final width, as we otherwise seem to lose some
+            # width when showing and hiding the side panel.
+            self.setMinimumWidth(10)
             self.togglePlanNotesButton.setText(self.tr("Show Plan Notes"))
             self.sidePanelWidget.setVisible(toggle_button_checked)
+            self.resize(self.width() - self.splitter.handleWidth() -
+                self.sidePanelWidget.width() + 30, self.height())
+            self.setMinimumSize(QtCore.QSize(0, 0))
 
     def update_plan_notes_source_visibility(self, toggle_button_checked):
         self.planNotesTextEdit.setVisible(not toggle_button_checked)
