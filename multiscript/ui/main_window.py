@@ -118,7 +118,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._in_plan_notes_sync = False
         self._programmatic_plan_notes_change = False
         self._last_sidepanel_width = 0
-        self._extra_width_compensation = 30 # To keep everything consistent when sidepanel shown/hidden
+        # _extra_width_compensation is the extra window width to add when showing the sidepanel
+        self._extra_width_compensation = 30 if multiscript.on_mac() else 24
         self.update_plan_notes_visibility(self.togglePlanNotesButton.isChecked())
         self.update_plan_notes_source_visibility(self.togglePlanNotesSourceButton.isChecked())
 
@@ -128,9 +129,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def on_toggle_plan_notes_button_clicked(self, checked):
         if checked:
+            # Release any specified minimum window width from when the sidepanel was hidden.
+            self.setMinimumSize(QtCore.QSize(0, 0))
+
             self.update_plan_notes_visibility(checked)
             if self._last_sidepanel_width > 0:
-                self.sidePanelWidget.resize(self._last_sidepanel_width,
+                self.sidePanelWidget.resize(self._last_sidepanel_width - self._extra_width_compensation,
                     self.sidePanelWidget.height())
             # We add an extra amount to the final width to allow for margins.
             self.resize(self.width() + self.splitter.handleWidth() +
@@ -138,14 +142,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             # For some reason, when we hide the notes sidepanel, Qt calculates the minimum
             # window width as though the sidepanel is still visible. The easiest workaround is
-            # to manually override the minimum width here to a small number, resize the window,
-            # then clear the minimum size override, by setting it to QSize(0, 0).
-            self.setMinimumWidth(10)
-            self._last_sidepanel_width = self.sidePanelWidget.width() - \
-                self._extra_width_compensation
-            self.resize(self.width() - self.splitter.handleWidth() -
-                self.sidePanelWidget.width(), self.height())
-            self.setMinimumSize(QtCore.QSize(0, 0))
+            # to manually override the minimum width here to the ideal minimum width of the main
+            # panel.
+            self.setMinimumWidth(self.mainLayoutWidget.minimumSizeHint().width())
+            self._last_sidepanel_width = self.sidePanelWidget.width()
+            self.resize(self.width() - self.splitter.handleWidth() - self._last_sidepanel_width, self.height())
             self.update_plan_notes_visibility(checked)
 
     def update_plan_notes_visibility(self, toggle_button_checked):
