@@ -74,7 +74,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.aboutAction.triggered.connect(self.on_about_triggered)
  
         self.togglePlanNotesButton.clicked.connect(self.on_toggle_plan_notes_button_clicked)
-        self.togglePlanNotesSourceButton.clicked.connect(self.update_plan_notes_source_visibility)
+        self.togglePlanNotesSourceButton.clicked.connect(self.on_toggle_plan_notes_source_button_clicked)
         self.addRowsButton.clicked.connect(self.on_add_rows_button_clicked)
         self.removeRowsButton.clicked.connect(self.on_remove_rows_button_clicked)
         self.editButton.clicked.connect(self.on_edit_button_clicked)
@@ -118,25 +118,25 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._in_plan_notes_sync = False
         self._programmatic_plan_notes_change = False
         self._last_sidepanel_width = 0 # For remembering side panel width while hidden
-        self.update_plan_notes_visibility(self.togglePlanNotesButton.isChecked())
-        self.update_plan_notes_source_visibility(self.togglePlanNotesSourceButton.isChecked())
+        self.update_plan_notes_visibility(True)
+        self.update_plan_notes_source_visibility(False)
 
     #
     # Plan notes methods
     #
     
-    def on_toggle_plan_notes_button_clicked(self, checked):
-        if checked:
+    def on_toggle_plan_notes_button_clicked(self, checked=False):
+        if not self.sidePanelWidget.isVisible(): # Show plan notes
             # Release any specified minimum window width from when the sidepanel was hidden.
             self.setMinimumSize(QtCore.QSize(0, 0))
 
-            self.update_plan_notes_visibility(checked)
+            self.update_plan_notes_visibility(True)
             if self._last_sidepanel_width > 0:
                 self.sidePanelWidget.resize(self._last_sidepanel_width,
                     self.sidePanelWidget.height())
             self.resize(self.width() + self.splitter.handleWidth() + self.sidePanelWidget.width(),
                 self.height())
-        else:
+        else: # Hide plan notes
             self._last_sidepanel_width = self.sidePanelWidget.width()
             # For some reason, when we hide the notes side panel, Qt calculates the minimum
             # window width as though the sidepanel is still visible. The easiest workaround is
@@ -145,18 +145,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.setMinimumWidth(self.mainLayoutWidget.minimumSizeHint().width())
             self.resize(self.width() - self.splitter.handleWidth() - self._last_sidepanel_width,
                 self.height())
-            self.update_plan_notes_visibility(checked)
+            self.update_plan_notes_visibility(False)
 
-    def update_plan_notes_visibility(self, toggle_button_checked):
-        button_text = self.tr("Hide Plan Notes") if toggle_button_checked else \
+    def update_plan_notes_visibility(self, show_plan_notes):
+        button_text = self.tr("Hide Plan Notes") if show_plan_notes else \
                       self.tr("Show Plan Notes")
         self.togglePlanNotesButton.setText(button_text)
-        self.sidePanelWidget.setVisible(toggle_button_checked)
+        self.sidePanelWidget.setVisible(show_plan_notes)
 
-    def update_plan_notes_source_visibility(self, toggle_button_checked):
-        self.planNotesTextEdit.setVisible(not toggle_button_checked)
-        self.planNotesPlainTextEdit.setVisible(toggle_button_checked)
-        if toggle_button_checked:
+    def on_toggle_plan_notes_source_button_clicked(self, checked=False):
+        self.update_plan_notes_source_visibility(self.planNotesTextEdit.isVisible())
+
+    def update_plan_notes_source_visibility(self, show_source):
+        self.planNotesTextEdit.setVisible(not show_source)
+        self.planNotesPlainTextEdit.setVisible(show_source)
+        if show_source:
             self.togglePlanNotesSourceButton.setText(self.tr("Hide Markdown"))
             self._programmatic_plan_notes_change = True
             self.on_plan_notes_source_text_changed()

@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(755, 737)
+        MainWindow.resize(872, 731)
         self.openAction = QAction(MainWindow)
         self.openAction.setObjectName(u"openAction")
         self.saveAsAction = QAction(MainWindow)
@@ -123,8 +123,8 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.togglePlanNotesButton = QPushButton(self.titleAreaWidget)
         self.togglePlanNotesButton.setObjectName(u"togglePlanNotesButton")
-        self.togglePlanNotesButton.setCheckable(True)
-        self.togglePlanNotesButton.setChecked(True)
+        self.togglePlanNotesButton.setCheckable(False)
+        self.togglePlanNotesButton.setChecked(False)
         self.togglePlanNotesButton.setFlat(True)
 
         self.verticalLayout.addWidget(self.togglePlanNotesButton)
@@ -425,7 +425,7 @@ class Ui_MainWindow(object):
 
         self.togglePlanNotesSourceButton = QPushButton(self.sidePanelWidget)
         self.togglePlanNotesSourceButton.setObjectName(u"togglePlanNotesSourceButton")
-        self.togglePlanNotesSourceButton.setCheckable(True)
+        self.togglePlanNotesSourceButton.setCheckable(False)
         self.togglePlanNotesSourceButton.setFlat(True)
 
         self.horizontalLayout.addWidget(self.togglePlanNotesSourceButton)
@@ -461,7 +461,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 755, 22))
+        self.menubar.setGeometry(QRect(0, 0, 872, 22))
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
         self.menuEdit = QMenu(self.menubar)
@@ -558,7 +558,7 @@ class Ui_MainWindow(object):
         self.restartAction.setText(QCoreApplication.translate("MainWindow", u"Restart Multiscript", None))
         self.appIconLabel.setText(QCoreApplication.translate("MainWindow", u"IconLabel", None))
         self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"Multiscript", None))
-        self.togglePlanNotesButton.setText(QCoreApplication.translate("MainWindow", u"Show Plan Notes", None))
+        self.togglePlanNotesButton.setText(QCoreApplication.translate("MainWindow", u"Hide Plan Notes", None))
         self.passagesLabel.setText(QCoreApplication.translate("MainWindow", u"Bible Passages", None))
         self.passagesLineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"For example: Gen 1:1-5, Gen 1:26-27; John 1:1-18, John 2:1-11", None))
         self.versionsTableLabel.setText(QCoreApplication.translate("MainWindow", u"\n"
