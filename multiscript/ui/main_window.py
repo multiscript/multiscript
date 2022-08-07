@@ -117,9 +117,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.splitter.setStretchFactor(1,0)
         self._in_plan_notes_sync = False
         self._programmatic_plan_notes_change = False
-        self._last_sidepanel_width = 0
-        # _extra_width_compensation is the extra window width to add when showing the sidepanel
-        self._extra_width_compensation = 30 if multiscript.on_mac() else 24
+        self._last_sidepanel_width = 0 # For remembering side panel width while hidden
         self.update_plan_notes_visibility(self.togglePlanNotesButton.isChecked())
         self.update_plan_notes_source_visibility(self.togglePlanNotesSourceButton.isChecked())
 
@@ -134,19 +132,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.update_plan_notes_visibility(checked)
             if self._last_sidepanel_width > 0:
-                self.sidePanelWidget.resize(self._last_sidepanel_width - self._extra_width_compensation,
+                self.sidePanelWidget.resize(self._last_sidepanel_width,
                     self.sidePanelWidget.height())
-            # We add an extra amount to the final width to allow for margins.
-            self.resize(self.width() + self.splitter.handleWidth() +
-                self.sidePanelWidget.width() + self._extra_width_compensation, self.height())
+            self.resize(self.width() + self.splitter.handleWidth() + self.sidePanelWidget.width(),
+                self.height())
         else:
-            # For some reason, when we hide the notes sidepanel, Qt calculates the minimum
-            # window width as though the sidepanel is still visible. The easiest workaround is
-            # to manually override the minimum width here to the ideal minimum width of the main
-            # panel.
-            self.setMinimumWidth(self.mainLayoutWidget.minimumSizeHint().width())
             self._last_sidepanel_width = self.sidePanelWidget.width()
-            self.resize(self.width() - self.splitter.handleWidth() - self._last_sidepanel_width, self.height())
+            # For some reason, when we hide the notes side panel, Qt calculates the minimum
+            # window width as though the sidepanel is still visible. The easiest workaround is
+            # to manually override the minimum window width to be the ideal minimum width of
+            # the main panel.
+            self.setMinimumWidth(self.mainLayoutWidget.minimumSizeHint().width())
+            self.resize(self.width() - self.splitter.handleWidth() - self._last_sidepanel_width,
+                self.height())
             self.update_plan_notes_visibility(checked)
 
     def update_plan_notes_visibility(self, toggle_button_checked):
