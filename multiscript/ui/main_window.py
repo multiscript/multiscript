@@ -9,7 +9,6 @@ import multiscript
 from multiscript.bible.reference import BibleRangeList
 from multiscript import plan
 from multiscript.plan.symbols import column_symbols
-from multiscript.qt_custom.concurrency import call_main_thread_later
 from multiscript.qt_custom.models import ItemListTableModel
 from multiscript.qt_custom.model_columns import ModelColumnType, AttributeColumn, BooleanColumn
 from multiscript.ui.main_window_generated import Ui_MainWindow
@@ -74,7 +73,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.appConfigAction.triggered.connect(self.on_app_config_triggered)
         self.aboutAction.triggered.connect(self.on_about_triggered)
  
-        self.togglePlanNotesButton.clicked.connect(self.update_plan_notes_visibility)
+        self.togglePlanNotesButton.clicked.connect(self.on_toggle_plan_notes_button_clicked)
         self.togglePlanNotesSourceButton.clicked.connect(self.update_plan_notes_source_visibility)
         self.addRowsButton.clicked.connect(self.on_add_rows_button_clicked)
         self.removeRowsButton.clicked.connect(self.on_remove_rows_button_clicked)
@@ -118,10 +117,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.splitter.setStretchFactor(1,0)
         self._in_plan_notes_sync = False
         self._programmatic_plan_notes_change = False
-        # The ui file initially sets the sidepanel visible. To ensure consistent
-        # button state and window widths, we have to called update_plan_notes_visibility()
-        # with False first, then the true value.
-        self.update_plan_notes_visibility(False)
+        self._last_sidepanel_width = 0
+        self._extra_width_compensation = 30 # To keep everything consistent when sidepanel shown/hidden
         self.update_plan_notes_visibility(self.togglePlanNotesButton.isChecked())
         self.update_plan_notes_source_visibility(self.togglePlanNotesSourceButton.isChecked())
 
@@ -129,25 +126,33 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # Plan notes methods
     #
     
-    def update_plan_notes_visibility(self, toggle_button_checked):
-        if toggle_button_checked:
-            self.togglePlanNotesButton.setText(self.tr("Hide Plan Notes"))
-            self.sidePanelWidget.setVisible(toggle_button_checked)
+    def on_toggle_plan_notes_button_clicked(self, checked):
+        if checked:
+            self.update_plan_notes_visibility(checked)
+            if self._last_sidepanel_width > 0:
+                self.sidePanelWidget.resize(self._last_sidepanel_width,
+                    self.sidePanelWidget.height())
+            # We add an extra amount to the final width to allow for margins.
             self.resize(self.width() + self.splitter.handleWidth() +
-                self.sidePanelWidget.width(), self.height())
+                self.sidePanelWidget.width() + self._extra_width_compensation, self.height())
         else:
             # For some reason, when we hide the notes sidepanel, Qt calculates the minimum
             # window width as though the sidepanel is still visible. The easiest workaround is
             # to manually override the minimum width here to a small number, resize the window,
             # then clear the minimum size override, by setting it to QSize(0, 0).
-            # We add an extra amount to the final width, as we otherwise seem to lose some
-            # width when showing and hiding the side panel.
             self.setMinimumWidth(10)
-            self.togglePlanNotesButton.setText(self.tr("Show Plan Notes"))
-            self.sidePanelWidget.setVisible(toggle_button_checked)
+            self._last_sidepanel_width = self.sidePanelWidget.width() - \
+                self._extra_width_compensation
             self.resize(self.width() - self.splitter.handleWidth() -
-                self.sidePanelWidget.width() + 30, self.height())
+                self.sidePanelWidget.width(), self.height())
             self.setMinimumSize(QtCore.QSize(0, 0))
+            self.update_plan_notes_visibility(checked)
+
+    def update_plan_notes_visibility(self, toggle_button_checked):
+        button_text = self.tr("Hide Plan Notes") if toggle_button_checked else \
+                      self.tr("Show Plan Notes")
+        self.togglePlanNotesButton.setText(button_text)
+        self.sidePanelWidget.setVisible(toggle_button_checked)
 
     def update_plan_notes_source_visibility(self, toggle_button_checked):
         self.planNotesTextEdit.setVisible(not toggle_button_checked)
