@@ -89,8 +89,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.startButton.clicked.connect(self.on_start_button_clicked)
   
         self.passagesLineEdit.textEdited.connect(self.set_plan_changed)
-        self.planNotesTextEdit.textChanged.connect(self.on_plan_notes_source_text_changed)
-        self.planNotesPlainTextEdit.textChanged.connect(self.on_plan_notes_rich_text_changed)
+        self.planNotesTextEdit.textChanged.connect(self.on_plan_notes_rich_text_changed)
+        self.planNotesPlainTextEdit.textChanged.connect(self.on_plan_notes_source_text_changed)
 
         #
         # Set up models and views
@@ -176,7 +176,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if not self._in_plan_notes_sync:
             self._in_plan_notes_sync = True
             self._programmatic_plan_notes_change = True
-            self.planNotesPlainTextEdit.setPlainText(self.planNotesTextEdit.toMarkdown())
+            self.planNotesTextEdit.setMarkdown(self.planNotesPlainTextEdit.toPlainText())
             self._programmatic_plan_notes_change = False
             self._in_plan_notes_sync = False
     
@@ -186,7 +186,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if not self._in_plan_notes_sync:
             self._in_plan_notes_sync = True
             self._programmatic_plan_notes_change = True
-            self.planNotesTextEdit.setMarkdown(self.planNotesPlainTextEdit.toPlainText())
+            self.planNotesPlainTextEdit.setPlainText(self.planNotesTextEdit.toMarkdown())
             self._programmatic_plan_notes_change = False
             self._in_plan_notes_sync = False
 

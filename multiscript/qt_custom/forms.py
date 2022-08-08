@@ -69,7 +69,7 @@ class Form(QtWidgets.QWidget):
     def add_mappings(self):
         pass
 
-    def add_model_column_and_widget(self, model_column, widget, col_index=None):
+    def add_model_column_and_widget(self, model_column, widget, col_index=None, property_name=None):
         if self._item_list_model is None:
             return
 
@@ -79,7 +79,10 @@ class Form(QtWidgets.QWidget):
         if model_column is not None:
             self._item_list_model.append_model_columns([model_column])
     
-        self.mapper.addMapping(widget, col_index)
+        if property_name is None:
+            self.mapper.addMapping(widget, col_index)
+        else:
+            self.mapper.addMapping(widget, col_index, property_name.encode('utf-8'))
         self._mapped_widgets.add(widget)
         if isinstance(widget, QtWidgets.QLineEdit):
             widget.textEdited.connect(self._on_data_widget_text_edited)

@@ -74,7 +74,7 @@ class VersionForm(Form, Ui_VersionForm):
         self.add_model_column_and_widget(
                 AttributeColumn("Notes", lambda version: version.notes,
                                 lambda version, value: setattr(version, "notes", value.strip()), hide=False),
-                self.notesPlainTextEdit
+                self.notesTextEdit, property_name="markdown"
         )
   
         for output_long_id, output_version_config_subform in self.output_version_config_subforms.items():
@@ -83,10 +83,10 @@ class VersionForm(Form, Ui_VersionForm):
 
     def edit_version_notes(self):
         version_notes_dialog = VersionNotesDialog(None)
-        version_notes_dialog.setNotes(self.notesPlainTextEdit.toPlainText())
+        version_notes_dialog.setNotes(self.notesTextEdit.toMarkdown())
         result = version_notes_dialog.exec()
         if result == QtWidgets.QDialog.Accepted:
-            self.notesPlainTextEdit.setPlainText(version_notes_dialog.getNotes())
+            self.notesTextEdit.setMarkdown(version_notes_dialog.getNotes())
 
 
         # Old code showing how to handle checkboxes:

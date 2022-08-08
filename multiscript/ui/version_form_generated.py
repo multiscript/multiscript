@@ -16,8 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
-    QLineEdit, QPlainTextEdit, QPushButton, QSizePolicy,
-    QSpacerItem, QTabWidget, QWidget)
+    QLineEdit, QPushButton, QSizePolicy, QSpacerItem,
+    QTabWidget, QTextEdit, QWidget)
 
 class Ui_VersionForm(object):
     def setupUi(self, VersionForm):
@@ -123,17 +123,6 @@ class Ui_VersionForm(object):
 
         self.gridLayout.addWidget(self.userNameLabel, 9, 0, 1, 1)
 
-        self.notesPlainTextEdit = QPlainTextEdit(VersionForm)
-        self.notesPlainTextEdit.setObjectName(u"notesPlainTextEdit")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.notesPlainTextEdit.sizePolicy().hasHeightForWidth())
-        self.notesPlainTextEdit.setSizePolicy(sizePolicy)
-        self.notesPlainTextEdit.setMaximumSize(QSize(16777215, 60))
-
-        self.gridLayout.addWidget(self.notesPlainTextEdit, 12, 1, 2, 1)
-
         self.nativeSectionLabel = QLabel(VersionForm)
         self.nativeSectionLabel.setObjectName(u"nativeSectionLabel")
 
@@ -158,6 +147,18 @@ class Ui_VersionForm(object):
 
 
         self.gridLayout.addLayout(self.horizontalLayout_3, 13, 0, 1, 1)
+
+        self.notesTextEdit = QTextEdit(VersionForm)
+        self.notesTextEdit.setObjectName(u"notesTextEdit")
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.notesTextEdit.sizePolicy().hasHeightForWidth())
+        self.notesTextEdit.setSizePolicy(sizePolicy)
+        self.notesTextEdit.setMaximumSize(QSize(16777215, 60))
+        self.notesTextEdit.setTabStopDistance(20.000000000000000)
+
+        self.gridLayout.addWidget(self.notesTextEdit, 12, 1, 2, 1)
 
         QWidget.setTabOrder(self.sourceLineEdit, self.idLineEdit)
         QWidget.setTabOrder(self.idLineEdit, self.nativeNameLineEdit)

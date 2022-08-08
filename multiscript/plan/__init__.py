@@ -22,7 +22,8 @@ class Plan:
         self._orig_path = None  # If the path renamed due to missing plugins, store the original path here, but only
                                 # until the plan is saved, when _orig_path is reset to None.
 
-        self.notes = ""                   # Markdown text of plan notes
+        self.notes = ""                   # String data of plan notes
+        self.notes_type = "text/markdown" # Media-type of plan notes. Currently only "text/markdown" supported.
         self.bible_passages = None
         self.bible_versions = []          # A list of all the BibleVersions in the plan.
         self.version_selection = [[], []] # A list of lists of Boolean values. The top-level list represents the list
