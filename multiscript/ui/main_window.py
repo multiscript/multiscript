@@ -120,6 +120,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._last_sidepanel_width = 0 # For remembering side panel width while hidden
         self.update_plan_notes_visibility(True)
         self.update_plan_notes_source_visibility(False)
+        # Hack to allow QTextEdit to open external links.
+        # See https://stackoverflow.com/a/70399240
+        for child in self.planNotesTextEdit.children():
+            if child.metaObject().className() == "QWidgetTextControl":
+                child.setProperty("openExternalLinks", True)
 
     #
     # Plan notes methods
