@@ -12,7 +12,7 @@ A Multiscript plan describes the Bible passage references, Bible versions, outpu
 Here are the basic features of a plan:
 
 ### Bible Passages
-This is the list of Bible passages you want to collate. Many common English abbreviations for book names will be accepted. At the moment, you always have to include the book name (i.e. references like `Mark 1:1-5; 2:1-5` won't work – use `Mark 1:1-5; Mark 2:1-5` instead).
+This is the list of Bible passages you want to collate. Many common English abbreviations for book names will be accepted. At the moment, you always have to include the book name (i.e. references like `Mark 1:1-5; 2:1-5` won't work, so use `Mark 1:1-5; Mark 2:1-5` instead).
 
 Passages separated by a comma are considered to be part of one *group*. Usually this means they'll appear in a single table under a combined heading, separated by an ellipsis (...).
 
