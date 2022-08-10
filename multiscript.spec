@@ -48,6 +48,7 @@ a = Analysis(['multiscript/__main__.py'],
         binaries=[],
         datas=[ ('VERSION', '.'),
                 ('Attribution.html', '.'),
+                ('multiscript/plan/default_plan_notes.md', 'multiscript/plan/default_plan_notes.md')
                 ('multiscript/templates', 'multiscript/templates'),
                 ('multiscript/icons', 'multiscript/icons'),
                 ('multiscript/icons/*.icns', '.')],

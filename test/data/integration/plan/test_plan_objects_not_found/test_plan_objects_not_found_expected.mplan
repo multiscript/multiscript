@@ -2,6 +2,8 @@
     "app_version": "0.11.0",
     "__object__": {
         "__type__": "Plan",
+        "notes": "",
+        "notes_type": "text/markdown",
         "bible_passages": "Gen 1:1-4 + Gen 1:27-31; Mark 1:1-3 + Mark 1:14-19",
         "bible_versions": [
             {
@@ -26,6 +28,8 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "notes": "",
+                "notes_type": "text/markdown",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -72,6 +76,8 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "notes": "",
+                "notes_type": "text/markdown",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -118,6 +124,8 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "notes": "",
+                "notes_type": "text/markdown",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -164,6 +172,8 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "notes": "",
+                "notes_type": "text/markdown",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",

@@ -116,6 +116,11 @@ def get_default_plan_path():
         # Create a new default plan
         default_plan = Plan()
         default_plan.path = path
+
+        default_plan_notes_path = Path(__file__).parent / "default_plan_notes.md"
+        with open(default_plan_notes_path) as file:
+            default_plan.notes = file.read()
+ 
         default_plan.save()
     return path
 
