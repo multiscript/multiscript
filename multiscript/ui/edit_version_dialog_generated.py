@@ -24,17 +24,12 @@ class Ui_EditVersionDialog(object):
     def setupUi(self, EditVersionDialog):
         if not EditVersionDialog.objectName():
             EditVersionDialog.setObjectName(u"EditVersionDialog")
-        EditVersionDialog.resize(394, 533)
+        EditVersionDialog.resize(394, 584)
         self.verticalLayout = QVBoxLayout(EditVersionDialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.versionForm = VersionForm(EditVersionDialog)
         self.versionForm.setObjectName(u"versionForm")
-        sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.versionForm.sizePolicy().hasHeightForWidth())
-        self.versionForm.setSizePolicy(sizePolicy)
-        self.versionForm.setMinimumSize(QSize(370, 469))
+        self.versionForm.setMinimumSize(QSize(370, 520))
 
         self.verticalLayout.addWidget(self.versionForm)
 

@@ -210,7 +210,7 @@
          <property name="minimumSize">
           <size>
            <width>370</width>
-           <height>469</height>
+           <height>520</height>
           </size>
          </property>
         </widget>
@@ -230,15 +230,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ItemListTableView</class>
-   <extends>QTableView</extends>
-   <header>multiscript.qt_custom.views</header>
-  </customwidget>
-  <customwidget>
    <class>VersionForm</class>
    <extends>QWidget</extends>
    <header>multiscript.ui.version_form</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ItemListTableView</class>
+   <extends>QTableView</extends>
+   <header>multiscript.qt_custom.views</header>
   </customwidget>
  </customwidgets>
  <tabstops>

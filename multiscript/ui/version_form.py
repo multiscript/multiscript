@@ -4,6 +4,7 @@ from PySide6.QtCore import Qt
 import multiscript
 from multiscript.qt_custom.forms import Form
 from multiscript.ui.version_form_generated import Ui_VersionForm
+from multiscript.ui.version_notes_dialog import VersionNotesDialog
 from multiscript.qt_custom.model_columns import AttributeColumn
 
 #
@@ -19,6 +20,7 @@ class VersionForm(Form, Ui_VersionForm):
         
     def setupUi(self):
         super().setupUi(self)
+        self.moreButton.clicked.connect(self.edit_version_notes)
 
         self.output_version_config_subforms = {}
         for output in multiscript.app().all_outputs:
@@ -69,10 +71,22 @@ class VersionForm(Form, Ui_VersionForm):
                                 lambda version, value: setattr(version.user_labels, "lang", value), hide=True),
                 self.userLangLineEdit
         )
- 
+        self.add_model_column_and_widget(
+                AttributeColumn("Notes", lambda version: version.notes,
+                                lambda version, value: setattr(version, "notes", value.strip()), hide=False),
+                self.notesTextEdit, property_name="markdown"
+        )
+  
         for output_long_id, output_version_config_subform in self.output_version_config_subforms.items():
             bible_output = multiscript.app().output(output_long_id)
             output_version_config_subform.add_mappings(self, bible_output)        
+
+    def edit_version_notes(self):
+        version_notes_dialog = VersionNotesDialog(None)
+        version_notes_dialog.setNotes(self.notesTextEdit.toMarkdown())
+        result = version_notes_dialog.exec()
+        if result == QtWidgets.QDialog.Accepted:
+            self.notesTextEdit.setMarkdown(version_notes_dialog.getNotes())
 
 
         # Old code showing how to handle checkboxes:

@@ -14,6 +14,8 @@ virtual_env_path = Path(os.environ['VIRTUAL_ENV'])
 project_path = virtual_env_path.parent # assumes virtual env is a top-level subdir of the project
 pyside_uic_path = virtual_env_path / Path('bin/pyside6-uic')
 mod_times_path = Path(__file__).parent / Path('.ui_mod_times.json')
+print("Project Path:    ", project_path)
+print("Virtual Env Path:", virtual_env_path)
 
 # Exclude any ui files in the virutal environment
 exclusions = set(virtual_env_path.glob('**/*.ui'))

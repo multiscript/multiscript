@@ -149,7 +149,7 @@ class Ui_AddVersionDialog(object):
         self.versionForm.setEnabled(False)
         sizePolicy4.setHeightForWidth(self.versionForm.sizePolicy().hasHeightForWidth())
         self.versionForm.setSizePolicy(sizePolicy4)
-        self.versionForm.setMinimumSize(QSize(370, 469))
+        self.versionForm.setMinimumSize(QSize(370, 520))
 
         self.verticalLayout_3.addWidget(self.versionForm)
 

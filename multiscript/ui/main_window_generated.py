@@ -18,8 +18,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
     QHeaderView, QLabel, QLineEdit, QMainWindow,
-    QMenu, QMenuBar, QPushButton, QSizePolicy,
-    QSpacerItem, QVBoxLayout, QWidget)
+    QMenu, QMenuBar, QPlainTextEdit, QPushButton,
+    QSizePolicy, QSpacerItem, QSplitter, QTextEdit,
+    QVBoxLayout, QWidget)
 
 from multiscript.qt_custom.views import ItemListTableView
 from multiscript.qt_custom.widgets import IconLabel
@@ -28,12 +29,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(706, 699)
-        sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
-        MainWindow.setSizePolicy(sizePolicy)
+        MainWindow.resize(872, 731)
         self.openAction = QAction(MainWindow)
         self.openAction.setObjectName(u"openAction")
         self.saveAsAction = QAction(MainWindow)
@@ -74,19 +70,42 @@ class Ui_MainWindow(object):
         self.restartAction.setVisible(False)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.verticalLayout = QVBoxLayout(self.centralwidget)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.titleAreaWidget = QWidget(self.centralwidget)
+        self.verticalLayout_3 = QVBoxLayout(self.centralwidget)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.splitter = QSplitter(self.centralwidget)
+        self.splitter.setObjectName(u"splitter")
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.splitter.sizePolicy().hasHeightForWidth())
+        self.splitter.setSizePolicy(sizePolicy)
+        self.splitter.setOrientation(Qt.Horizontal)
+        self.splitter.setChildrenCollapsible(False)
+        self.mainLayoutWidget = QWidget(self.splitter)
+        self.mainLayoutWidget.setObjectName(u"mainLayoutWidget")
+        self.mainLayout = QVBoxLayout(self.mainLayoutWidget)
+        self.mainLayout.setObjectName(u"mainLayout")
+        self.mainLayout.setContentsMargins(12, 0, 12, 0)
+        self.titleAreaWidget = QWidget(self.mainLayoutWidget)
         self.titleAreaWidget.setObjectName(u"titleAreaWidget")
         self.titleAreaWidget.setAutoFillBackground(False)
-        self.verticalLayout_2 = QVBoxLayout(self.titleAreaWidget)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(12, -1, -1, 0)
-        self.horizontalLayout_9 = QHBoxLayout()
-        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
-        self.verticalLayout_5 = QVBoxLayout()
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.titleAreaWidgetLayout = QVBoxLayout(self.titleAreaWidget)
+        self.titleAreaWidgetLayout.setObjectName(u"titleAreaWidgetLayout")
+        self.titleAreaWidgetLayout.setContentsMargins(0, 12, 0, 12)
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setSpacing(0)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.appIconLabel = IconLabel(self.titleAreaWidget)
+        self.appIconLabel.setObjectName(u"appIconLabel")
+        self.appIconLabel.setMinimumSize(QSize(64, 64))
+
+        self.horizontalLayout_3.addWidget(self.appIconLabel)
+
+        self.horizontalSpacer_4 = QSpacerItem(6, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+
+        self.horizontalLayout_3.addItem(self.horizontalSpacer_4)
+
         self.titleLabel = QLabel(self.titleAreaWidget)
         self.titleLabel.setObjectName(u"titleLabel")
         font = QFont()
@@ -94,44 +113,47 @@ class Ui_MainWindow(object):
         font.setBold(True)
         self.titleLabel.setFont(font)
 
-        self.verticalLayout_5.addWidget(self.titleLabel)
-
-        self.label = QLabel(self.titleAreaWidget)
-        self.label.setObjectName(u"label")
-
-        self.verticalLayout_5.addWidget(self.label)
-
-
-        self.horizontalLayout_9.addLayout(self.verticalLayout_5)
+        self.horizontalLayout_3.addWidget(self.titleLabel)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout_9.addItem(self.horizontalSpacer)
+        self.horizontalLayout_3.addItem(self.horizontalSpacer)
 
-        self.appIconLabel = IconLabel(self.titleAreaWidget)
-        self.appIconLabel.setObjectName(u"appIconLabel")
-        self.appIconLabel.setMinimumSize(QSize(64, 64))
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.togglePlanNotesButton = QPushButton(self.titleAreaWidget)
+        self.togglePlanNotesButton.setObjectName(u"togglePlanNotesButton")
+        self.togglePlanNotesButton.setCheckable(False)
+        self.togglePlanNotesButton.setChecked(False)
+        self.togglePlanNotesButton.setFlat(True)
 
-        self.horizontalLayout_9.addWidget(self.appIconLabel)
+        self.verticalLayout.addWidget(self.togglePlanNotesButton)
+
+        self.verticalSpacer = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Preferred)
+
+        self.verticalLayout.addItem(self.verticalSpacer)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout_9)
+        self.horizontalLayout_3.addLayout(self.verticalLayout)
 
 
-        self.verticalLayout.addWidget(self.titleAreaWidget)
+        self.titleAreaWidgetLayout.addLayout(self.horizontalLayout_3)
 
-        self.line = QFrame(self.centralwidget)
+
+        self.mainLayout.addWidget(self.titleAreaWidget)
+
+        self.line = QFrame(self.mainLayoutWidget)
         self.line.setObjectName(u"line")
         self.line.setFrameShape(QFrame.HLine)
         self.line.setFrameShadow(QFrame.Sunken)
 
-        self.verticalLayout.addWidget(self.line)
+        self.mainLayout.addWidget(self.line)
 
-        self.mainAreaWidget = QWidget(self.centralwidget)
+        self.mainAreaWidget = QWidget(self.mainLayoutWidget)
         self.mainAreaWidget.setObjectName(u"mainAreaWidget")
         self.mainAreaWidgetLayout = QVBoxLayout(self.mainAreaWidget)
         self.mainAreaWidgetLayout.setObjectName(u"mainAreaWidgetLayout")
-        self.mainAreaWidgetLayout.setContentsMargins(-1, 0, -1, 0)
+        self.mainAreaWidgetLayout.setContentsMargins(0, 12, 0, 12)
         self.passagesLabel = QLabel(self.mainAreaWidget)
         self.passagesLabel.setObjectName(u"passagesLabel")
         font1 = QFont()
@@ -153,26 +175,26 @@ class Ui_MainWindow(object):
 
         self.versionsVerticalLayout = QVBoxLayout()
         self.versionsVerticalLayout.setObjectName(u"versionsVerticalLayout")
-        self.horizontalLayout_6 = QHBoxLayout()
-        self.horizontalLayout_6.setSpacing(12)
-        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalLayout_8 = QHBoxLayout()
+        self.horizontalLayout_8.setSpacing(12)
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
         self.addRowsButton = QPushButton(self.mainAreaWidget)
         self.addRowsButton.setObjectName(u"addRowsButton")
         self.addRowsButton.setAutoDefault(True)
 
-        self.horizontalLayout_6.addWidget(self.addRowsButton)
+        self.horizontalLayout_8.addWidget(self.addRowsButton)
 
         self.removeRowsButton = QPushButton(self.mainAreaWidget)
         self.removeRowsButton.setObjectName(u"removeRowsButton")
         self.removeRowsButton.setAutoDefault(True)
 
-        self.horizontalLayout_6.addWidget(self.removeRowsButton)
+        self.horizontalLayout_8.addWidget(self.removeRowsButton)
 
         self.editButton = QPushButton(self.mainAreaWidget)
         self.editButton.setObjectName(u"editButton")
         self.editButton.setAutoDefault(True)
 
-        self.horizontalLayout_6.addWidget(self.editButton)
+        self.horizontalLayout_8.addWidget(self.editButton)
 
         self.rowSummaryLabel = QLabel(self.mainAreaWidget)
         self.rowSummaryLabel.setObjectName(u"rowSummaryLabel")
@@ -183,80 +205,83 @@ class Ui_MainWindow(object):
         self.rowSummaryLabel.setSizePolicy(sizePolicy1)
         self.rowSummaryLabel.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
-        self.horizontalLayout_6.addWidget(self.rowSummaryLabel)
+        self.horizontalLayout_8.addWidget(self.rowSummaryLabel)
 
 
-        self.versionsVerticalLayout.addLayout(self.horizontalLayout_6)
+        self.versionsVerticalLayout.addLayout(self.horizontalLayout_8)
 
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout_12 = QHBoxLayout()
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
         self.versionTable = ItemListTableView(self.mainAreaWidget)
         self.versionTable.setObjectName(u"versionTable")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(1)
+        sizePolicy2.setHeightForWidth(self.versionTable.sizePolicy().hasHeightForWidth())
+        self.versionTable.setSizePolicy(sizePolicy2)
         self.versionTable.horizontalHeader().setHighlightSections(False)
         self.versionTable.horizontalHeader().setStretchLastSection(True)
         self.versionTable.verticalHeader().setStretchLastSection(False)
 
-        self.horizontalLayout.addWidget(self.versionTable)
+        self.horizontalLayout_12.addWidget(self.versionTable)
 
 
-        self.versionsVerticalLayout.addLayout(self.horizontalLayout)
+        self.versionsVerticalLayout.addLayout(self.horizontalLayout_12)
 
-        self.horizontalLayout_2 = QHBoxLayout()
-        self.horizontalLayout_2.setSpacing(12)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_13 = QHBoxLayout()
+        self.horizontalLayout_13.setSpacing(12)
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
         self.addColumnButton = QPushButton(self.mainAreaWidget)
         self.addColumnButton.setObjectName(u"addColumnButton")
 
-        self.horizontalLayout_2.addWidget(self.addColumnButton)
+        self.horizontalLayout_13.addWidget(self.addColumnButton)
 
         self.removeColumnButton = QPushButton(self.mainAreaWidget)
         self.removeColumnButton.setObjectName(u"removeColumnButton")
 
-        self.horizontalLayout_2.addWidget(self.removeColumnButton)
+        self.horizontalLayout_13.addWidget(self.removeColumnButton)
 
         self.columnSummaryLabel = QLabel(self.mainAreaWidget)
         self.columnSummaryLabel.setObjectName(u"columnSummaryLabel")
         sizePolicy1.setHeightForWidth(self.columnSummaryLabel.sizePolicy().hasHeightForWidth())
         self.columnSummaryLabel.setSizePolicy(sizePolicy1)
 
-        self.horizontalLayout_2.addWidget(self.columnSummaryLabel)
+        self.horizontalLayout_13.addWidget(self.columnSummaryLabel)
 
 
-        self.versionsVerticalLayout.addLayout(self.horizontalLayout_2)
+        self.versionsVerticalLayout.addLayout(self.horizontalLayout_13)
 
+        self.versionsVerticalLayout.setStretch(1, 1)
 
         self.mainAreaWidgetLayout.addLayout(self.versionsVerticalLayout)
 
-        self.gridLayout_2 = QGridLayout()
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.pathsLayout = QGridLayout()
+        self.pathsLayout.setObjectName(u"pathsLayout")
         self.outputLabel = QLabel(self.mainAreaWidget)
         self.outputLabel.setObjectName(u"outputLabel")
         self.outputLabel.setFont(font1)
 
-        self.gridLayout_2.addWidget(self.outputLabel, 0, 1, 1, 1)
+        self.pathsLayout.addWidget(self.outputLabel, 0, 1, 1, 1)
 
         self.templateLabel = QLabel(self.mainAreaWidget)
         self.templateLabel.setObjectName(u"templateLabel")
         self.templateLabel.setFont(font1)
 
-        self.gridLayout_2.addWidget(self.templateLabel, 0, 0, 1, 1)
+        self.pathsLayout.addWidget(self.templateLabel, 0, 0, 1, 1)
 
-        self.verticalLayout_7 = QVBoxLayout()
-        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
-        self.horizontalLayout_4 = QHBoxLayout()
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.verticalLayout_4 = QVBoxLayout()
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.templateIconLabel = IconLabel(self.mainAreaWidget)
         self.templateIconLabel.setObjectName(u"templateIconLabel")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.templateIconLabel.sizePolicy().hasHeightForWidth())
-        self.templateIconLabel.setSizePolicy(sizePolicy2)
+        sizePolicy.setHeightForWidth(self.templateIconLabel.sizePolicy().hasHeightForWidth())
+        self.templateIconLabel.setSizePolicy(sizePolicy)
         self.templateIconLabel.setMinimumSize(QSize(0, 32))
         self.templateIconLabel.setFrameShape(QFrame.NoFrame)
         self.templateIconLabel.setScaledContents(False)
 
-        self.horizontalLayout_4.addWidget(self.templateIconLabel)
+        self.horizontalLayout_5.addWidget(self.templateIconLabel)
 
         self.templatePathLabel = QLabel(self.mainAreaWidget)
         self.templatePathLabel.setObjectName(u"templatePathLabel")
@@ -264,130 +289,179 @@ class Ui_MainWindow(object):
         self.templatePathLabel.setSizePolicy(sizePolicy1)
         self.templatePathLabel.setFrameShape(QFrame.NoFrame)
 
-        self.horizontalLayout_4.addWidget(self.templatePathLabel)
+        self.horizontalLayout_5.addWidget(self.templatePathLabel)
 
 
-        self.verticalLayout_7.addLayout(self.horizontalLayout_4)
+        self.verticalLayout_4.addLayout(self.horizontalLayout_5)
 
-        self.horizontalLayout_5 = QHBoxLayout()
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.templateSelectButton = QPushButton(self.mainAreaWidget)
         self.templateSelectButton.setObjectName(u"templateSelectButton")
         self.templateSelectButton.setAutoDefault(True)
 
-        self.horizontalLayout_5.addWidget(self.templateSelectButton)
+        self.horizontalLayout_6.addWidget(self.templateSelectButton)
 
         self.templateShowButton = QPushButton(self.mainAreaWidget)
         self.templateShowButton.setObjectName(u"templateShowButton")
 
-        self.horizontalLayout_5.addWidget(self.templateShowButton)
+        self.horizontalLayout_6.addWidget(self.templateShowButton)
 
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout_5.addItem(self.horizontalSpacer_3)
-
-
-        self.verticalLayout_7.addLayout(self.horizontalLayout_5)
+        self.horizontalLayout_6.addItem(self.horizontalSpacer_8)
 
 
-        self.gridLayout_2.addLayout(self.verticalLayout_7, 1, 0, 1, 1)
+        self.verticalLayout_4.addLayout(self.horizontalLayout_6)
 
-        self.verticalLayout_8 = QVBoxLayout()
-        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.horizontalLayout_7 = QHBoxLayout()
-        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+
+        self.pathsLayout.addLayout(self.verticalLayout_4, 1, 0, 1, 1)
+
+        self.verticalLayout_2 = QVBoxLayout()
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.outputDirIconLabel = IconLabel(self.mainAreaWidget)
         self.outputDirIconLabel.setObjectName(u"outputDirIconLabel")
         self.outputDirIconLabel.setMinimumSize(QSize(0, 32))
 
-        self.horizontalLayout_7.addWidget(self.outputDirIconLabel)
+        self.horizontalLayout_4.addWidget(self.outputDirIconLabel)
 
         self.outputDirPathLabel = QLabel(self.mainAreaWidget)
         self.outputDirPathLabel.setObjectName(u"outputDirPathLabel")
         sizePolicy1.setHeightForWidth(self.outputDirPathLabel.sizePolicy().hasHeightForWidth())
         self.outputDirPathLabel.setSizePolicy(sizePolicy1)
 
-        self.horizontalLayout_7.addWidget(self.outputDirPathLabel)
+        self.horizontalLayout_4.addWidget(self.outputDirPathLabel)
 
 
-        self.verticalLayout_8.addLayout(self.horizontalLayout_7)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
 
-        self.horizontalLayout_8 = QHBoxLayout()
-        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.horizontalLayout_7 = QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.outputDirSelectButton = QPushButton(self.mainAreaWidget)
         self.outputDirSelectButton.setObjectName(u"outputDirSelectButton")
         self.outputDirSelectButton.setAutoDefault(True)
 
-        self.horizontalLayout_8.addWidget(self.outputDirSelectButton)
+        self.horizontalLayout_7.addWidget(self.outputDirSelectButton)
 
         self.outputDirShowButton = QPushButton(self.mainAreaWidget)
         self.outputDirShowButton.setObjectName(u"outputDirShowButton")
 
-        self.horizontalLayout_8.addWidget(self.outputDirShowButton)
+        self.horizontalLayout_7.addWidget(self.outputDirShowButton)
 
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout_8.addItem(self.horizontalSpacer_4)
-
-
-        self.verticalLayout_8.addLayout(self.horizontalLayout_8)
+        self.horizontalLayout_7.addItem(self.horizontalSpacer_5)
 
 
-        self.gridLayout_2.addLayout(self.verticalLayout_8, 1, 1, 1, 1)
-
-        self.gridLayout_2.setColumnStretch(0, 1)
-        self.gridLayout_2.setColumnStretch(1, 1)
-
-        self.mainAreaWidgetLayout.addLayout(self.gridLayout_2)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_7)
 
 
-        self.verticalLayout.addWidget(self.mainAreaWidget)
+        self.pathsLayout.addLayout(self.verticalLayout_2, 1, 1, 1, 1)
 
-        self.line_2 = QFrame(self.centralwidget)
+        self.pathsLayout.setColumnStretch(0, 1)
+        self.pathsLayout.setColumnStretch(1, 1)
+
+        self.mainAreaWidgetLayout.addLayout(self.pathsLayout)
+
+
+        self.mainLayout.addWidget(self.mainAreaWidget)
+
+        self.line_2 = QFrame(self.mainLayoutWidget)
         self.line_2.setObjectName(u"line_2")
         self.line_2.setFrameShape(QFrame.HLine)
         self.line_2.setFrameShadow(QFrame.Sunken)
 
-        self.verticalLayout.addWidget(self.line_2)
+        self.mainLayout.addWidget(self.line_2)
 
-        self.footerAreaWidget = QWidget(self.centralwidget)
+        self.footerAreaWidget = QWidget(self.mainLayoutWidget)
         self.footerAreaWidget.setObjectName(u"footerAreaWidget")
-        self.verticalLayout_6 = QVBoxLayout(self.footerAreaWidget)
-        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.verticalLayout_6.setContentsMargins(-1, 0, -1, -1)
-        self.horizontalLayout_3 = QHBoxLayout()
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.footerLayout = QHBoxLayout(self.footerAreaWidget)
+        self.footerLayout.setObjectName(u"footerLayout")
+        self.footerLayout.setContentsMargins(0, 12, 0, 18)
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout_3.addItem(self.horizontalSpacer_2)
+        self.footerLayout.addItem(self.horizontalSpacer_2)
 
         self.closeButton = QPushButton(self.footerAreaWidget)
         self.closeButton.setObjectName(u"closeButton")
         self.closeButton.setAutoDefault(True)
 
-        self.horizontalLayout_3.addWidget(self.closeButton)
+        self.footerLayout.addWidget(self.closeButton)
 
         self.planConfigButton = QPushButton(self.footerAreaWidget)
         self.planConfigButton.setObjectName(u"planConfigButton")
 
-        self.horizontalLayout_3.addWidget(self.planConfigButton)
+        self.footerLayout.addWidget(self.planConfigButton)
 
         self.startButton = QPushButton(self.footerAreaWidget)
         self.startButton.setObjectName(u"startButton")
         self.startButton.setAutoDefault(True)
 
-        self.horizontalLayout_3.addWidget(self.startButton)
+        self.footerLayout.addWidget(self.startButton)
 
 
-        self.verticalLayout_6.addLayout(self.horizontalLayout_3)
+        self.mainLayout.addWidget(self.footerAreaWidget)
+
+        self.splitter.addWidget(self.mainLayoutWidget)
+        self.sidePanelWidget = QWidget(self.splitter)
+        self.sidePanelWidget.setObjectName(u"sidePanelWidget")
+        self.sidePanelWidget.setEnabled(True)
+        sizePolicy3 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.sidePanelWidget.sizePolicy().hasHeightForWidth())
+        self.sidePanelWidget.setSizePolicy(sizePolicy3)
+        self.sidePanelWidget.setMinimumSize(QSize(250, 100))
+        self.verticalLayout_5 = QVBoxLayout(self.sidePanelWidget)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.verticalLayout_5.setContentsMargins(-1, 18, -1, -1)
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer_3)
+
+        self.togglePlanNotesSourceButton = QPushButton(self.sidePanelWidget)
+        self.togglePlanNotesSourceButton.setObjectName(u"togglePlanNotesSourceButton")
+        self.togglePlanNotesSourceButton.setCheckable(False)
+        self.togglePlanNotesSourceButton.setFlat(True)
+
+        self.horizontalLayout.addWidget(self.togglePlanNotesSourceButton)
 
 
-        self.verticalLayout.addWidget(self.footerAreaWidget)
+        self.verticalLayout_5.addLayout(self.horizontalLayout)
+
+        self.planNotesTextEdit = QTextEdit(self.sidePanelWidget)
+        self.planNotesTextEdit.setObjectName(u"planNotesTextEdit")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.planNotesTextEdit.sizePolicy().hasHeightForWidth())
+        self.planNotesTextEdit.setSizePolicy(sizePolicy4)
+        self.planNotesTextEdit.setMaximumSize(QSize(16777215, 16777215))
+        self.planNotesTextEdit.setAutoFormatting(QTextEdit.AutoAll)
+        self.planNotesTextEdit.setReadOnly(False)
+        self.planNotesTextEdit.setTabStopDistance(20.000000000000000)
+        self.planNotesTextEdit.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextEditable|Qt.TextEditorInteraction|Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
+
+        self.verticalLayout_5.addWidget(self.planNotesTextEdit)
+
+        self.planNotesPlainTextEdit = QPlainTextEdit(self.sidePanelWidget)
+        self.planNotesPlainTextEdit.setObjectName(u"planNotesPlainTextEdit")
+        self.planNotesPlainTextEdit.setTabStopDistance(20.000000000000000)
+
+        self.verticalLayout_5.addWidget(self.planNotesPlainTextEdit)
+
+        self.splitter.addWidget(self.sidePanelWidget)
+
+        self.verticalLayout_3.addWidget(self.splitter)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 706, 22))
+        self.menubar.setGeometry(QRect(0, 0, 872, 22))
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
         self.menuEdit = QMenu(self.menubar)
@@ -482,9 +556,9 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(shortcut)
         self.planConfigAction.setText(QCoreApplication.translate("MainWindow", u"Plan Options...", None))
         self.restartAction.setText(QCoreApplication.translate("MainWindow", u"Restart Multiscript", None))
-        self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"Multiscript", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Combine Bible versions for multicultural ministry.", None))
         self.appIconLabel.setText(QCoreApplication.translate("MainWindow", u"IconLabel", None))
+        self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"Multiscript", None))
+        self.togglePlanNotesButton.setText(QCoreApplication.translate("MainWindow", u"Hide Plan Notes", None))
         self.passagesLabel.setText(QCoreApplication.translate("MainWindow", u"Bible Passages", None))
         self.passagesLineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"For example: Gen 1:1-5, Gen 1:26-27; John 1:1-18, John 2:1-11", None))
         self.versionsTableLabel.setText(QCoreApplication.translate("MainWindow", u"\n"
@@ -511,6 +585,8 @@ class Ui_MainWindow(object):
         self.closeButton.setText(QCoreApplication.translate("MainWindow", u"Close", None))
         self.planConfigButton.setText(QCoreApplication.translate("MainWindow", u"Plan Options...", None))
         self.startButton.setText(QCoreApplication.translate("MainWindow", u"Start...", None))
+        self.togglePlanNotesSourceButton.setText(QCoreApplication.translate("MainWindow", u"Show Markdown", None))
+        self.planNotesTextEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Plan Notes", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuEdit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))

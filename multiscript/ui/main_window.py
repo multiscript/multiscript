@@ -39,10 +39,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.appIconLabel.setIcon(self.windowIcon())
 
-        # Mac style leaves too much vertical space, so we remove it
+        # Mac style leaves too much vertical space, so we reduce it
         if multiscript.on_mac():
+            self.titleAreaWidgetLayout.setSpacing(0)
             self.mainAreaWidgetLayout.setSpacing(6)
+            self.pathsLayout.setSpacing(6)
             self.versionsVerticalLayout.setSpacing(0)
+            left, top, right, bottom = self.titleAreaWidgetLayout.getContentsMargins()
+            self.titleAreaWidgetLayout.setContentsMargins(left, top, right, 0)
+            left, top, right, bottom = self.mainAreaWidgetLayout.getContentsMargins()
+            self.mainAreaWidgetLayout.setContentsMargins(left, 0, right, 0)
+            left, top, right, bottom = self.footerLayout.getContentsMargins()
+            self.footerLayout.setContentsMargins(left, 0, right, bottom)
 
         #
         # Connect signals and slots
@@ -65,6 +73,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.appConfigAction.triggered.connect(self.on_app_config_triggered)
         self.aboutAction.triggered.connect(self.on_about_triggered)
  
+        self.togglePlanNotesButton.clicked.connect(self.on_toggle_plan_notes_button_clicked)
+        self.togglePlanNotesSourceButton.clicked.connect(self.on_toggle_plan_notes_source_button_clicked)
         self.addRowsButton.clicked.connect(self.on_add_rows_button_clicked)
         self.removeRowsButton.clicked.connect(self.on_remove_rows_button_clicked)
         self.editButton.clicked.connect(self.on_edit_button_clicked)
@@ -79,6 +89,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.startButton.clicked.connect(self.on_start_button_clicked)
   
         self.passagesLineEdit.textEdited.connect(self.set_plan_changed)
+        self.planNotesTextEdit.textChanged.connect(self.on_plan_notes_rich_text_changed)
+        self.planNotesPlainTextEdit.textChanged.connect(self.on_plan_notes_source_text_changed)
 
         #
         # Set up models and views
@@ -88,7 +100,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             AttributeColumn(self.tr("Abbrev"),           "abbrev"),
             AttributeColumn(self.tr("Version Name"),     "name"),
             AttributeColumn(self.tr("Language"),         "lang"),
-            AttributeColumn(self.tr("Source"),           lambda version: version.bible_source.name)
+            AttributeColumn(self.tr("Source"),           lambda version: version.bible_source.name),
+            AttributeColumn(self.tr("Notes"),            "notes")
         ])
         self.versionModel.set_all_columns_editable(False)
 
@@ -96,6 +109,91 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.versionTable.horizontalHeader().setSectionsMovable(True)
         self.versionTable.verticalHeader().setSectionsMovable(True)
         self.versionTable.doubleClicked.connect(self.on_version_table_double_clicked)
+
+        #
+        # Set up plan notes
+        #
+        self.splitter.setStretchFactor(0,1)
+        self.splitter.setStretchFactor(1,0)
+        self._in_plan_notes_sync = False
+        self._programmatic_plan_notes_change = False
+        self._last_sidepanel_width = 0 # For remembering side panel width while hidden
+        self.update_plan_notes_visibility(True)
+        self.update_plan_notes_source_visibility(False)
+        # Hack to allow QTextEdit to open external links.
+        # See https://stackoverflow.com/a/70399240
+        for child in self.planNotesTextEdit.children():
+            if child.metaObject().className() == "QWidgetTextControl":
+                child.setProperty("openExternalLinks", True)
+
+    #
+    # Plan notes methods
+    #
+    
+    def on_toggle_plan_notes_button_clicked(self, checked=False):
+        if not self.sidePanelWidget.isVisible(): # Show plan notes
+            # Release any specified minimum window width from when the sidepanel was hidden.
+            self.setMinimumSize(QtCore.QSize(0, 0))
+
+            self.update_plan_notes_visibility(True)
+            if self._last_sidepanel_width > 0:
+                self.sidePanelWidget.resize(self._last_sidepanel_width,
+                    self.sidePanelWidget.height())
+            self.resize(self.width() + self.splitter.handleWidth() + self.sidePanelWidget.width(),
+                self.height())
+        else: # Hide plan notes
+            self._last_sidepanel_width = self.sidePanelWidget.width()
+            # For some reason, when we hide the notes side panel, Qt calculates the minimum
+            # window width as though the sidepanel is still visible. The easiest workaround is
+            # to manually override the minimum window width to be the ideal minimum width of
+            # the main panel.
+            self.setMinimumWidth(self.mainLayoutWidget.minimumSizeHint().width())
+            self.resize(self.width() - self.splitter.handleWidth() - self._last_sidepanel_width,
+                self.height())
+            self.update_plan_notes_visibility(False)
+
+    def update_plan_notes_visibility(self, show_plan_notes):
+        button_text = self.tr("Hide Plan Notes") if show_plan_notes else \
+                      self.tr("Show Plan Notes")
+        self.togglePlanNotesButton.setText(button_text)
+        self.sidePanelWidget.setVisible(show_plan_notes)
+
+    def on_toggle_plan_notes_source_button_clicked(self, checked=False):
+        self.update_plan_notes_source_visibility(self.planNotesTextEdit.isVisible())
+
+    def update_plan_notes_source_visibility(self, show_source):
+        self.planNotesTextEdit.setVisible(not show_source)
+        self.planNotesPlainTextEdit.setVisible(show_source)
+        if show_source:
+            self.togglePlanNotesSourceButton.setText(self.tr("Hide Markdown"))
+            self._programmatic_plan_notes_change = True
+            self.on_plan_notes_source_text_changed()
+            self._programmatic_plan_notes_change = False
+        else:
+            self.togglePlanNotesSourceButton.setText(self.tr("Show Markdown"))
+            self._programmatic_plan_notes_change = True
+            self.on_plan_notes_rich_text_changed()
+            self._programmatic_plan_notes_change = False
+
+    def on_plan_notes_source_text_changed(self):
+        if not self._programmatic_plan_notes_change:
+            self.set_plan_changed()
+        if not self._in_plan_notes_sync:
+            self._in_plan_notes_sync = True
+            self._programmatic_plan_notes_change = True
+            self.planNotesTextEdit.setMarkdown(self.planNotesPlainTextEdit.toPlainText())
+            self._programmatic_plan_notes_change = False
+            self._in_plan_notes_sync = False
+    
+    def on_plan_notes_rich_text_changed(self):
+        if not self._programmatic_plan_notes_change:
+            self.set_plan_changed()
+        if not self._in_plan_notes_sync:
+            self._in_plan_notes_sync = True
+            self._programmatic_plan_notes_change = True
+            self.planNotesPlainTextEdit.setPlainText(self.planNotesTextEdit.toMarkdown())
+            self._programmatic_plan_notes_change = False
+            self._in_plan_notes_sync = False
 
     #
     # Version table methods
@@ -352,7 +450,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.update_read_only_widgets_from_plan()
 
     def copy_window_to_plan(self):
+        self.plan.notes = self.planNotesTextEdit.toMarkdown()
         self.plan.bible_passages = self.passagesLineEdit.text().strip()
+
         # We need to save both the versions and the boolean columns in our model. (The boolean
         # columns hold the version checkbox/radio-button selection.)
         # We also want to save these values out in the display order of the rows, rather
@@ -372,6 +472,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def copy_plan_to_window(self):
         self.update_read_only_widgets_from_plan()
+
+        self._programmatic_plan_notes_change = True
+        self.planNotesTextEdit.setMarkdown(self.plan.notes)
+        self._programmatic_plan_notes_change = False
 
         if self.plan.bible_passages is None:
             self.passagesLineEdit.setText("")
