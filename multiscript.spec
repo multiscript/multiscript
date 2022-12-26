@@ -82,7 +82,7 @@ exe = EXE(pyz,
         icon='multiscript/icons/multiscript.ico',
         disable_windowed_traceback=False,
         argv_emulation=multiscript.ARGV_EMULATION,
-        target_arch='x86_64',
+        target_arch='universal2',
         codesign_identity=None,
         entitlements_file=None,
     )
