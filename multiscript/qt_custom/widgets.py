@@ -22,8 +22,11 @@ class IconLabel(QtWidgets.QLabel):
             max_size = icon.availableSizes()[-1] # Get the largest icon available
         else:
             # It's probably an SVG icon, so we just pick a big size
-            max_size = QtCore.QSize(1024, 1024)
-        pixmap = icon.pixmap(max_size).scaled(self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            max_size = QtCore.QSize(2048, 2048)
+        # Note that to allow for high-DPI screens we multiply our size by the device pixel ration (e.g. 2)
+        pixmap = icon.pixmap(max_size).scaled(self.size() * self.devicePixelRatioF(),
+                                              Qt.AspectRatioMode.KeepAspectRatio,
+                                              Qt.TransformationMode.SmoothTransformation)
         self.setPixmap(pixmap)
     
     def icon(self):
