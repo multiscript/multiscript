@@ -421,13 +421,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
     def exec_catches_exceptions(self):
         '''Same as exec(), but rather than reraising unhandled exceptions, we catch them here
         and display them in a dialog.
-
-        If we're not running as a 'frozen' pyinstaller bundle, this calls exec() in our superclass
-        as normal.
-
-        If we *are* running as a 'frozen' pyinstaller bundle, we still call exec() in the superclass,
-        but we ensure that any unhandled exceptions are caught and displayed in a dialog.
-        '''
+       '''
         if self.restart_requested:
             # Since a restart has already been requested, just exit straightaway.
             return 0
