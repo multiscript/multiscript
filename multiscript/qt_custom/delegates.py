@@ -7,6 +7,7 @@ from PySide6 import QtGui
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QStyle
 from PySide6.QtGui import QPalette
+from PySide6.QtWidgets import QStyleOptionViewItem as QSOVI
 
 
 class EnhancedCheckedDelegate(QtWidgets.QStyledItemDelegate):
@@ -122,9 +123,9 @@ class EnhancedCheckedDelegate(QtWidgets.QStyledItemDelegate):
             return super().editorEvent(event, model, option, index)
 
     def _isLoneIndicator(self, option):
-        hasCheckIndicator = True if int(option.features) & int(option.HasCheckIndicator) else False
-        hasDecoration = True if int(option.features) & int(option.HasDecoration) else False
-        hasDisplay = True if int(option.features) & int(option.HasDisplay) else False
+        hasCheckIndicator = True if (option.features & QSOVI.ViewItemFeature.HasCheckIndicator) else False
+        hasDecoration = True if (option.features & QSOVI.ViewItemFeature.HasDecoration) else False
+        hasDisplay = True if (option.features & QSOVI.ViewItemFeature.HasDisplay) else False
         return (hasCheckIndicator and not hasDecoration and not hasDisplay)
 
     def _indicatorSize(self, option):
