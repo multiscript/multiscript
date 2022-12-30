@@ -8,7 +8,10 @@ from multiscript.application import MultiscriptApplication
 
 
 # Flag to turn pyinstaller argv-emulation on macOS on (True) or off (False)
-ARGV_EMULATION = True
+#
+# Argv-emulation doesn't seem to work on macOS Ventura, so we disable it for
+# now. See https://github.com/pyinstaller/pyinstaller/issues/7355
+ARGV_EMULATION = False
 
 
 _app = None

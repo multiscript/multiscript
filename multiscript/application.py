@@ -441,12 +441,13 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         # On Mac only, files are opened via AppleEvents, which Qt exposes as a (Mac-only) FileOpen
         # Qt event. However, it's possible that some of these FileOpen events are duplicates
         # of the files passed to the app as commmand line arguments. This can happen:
-        #   1. When running unfrozen (i.e. from source), with command-line arguments.
-        #   2. When running frozen with pyinstaller if pyinstaller's argv-emulation is turned
-        #      on. In this case, pyinstaller catches the initial open event and supplies the
-        #      same info as a command-line argument. One advantage of this is that we can
-        #      immediately open the file at startup, rather than waiting for our code to process
-        #      an event.
+        #   1. When running from the command-line with command-line arguments (either unfrozen or
+        #      frozen).
+        #   2. When launched from the Finder when frozen with pyinstaller if pyinstaller's
+        #      argv-emulation is turned on. In this case, pyinstaller catches the initial open
+        #      event and supplies the same info as a command-line argument. One advantage of this
+        #      is that we can immediately open the file at startup, rather than waiting for our
+        #      code to process an event.
         #
         # All of this means that it's possible be notified twice about opening a file: once on the
         # command-line, and once as a FileOpen event. Therefore, at startup, we create a set of
