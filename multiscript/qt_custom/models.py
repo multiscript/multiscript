@@ -16,7 +16,7 @@ class ItemListTableModel(QtCore.QAbstractTableModel):
     model. Each ItemListModelColumn determines how to use the item in
     each row to get and set data for that column.
     '''
-    SORT_ROLE = Qt.UserRole
+    SORT_ROLE = Qt.ItemDataRole.UserRole
 
     def __init__(self):
         super().__init__()
@@ -116,19 +116,19 @@ class ItemListTableModel(QtCore.QAbstractTableModel):
             column.items_removed(num_rows, start_row_index)
         self.endRemoveRows()
 
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
         data = self.model_columns[index.column()].get_data(index.row())
 
         # For boolean data, we don't display it as a string. Instead
-        # we display it using the Qt.CheckStateRole.
-        if role == Qt.DisplayRole or role == Qt.EditRole:
+        # we display it using the Qt.ItemDataRole.CheckStateRole.
+        if role == Qt.ItemDataRole.DisplayRole or role == Qt.ItemDataRole.EditRole:
             if type(data) is bool:
                 return None
             else:
                 return data
-        elif role == Qt.CheckStateRole:
+        elif role == Qt.ItemDataRole.CheckStateRole:
             if type(data) is bool:
-                result = Qt.Checked if data else Qt.Unchecked
+                result = Qt.CheckState.Checked if data else Qt.CheckState.Unchecked
                 return result
         elif role == ItemListTableModel.SORT_ROLE:
             if type(data) is bool:
@@ -139,33 +139,36 @@ class ItemListTableModel(QtCore.QAbstractTableModel):
         else:
             return None
 
-    def setData(self, index, value, role=Qt.EditRole):
+    def setData(self, index, value, role=Qt.ItemDataRole.EditRole):
         result = None
-        if role == Qt.DisplayRole or role == Qt.EditRole or role == Qt.CheckStateRole:
-            if role == Qt.CheckStateRole:
-                value = True if value == Qt.Checked else False
+        if role == Qt.ItemDataRole.DisplayRole or role == Qt.ItemDataRole.EditRole or \
+           role == Qt.ItemDataRole.CheckStateRole:
+            if role == Qt.ItemDataRole.CheckStateRole:
+                value = True if value == Qt.CheckState.Checked else False
 
             self.model_columns[index.column()].set_data(index.row(), value)
             self.dataChanged.emit(index, index, [role])
             result = True
         else:
+            if role==Qt.ItemDataRole.FontRole:
+                print(value)
             result = super().setData(index, value, role)
         return result
 
     def flags(self, index):
         data = self.model_columns[index.column()].get_data(index.row())
-        result_flags = Qt.ItemIsEnabled | Qt.ItemIsSelectable
+        result_flags = Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
         
         if type(data) is bool:
-            result_flags |= Qt.ItemIsUserCheckable
+            result_flags |= Qt.ItemFlag.ItemIsUserCheckable
         elif self.model_columns[index.column()].editable:
-            result_flags |= Qt.ItemIsEditable
+            result_flags |= Qt.ItemFlag.ItemIsEditable
 
         return result_flags
 
-    def headerData(self, section, orientation, role=Qt.DisplayRole):
+    def headerData(self, section, orientation, role=Qt.ItemDataRole.DisplayRole):
         header = None
-        if role == Qt.DisplayRole:
+        if role == Qt.ItemDataRole.DisplayRole:
             if orientation == Qt.Orientation.Horizontal:
                 header = self.model_columns[section].label
             elif orientation == Qt.Orientation.Vertical:
@@ -213,7 +216,7 @@ class ItemListFilterSortProxyModel(QtCore.QSortFilterProxyModel):
 
     def setLineEditWidget(self, lineEditWidget):
         self.setFilterRegularExpression(lineEditWidget.text())
-        self.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        self.setFilterCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         lineEditWidget.textChanged.connect(self.on_filterLineEdit_textChanged)
 
     def on_filterLineEdit_textChanged(self, string):

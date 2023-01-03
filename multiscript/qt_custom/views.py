@@ -10,8 +10,8 @@ class ItemListTableView(QtWidgets.QTableView):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.standard_delegate = self.itemDelegate() # We save this so we can restore it later
-        self.setTextElideMode(Qt.ElideMiddle)
-        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
         self.horizontalHeader().setMaximumSectionSize(MAX_COLUMN_WIDTH)
 
     def setModel(self, model):

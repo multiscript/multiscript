@@ -198,7 +198,7 @@ class AllTextColumn(ItemListModelColumn):
             for column_index in range(self._model.columnCount()):
                 if self._model.model_columns[column_index] is not self:
                     index = self._model.index(row_index, column_index, QtCore.QModelIndex())
-                    data = self._model.data(index, Qt.DisplayRole)
+                    data = self._model.data(index, Qt.ItemDataRole.DisplayRole)
                     alltext += " " + (str(data) if data is not None else "")
             self.alltext_values[row_index] = alltext
 
