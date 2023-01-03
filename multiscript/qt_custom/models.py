@@ -119,9 +119,9 @@ class ItemListTableModel(QtCore.QAbstractTableModel):
     def data(self, index, role=Qt.ItemDataRole.DisplayRole):
         data = self.model_columns[index.column()].get_data(index.row())
 
-        # For boolean data, we don't display it as a string. Instead
-        # we display it using the Qt.ItemDataRole.CheckStateRole.
         if role == Qt.ItemDataRole.DisplayRole or role == Qt.ItemDataRole.EditRole:
+            # For boolean data, we don't display it as a string. Instead
+            # we display it using the Qt.ItemDataRole.CheckStateRole.
             if type(data) is bool:
                 return None
             else:
@@ -136,6 +136,10 @@ class ItemListTableModel(QtCore.QAbstractTableModel):
                 return -1 if data == True else 0
             else:
                 return data
+        elif role == Qt.ItemDataRole.FontRole:
+            # On Windows with high-DPI displays, if we don't supply a font for the FontRole,
+            # the table text is displayed too large. So we supply the default font.
+            return QtWidgets.QApplication.font()
         else:
             return None
 
@@ -150,8 +154,6 @@ class ItemListTableModel(QtCore.QAbstractTableModel):
             self.dataChanged.emit(index, index, [role])
             result = True
         else:
-            if role==Qt.ItemDataRole.FontRole:
-                print(value)
             result = super().setData(index, value, role)
         return result
 
@@ -176,6 +178,10 @@ class ItemListTableModel(QtCore.QAbstractTableModel):
                     header = section + 1 # sections are indexed from 0
                 else:
                     header = self.rowHeaderText
+        elif role == Qt.ItemDataRole.FontRole:
+            # On Windows with high-DPI displays, if we don't supply a font for the FontRole,
+            # the table text is displayed too large. So we supply the default font.
+            return QtWidgets.QApplication.font()
         else:
             header = super().headerData(section, orientation, role)
         
