@@ -565,12 +565,13 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                                           self.tr("Do you wish to replace it?\n\n") + 
                                           self.tr("This will require restarting Multiscript."),
                                           self.tr("Replace Plugin?"),
-                                          QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Cancel | \
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
                 else:
                     # For silent install, just go ahead and overwrite the plugin
-                    result = QtWidgets.QMessageBox.Ok
+                    result = QtWidgets.QMessageBox.StandardButton.Ok
 
-                if result == QtWidgets.QMessageBox.Cancel:
+                if result == QtWidgets.QMessageBox.StandardButton.Cancel:
                     return None
                 else:
                     # Remove the existing plugin. We therefore need to restart, and we'll
@@ -634,9 +635,11 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         if show_ui:
             result = self.msg_box(self.tr(f"Are you sure you want to remove the plugin '{name}' with id '{id}' and restart Multiscript?"),
                                   self.tr("Remove Plugin?"),
-                                  QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Ok,
-                                  QtWidgets.QMessageBox.Cancel, self.tr(f"This will delete the folder {path}"))
-            if result == QtWidgets.QMessageBox.Cancel:
+                                  QtWidgets.QMessageBox.StandardButton.Cancel | \
+                                  QtWidgets.QMessageBox.StandardButton.Ok,
+                                  QtWidgets.QMessageBox.StandardButton.Cancel,
+                                  self.tr(f"This will delete the folder {path}"))
+            if result == QtWidgets.QMessageBox.StandardButton.Cancel:
                 return False
 
         try:
@@ -654,9 +657,9 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         if window_title is None:
             window_title = self.tr("Multiscript")
         if standard_buttons is None:
-            standard_buttons = QtWidgets.QMessageBox.Ok
+            standard_buttons = QtWidgets.QMessageBox.StandardButton.Ok
         if default_button is None:
-            default_button = QtWidgets.QMessageBox.Ok
+            default_button = QtWidgets.QMessageBox.StandardButton.Ok
         box = QtWidgets.QMessageBox()
         box.setWindowTitle(window_title)
         box.setText(message_text)

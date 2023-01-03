@@ -38,4 +38,4 @@ class PlainTextPlanConfigPanel(ConfigWidget, Ui_PlainTextPlanConfigPanel):
         config.use_poetry_tabs = self.usePoetryTabsCheckBox.isChecked()
 
     def on_insert_para_tab_chceckbox_state_changed(self, state):
-        self.skipInitialParaCheckBox.setEnabled(state == Qt.Checked)
+        self.skipInitialParaCheckBox.setEnabled(state == Qt.CheckState.Checked)

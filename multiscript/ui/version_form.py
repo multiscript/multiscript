@@ -85,7 +85,7 @@ class VersionForm(Form, Ui_VersionForm):
         version_notes_dialog = VersionNotesDialog(None)
         version_notes_dialog.setNotes(self.notesTextEdit.toMarkdown())
         result = version_notes_dialog.exec()
-        if result == QtWidgets.QDialog.Accepted:
+        if result == QtWidgets.QDialog.DialogCode.Accepted:
             self.notesTextEdit.setMarkdown(version_notes_dialog.getNotes())
 
 
