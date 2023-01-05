@@ -26,13 +26,14 @@ class IconLabel(QtWidgets.QLabel):
             # It's probably an SVG icon, so we just pick a big size
             max_size = QtCore.QSize(2048, 2048)
         
-        # Re high-DPI screens:
-        #   * On macOS, we have multiply the required sieze by the device pixel ratio (e.g. 2)
-        #   * On Windows, this scaling seems to be unnecessary.
-        scale_factor = self.devicePixelRatioF() if multiscript.on_mac() else 1
-        pixmap = icon.pixmap(max_size).scaled(self.size() * scale_factor,
+        # To allow for high-DPI screens we multiply our size by the device pixel ratio (e.g. 2)
+        # (Note that QSize supports multiplying by a scalar.)
+        pixmap = icon.pixmap(max_size).scaled(self.size() * self.devicePixelRatioF(),
                                               Qt.AspectRatioMode.KeepAspectRatio,
                                               Qt.TransformationMode.SmoothTransformation)
+        # We also have to set copy device pixel ratio onto the pixmap. If we don't do this,
+        # the label will later be wrongly resized on some platforms (e.g. Windows). 
+        pixmap.setDevicePixelRatio(self.devicePixelRatioF())
         self.setPixmap(pixmap)
     
     def icon(self):
