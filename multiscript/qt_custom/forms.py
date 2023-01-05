@@ -53,12 +53,12 @@ class Form(QtWidgets.QWidget):
 
     def setAutoSubmit(self, auto_submit=True):
         if auto_submit:
-            self.mapper.setSubmitPolicy(QtWidgets.QDataWidgetMapper.AutoSubmit)
+            self.mapper.setSubmitPolicy(QtWidgets.QDataWidgetMapper.SubmitPolicy.AutoSubmit)
         else:
-            self.mapper.setSubmitPolicy(QtWidgets.QDataWidgetMapper.ManualSubmit)
+            self.mapper.setSubmitPolicy(QtWidgets.QDataWidgetMapper.SubmitPolicy.ManualSubmit)
 
     def getAutoSubmit(self):
-        return self.mapper.submitPolicy() == QtWidgets.QDataWidgetMapper.AutoSubmit
+        return self.mapper.submitPolicy() == QtWidgets.QDataWidgetMapper.SubmitPolicy.AutoSubmit
 
     @Slot()
     def submit(self):

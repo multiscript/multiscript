@@ -4,7 +4,7 @@ from PySide6.QtCore import Qt
 
 import multiscript
 from multiscript.ui.add_version_dialog_generated import Ui_AddVersionDialog
-from multiscript.qt_custom.concurrency import call_nonblock, wait_for_nonblock_threads
+from multiscript.qt_custom.concurrency import call_nonblock
 from multiscript.qt_custom.models import ItemListTableModel, ItemListFilterSortProxyModel
 from multiscript.qt_custom.model_columns import AttributeColumn, BooleanColumn
 
@@ -26,7 +26,7 @@ class AddVersionDialog(QtWidgets.QDialog, Ui_AddVersionDialog):
         self.splitter.setStretchFactor(0,1)     # Main panel expands by default
         self.splitter.setStretchFactor(1,0)     # Sidebar panel doesn't expand by default
         self.editButton.toggled.connect(self.on_edit_button_toggled)
-        self.filterLineEdit.setFocus(Qt.OtherFocusReason)
+        self.filterLineEdit.setFocus(Qt.FocusReason.OtherFocusReason)
 
         self.versionModel = ItemListTableModel() # Stores a list of BibleVersions
         self.versionModel.append_model_columns([
@@ -68,7 +68,8 @@ class AddVersionDialog(QtWidgets.QDialog, Ui_AddVersionDialog):
         top_left = self.proxyModel.index(last_row, 0)
         bottom_right = self.proxyModel.index(last_row, last_col)
         selection = QtCore.QItemSelection(top_left, bottom_right)
-        self.versionTable.selectionModel().select(selection, QtCore.QItemSelectionModel.ClearAndSelect | QtCore.QItemSelectionModel.Current)
+        self.versionTable.selectionModel().select(selection,
+            QtCore.QItemSelectionModel.SelectionFlag.ClearAndSelect | QtCore.QItemSelectionModel.SelectionFlag.Current)
         self.versionTable.scrollToBottom()
 
     def tr(self, str):
@@ -114,7 +115,7 @@ class AddVersionDialog(QtWidgets.QDialog, Ui_AddVersionDialog):
         self.pending_results.clear()
 
     def get_versions_to_add(self):
-        if self.result() == QtWidgets.QDialog.Rejected:
+        if self.result() == QtWidgets.QDialog.DialogCode.Rejected:
             return []
 
         # Set the checkboxes for the selected versions.
