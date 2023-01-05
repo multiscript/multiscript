@@ -4,6 +4,8 @@ import pathlib
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import Qt
 
+import multiscript
+
 
 class IconLabel(QtWidgets.QLabel):
     '''QLabel subclass that allows an icon to be easily set that will scale to the label's size while maintaining
@@ -23,8 +25,12 @@ class IconLabel(QtWidgets.QLabel):
         else:
             # It's probably an SVG icon, so we just pick a big size
             max_size = QtCore.QSize(2048, 2048)
-        # Note that to allow for high-DPI screens we multiply our size by the device pixel ration (e.g. 2)
-        pixmap = icon.pixmap(max_size).scaled(self.size() * self.devicePixelRatioF(),
+        
+        # Re high-DPI screens:
+        #   * On macOS, we have multiply the required sieze by the device pixel ratio (e.g. 2)
+        #   * On Windows, this scaling seems to be unnecessary.
+        scale_factor = self.devicePixelRatioF() if multiscript.on_mac() else 1
+        pixmap = icon.pixmap(max_size).scaled(self.size() * scale_factor,
                                               Qt.AspectRatioMode.KeepAspectRatio,
                                               Qt.TransformationMode.SmoothTransformation)
         self.setPixmap(pixmap)
