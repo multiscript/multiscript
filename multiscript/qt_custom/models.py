@@ -136,10 +136,6 @@ class ItemListTableModel(QtCore.QAbstractTableModel):
                 return -1 if data == True else 0
             else:
                 return data
-        elif role == Qt.ItemDataRole.FontRole:
-            # On Windows with high-DPI displays, if we don't supply a font for the FontRole,
-            # the table text is displayed too large. So we supply the default font.
-            return QtWidgets.QApplication.font()
         else:
             return None
 
@@ -178,10 +174,6 @@ class ItemListTableModel(QtCore.QAbstractTableModel):
                     header = section + 1 # sections are indexed from 0
                 else:
                     header = self.rowHeaderText
-        elif role == Qt.ItemDataRole.FontRole:
-            # On Windows with high-DPI displays, if we don't supply a font for the FontRole,
-            # the table text is displayed too large. So we supply the default font.
-            return QtWidgets.QApplication.font()
         else:
             header = super().headerData(section, orientation, role)
         

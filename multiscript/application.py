@@ -347,7 +347,13 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         MultiscriptBaseApplication.__init__(self) # Necessary because QApplication doesn't call super().__init__
-        
+
+        # On Windows with highDPI displays and display scaling enabled, many text widgets have
+        # oversized text, including menus and table views. For some reason, just setting a value
+        # for the default application font seems to fix the problem. Theefore, we just read the
+        # current default application font and set it to the same value, fixing the scaling issue.
+        self.setFont(self.font())
+         
         # Cmd-line arguments we also expect to receive as FileOpen events. See self.event() below.
         self._expected_open_file_event_args = set(sys.argv[1:])
 
