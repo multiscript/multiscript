@@ -461,7 +461,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         # event, if the path is already in this set, we ignore the event, and remove the path
         # from the set. Otherwise we process the event as normal.
         #
-        if e.type() == QtCore.QEvent.FileOpen:
+        if e.type() == QtCore.QEvent.Type.FileOpen:
             path_str = e.file()
             if path_str in self._expected_open_file_event_args:
                 # Duplicate file open notification
