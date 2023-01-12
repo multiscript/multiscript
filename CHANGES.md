@@ -1,4 +1,4 @@
-- Next version
+- 0.12.0
   - Properly handle high-resolution displays.
   - App on macOS is now a universal binary, for both Intel (x86) and Apple Silicon (ARM) machines.
   - Fix periodic hangs on macOS Ventura.
