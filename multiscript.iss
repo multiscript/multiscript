@@ -33,7 +33,7 @@ DisableProgramGroupPage=yes
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=C:\JamesWorkArea\Code\multiscript\dist\
+OutputDir={#SourcePath}dist\
 OutputBaseFilename=multiscript_installer
 Compression=lzma
 SolidCompression=yes
@@ -46,8 +46,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\JamesWorkArea\Code\multiscript\dist\multiscript\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\JamesWorkArea\Code\multiscript\dist\multiscript\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourcePath}dist\multiscript\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourcePath}dist\multiscript\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
