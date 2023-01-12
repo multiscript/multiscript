@@ -293,7 +293,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         version = self.versionModel.items[item_index]
         edit_version_dialog = EditVersionDialog(None, version)
         result = edit_version_dialog.exec()
-        if result == QtWidgets.QDialog.Accepted:
+        if result == QtWidgets.QDialog.DialogCode.Accepted:
             self.set_plan_changed()
 
     #
@@ -361,10 +361,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         cancel = False
         if self.plan is not None and self.plan.changed:
             result = self.check_for_save()
-            if result == QtWidgets.QMessageBox.Save:
+            if result == QtWidgets.QMessageBox.StandardButton.Save:
                 self.save_plan()
                 cancel = False
-            elif result == QtWidgets.QMessageBox.Discard:
+            elif result == QtWidgets.QMessageBox.StandardButton.Discard:
                 # Don't want to save
                 cancel = False
             else:
@@ -432,9 +432,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # The current plan was modified due to missing plugins. Offer to reload
             result = multiscript.app().msg_box(self.tr(f"Would you like to reload the current plan?"),
                         self.tr(f"Reload Plan?"),
-                        standard_buttons=(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
-                        default_button=QtWidgets.QMessageBox.Yes)
-            if result == QtWidgets.QMessageBox.Yes:
+                        standard_buttons=(QtWidgets.QMessageBox.StandardButton.Yes | \
+                                          QtWidgets.QMessageBox.StandardButton.No),
+                        default_button=QtWidgets.QMessageBox.StandardButton.Yes)
+            if result == QtWidgets.QMessageBox.StandardButton.Yes:
                 self.load_plan(self.plan._orig_path)
 
     #
@@ -536,8 +537,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         msg_box.setText(self.tr("This plan has been modified."))
         msg_box.setInformativeText(self.tr("Do you wish to save your changes?"))
         msg_box.setIconPixmap(self.windowIcon().pixmap(64, 64))
-        msg_box.setStandardButtons(QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
-        msg_box.setDefaultButton(QtWidgets.QMessageBox.Save)
+        msg_box.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Save | \
+                                   QtWidgets.QMessageBox.StandardButton.Discard | \
+                                   QtWidgets.QMessageBox.StandardButton.Cancel)
+        msg_box.setDefaultButton(QtWidgets.QMessageBox.StandardButton.Save)
         return msg_box.exec()
 
     def report_plan_errors(self, plan, error_list):
@@ -577,10 +580,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def closeEvent(self, event):
         if(self.plan.changed):
             result = self.check_for_save()
-            if result == QtWidgets.QMessageBox.Save:
+            if result == QtWidgets.QMessageBox.StandardButton.Save:
                 self.save_plan()
                 event.accept()
-            elif result == QtWidgets.QMessageBox.Discard:
+            elif result == QtWidgets.QMessageBox.StandardButton.Discard:
                 # Close without saving
                 event.accept()
             else:
@@ -653,7 +656,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def on_plan_config_triggered(self):
         plan_config_dialog = PlanConfigDialog(None, self.plan)
         result = plan_config_dialog.exec()
-        if result == QtWidgets.QDialog.Accepted:
+        if result == QtWidgets.QDialog.DialogCode.Accepted:
             self.set_plan_changed()
 
     def on_app_config_triggered(self):
@@ -664,7 +667,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         plugins_altpath_before = app_config_group.plugins.altPluginsPath
         
         result = app_config_dialog.exec()
-        if result == QtWidgets.QDialog.Accepted:
+        if result == QtWidgets.QDialog.DialogCode.Accepted:
             app_config_group.save()
         
         plugins_after = set(multiscript.app().all_plugins)
@@ -673,9 +676,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             result = multiscript.app().msg_box(self.tr(f"The Alternate Plugins Folder has changed. " +
                         f"Would you like to restart Multiscript to process the changes?"),
                         self.tr(f"Restart Multiscript?"),
-                        standard_buttons=(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
-                        default_button=QtWidgets.QMessageBox.Yes)
-            if result == QtWidgets.QMessageBox.Yes:
+                        standard_buttons=(QtWidgets.QMessageBox.StandardButton.Yes | \
+                                          QtWidgets.QMessageBox.StandardButton.No),
+                        default_button=QtWidgets.QMessageBox.StandardButton.Yes)
+            if result == QtWidgets.QMessageBox.StandardButton.Yes:
                 multiscript.app().request_restart()
 
         if (plugins_before != plugins_after) and not multiscript.app().restart_requested:

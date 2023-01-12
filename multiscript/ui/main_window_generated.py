@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'main_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.3.1
+## Created by: Qt User Interface Compiler version 6.4.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -461,7 +461,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 872, 22))
+        self.menubar.setGeometry(QRect(0, 0, 872, 36))
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
         self.menuEdit = QMenu(self.menubar)
@@ -469,6 +469,23 @@ class Ui_MainWindow(object):
         self.menuHelp = QMenu(self.menubar)
         self.menuHelp.setObjectName(u"menuHelp")
         MainWindow.setMenuBar(self.menubar)
+        QWidget.setTabOrder(self.passagesLineEdit, self.addRowsButton)
+        QWidget.setTabOrder(self.addRowsButton, self.removeRowsButton)
+        QWidget.setTabOrder(self.removeRowsButton, self.editButton)
+        QWidget.setTabOrder(self.editButton, self.versionTable)
+        QWidget.setTabOrder(self.versionTable, self.addColumnButton)
+        QWidget.setTabOrder(self.addColumnButton, self.removeColumnButton)
+        QWidget.setTabOrder(self.removeColumnButton, self.templateSelectButton)
+        QWidget.setTabOrder(self.templateSelectButton, self.templateShowButton)
+        QWidget.setTabOrder(self.templateShowButton, self.outputDirSelectButton)
+        QWidget.setTabOrder(self.outputDirSelectButton, self.outputDirShowButton)
+        QWidget.setTabOrder(self.outputDirShowButton, self.closeButton)
+        QWidget.setTabOrder(self.closeButton, self.planConfigButton)
+        QWidget.setTabOrder(self.planConfigButton, self.startButton)
+        QWidget.setTabOrder(self.startButton, self.togglePlanNotesButton)
+        QWidget.setTabOrder(self.togglePlanNotesButton, self.togglePlanNotesSourceButton)
+        QWidget.setTabOrder(self.togglePlanNotesSourceButton, self.planNotesTextEdit)
+        QWidget.setTabOrder(self.planNotesTextEdit, self.planNotesPlainTextEdit)
 
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())

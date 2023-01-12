@@ -1,3 +1,9 @@
+- Next version
+  - Properly handle high-resolution displays.
+  - App on macOS is now a universal binary, for both Intel (x86) and Apple Silicon (ARM) machines.
+  - Fix periodic hangs on macOS Ventura.
+  - Ensure app works on Windows 11.
+  - Upgrade to Qt 6.4 (PySide 6.4.1) and PyInstaller 5.7.0
 - 0.11.0
   - Allow user notes to be stored on plans and Bible versions. Notes are currently formatted as markdown.
 - 0.10.0

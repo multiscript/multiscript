@@ -69,9 +69,9 @@ class _Call_NonBlock_Thread(QThread):
         
         # We use the finished signal to remove our saved instance of ourselves.
         # It's safest for this to occur on the main thread, when we have confidence
-        # the QThread object is ready to be deleted. We use Qt.QueuedConnection
+        # the QThread object is ready to be deleted. We use Qt.ConnectionType.QueuedConnection
         # to make the finished signal be received on the main thread.
-        self.finished.connect(self.on_finished, type=Qt.QueuedConnection)
+        self.finished.connect(self.on_finished, type=Qt.ConnectionType.QueuedConnection)
         
         with _Call_NonBlock_Thread.instances_lock:
             _Call_NonBlock_Thread.instances.append(self)

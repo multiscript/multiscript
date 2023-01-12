@@ -1,18 +1,11 @@
 # Pinned requirements
-PySide6-Essentials==6.3.1
+PySide6-Essentials==6.4.1
 beautifulsoup4==4.11.1
-dmgbuild==1.5.2
+dmgbuild==1.6.0
 pluginlib==0.9
-
-# We would normally install pyinstaller in this way:
-# pyinstaller==5.1
-# But pyinstaller is yet to catch up to the rearranged structure of PySide6 6.3
-# The following is the URL of the pyinstaller patch that fixes the problem,
-# which we directly reference until it's part of the next pyinstaller release:
-https://github.com/rokm/pyinstaller/archive/51c8819cda9eefe773f77103f6d2bfccad1e8573.zip
-
+pyinstaller==5.7.0
 python-docx==0.8.11
 python-scriptures==3.0.0
-requests==2.28.0
+requests==2.28.1
 semver==2.13.0
-stdlibs==2022.3.16
+stdlibs==2022.10.9

@@ -690,7 +690,7 @@ Template</string>
      <x>0</x>
      <y>0</y>
      <width>872</width>
-     <height>22</height>
+     <height>36</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -877,6 +877,26 @@ Template</string>
    <header>multiscript.qt_custom.widgets</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>passagesLineEdit</tabstop>
+  <tabstop>addRowsButton</tabstop>
+  <tabstop>removeRowsButton</tabstop>
+  <tabstop>editButton</tabstop>
+  <tabstop>versionTable</tabstop>
+  <tabstop>addColumnButton</tabstop>
+  <tabstop>removeColumnButton</tabstop>
+  <tabstop>templateSelectButton</tabstop>
+  <tabstop>templateShowButton</tabstop>
+  <tabstop>outputDirSelectButton</tabstop>
+  <tabstop>outputDirShowButton</tabstop>
+  <tabstop>closeButton</tabstop>
+  <tabstop>planConfigButton</tabstop>
+  <tabstop>startButton</tabstop>
+  <tabstop>togglePlanNotesButton</tabstop>
+  <tabstop>togglePlanNotesSourceButton</tabstop>
+  <tabstop>planNotesTextEdit</tabstop>
+  <tabstop>planNotesPlainTextEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

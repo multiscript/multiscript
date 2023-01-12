@@ -347,7 +347,13 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         MultiscriptBaseApplication.__init__(self) # Necessary because QApplication doesn't call super().__init__
-        
+
+        # On Windows with highDPI displays and display scaling enabled, many text widgets have
+        # oversized text, including menus and table views. For some reason, just setting a value
+        # for the default application font seems to fix the problem. Theefore, we just read the
+        # current default application font and set it to the same value, fixing the scaling issue.
+        self.setFont(self.font())
+         
         # Cmd-line arguments we also expect to receive as FileOpen events. See self.event() below.
         self._expected_open_file_event_args = set(sys.argv[1:])
 
@@ -421,13 +427,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
     def exec_catches_exceptions(self):
         '''Same as exec(), but rather than reraising unhandled exceptions, we catch them here
         and display them in a dialog.
-
-        If we're not running as a 'frozen' pyinstaller bundle, this calls exec() in our superclass
-        as normal.
-
-        If we *are* running as a 'frozen' pyinstaller bundle, we still call exec() in the superclass,
-        but we ensure that any unhandled exceptions are caught and displayed in a dialog.
-        '''
+       '''
         if self.restart_requested:
             # Since a restart has already been requested, just exit straightaway.
             return 0
@@ -447,12 +447,13 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         # On Mac only, files are opened via AppleEvents, which Qt exposes as a (Mac-only) FileOpen
         # Qt event. However, it's possible that some of these FileOpen events are duplicates
         # of the files passed to the app as commmand line arguments. This can happen:
-        #   1. When running unfrozen (i.e. from source), with command-line arguments.
-        #   2. When running frozen with pyinstaller if pyinstaller's argv-emulation is turned
-        #      on. In this case, pyinstaller catches the initial open event and supplies the
-        #      same info as a command-line argument. One advantage of this is that we can
-        #      immediately open the file at startup, rather than waiting for our code to process
-        #      an event.
+        #   1. When running from the command-line with command-line arguments (either unfrozen or
+        #      frozen).
+        #   2. When launched from the Finder when frozen with pyinstaller if pyinstaller's
+        #      argv-emulation is turned on. In this case, pyinstaller catches the initial open
+        #      event and supplies the same info as a command-line argument. One advantage of this
+        #      is that we can immediately open the file at startup, rather than waiting for our
+        #      code to process an event.
         #
         # All of this means that it's possible be notified twice about opening a file: once on the
         # command-line, and once as a FileOpen event. Therefore, at startup, we create a set of
@@ -460,7 +461,7 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         # event, if the path is already in this set, we ignore the event, and remove the path
         # from the set. Otherwise we process the event as normal.
         #
-        if e.type() == QtCore.QEvent.FileOpen:
+        if e.type() == QtCore.QEvent.Type.FileOpen:
             path_str = e.file()
             if path_str in self._expected_open_file_event_args:
                 # Duplicate file open notification
@@ -570,12 +571,13 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
                                           self.tr("Do you wish to replace it?\n\n") + 
                                           self.tr("This will require restarting Multiscript."),
                                           self.tr("Replace Plugin?"),
-                                          QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Cancel | \
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
                 else:
                     # For silent install, just go ahead and overwrite the plugin
-                    result = QtWidgets.QMessageBox.Ok
+                    result = QtWidgets.QMessageBox.StandardButton.Ok
 
-                if result == QtWidgets.QMessageBox.Cancel:
+                if result == QtWidgets.QMessageBox.StandardButton.Cancel:
                     return None
                 else:
                     # Remove the existing plugin. We therefore need to restart, and we'll
@@ -639,9 +641,11 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         if show_ui:
             result = self.msg_box(self.tr(f"Are you sure you want to remove the plugin '{name}' with id '{id}' and restart Multiscript?"),
                                   self.tr("Remove Plugin?"),
-                                  QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Ok,
-                                  QtWidgets.QMessageBox.Cancel, self.tr(f"This will delete the folder {path}"))
-            if result == QtWidgets.QMessageBox.Cancel:
+                                  QtWidgets.QMessageBox.StandardButton.Cancel | \
+                                  QtWidgets.QMessageBox.StandardButton.Ok,
+                                  QtWidgets.QMessageBox.StandardButton.Cancel,
+                                  self.tr(f"This will delete the folder {path}"))
+            if result == QtWidgets.QMessageBox.StandardButton.Cancel:
                 return False
 
         try:
@@ -659,9 +663,9 @@ class MultiscriptApplication(QtWidgets.QApplication, MultiscriptBaseApplication)
         if window_title is None:
             window_title = self.tr("Multiscript")
         if standard_buttons is None:
-            standard_buttons = QtWidgets.QMessageBox.Ok
+            standard_buttons = QtWidgets.QMessageBox.StandardButton.Ok
         if default_button is None:
-            default_button = QtWidgets.QMessageBox.Ok
+            default_button = QtWidgets.QMessageBox.StandardButton.Ok
         box = QtWidgets.QMessageBox()
         box.setWindowTitle(window_title)
         box.setText(message_text)
