@@ -110,7 +110,9 @@ app = BUNDLE(bundle_obj,
             'UTExportedTypeDeclarations':
                 [{
                     'UTTypeIdentifier': 'app.multiscript.mplan',
-                    'UTTypeConformsTo': ['public.json'],
+                    # Plans are actually json files, but including the UTTypeConformsTo directive sometimes
+                    # results in our plan icon not displaying. So we omit UTTypeConformsTo for now.
+                    # 'UTTypeConformsTo': ['public.json'],
                     'UTTypeTagSpecification':
                         {
                             'public.filename-extension': ['mplan']
