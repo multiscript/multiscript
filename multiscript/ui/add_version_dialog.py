@@ -31,9 +31,9 @@ class AddVersionDialog(QtWidgets.QDialog, Ui_AddVersionDialog):
         self.versionModel = ItemListTableModel() # Stores a list of BibleVersions
         self.versionModel.append_model_columns([
             BooleanColumn(),
-            AttributeColumn("Version Name",     "name"),
-            AttributeColumn("Abbrev",           "abbrev"),
             AttributeColumn("Language",         "lang"),
+            AttributeColumn("Abbrev",           "abbrev"),
+            AttributeColumn("Version Name",     "name"),
             AttributeColumn("Source",           lambda version: version.bible_source.name)
         ])
         self.versionModel.set_all_columns_editable(False)

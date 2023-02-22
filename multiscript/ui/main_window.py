@@ -97,9 +97,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #
         self.versionModel = ItemListTableModel() # Stores a list of BibleVersions
         self.versionModel.append_model_columns([
+            AttributeColumn(self.tr("Language"),         "lang"),
             AttributeColumn(self.tr("Abbrev"),           "abbrev"),
             AttributeColumn(self.tr("Version Name"),     "name"),
-            AttributeColumn(self.tr("Language"),         "lang"),
             AttributeColumn(self.tr("Source"),           lambda version: version.bible_source.name),
             AttributeColumn(self.tr("Notes"),            "notes")
         ])
