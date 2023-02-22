@@ -1,3 +1,8 @@
+- 0.13.0
+  - Various minor improvements:
+    - Reorder version columns
+    - Simplify default plan notes
+    - Update default Word template to not use MS Word compatibility mode
 - 0.12.0
   - Properly handle high-resolution displays.
   - App on macOS is now a universal binary, for both Intel (x86) and Apple Silicon (ARM) machines.
