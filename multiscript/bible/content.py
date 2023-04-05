@@ -29,6 +29,7 @@ class BibleContent:
             string += "Version: " + str(self.bible_version.name) + "\n"
         string += "Range: " + str(self.bible_range) + "\n"
         string += str(self.body)
+        string += "\nCopyright: " + self.copyright_text + "\n"
         return string
 
 
