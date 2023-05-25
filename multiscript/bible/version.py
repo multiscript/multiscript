@@ -2,17 +2,14 @@
 from pprint import pformat
 
 import multiscript
-from multiscript.sources.base import BibleSource
-from multiscript.outputs.base import OutputVersionConfig
-
 
 class BibleVersion:
     '''Class to hold information about a particular Bible version from a particular
     BibleSource.
     '''
-    def __init__(self, source: BibleSource = None, id: str = None, name: str = None, lang: str = None,
+    def __init__(self, source: 'BibleSource' = None, id: str = None, name: str = None, lang: str = None,
                  abbrev: str = None):
-        self.bible_source: BibleSource = source
+        self.bible_source: 'BibleSource' = source
         self.id: str = id
         self.user_labels: BibleVersionLabels = BibleVersionLabels()
         self.native_labels: BibleVersionLabels = BibleVersionLabels()
@@ -23,7 +20,7 @@ class BibleVersion:
         self.notes_type: str = "text/markdown"   # Media-type of plan notes. Currently only "text/markdown" supported.
 
         # Dict of OutputVersionConfig by output long_id
-        self.output_config: dict[str, OutputVersionConfig] = {}
+        self.output_config: dict[str, 'OutputVersionConfig'] = {}
 
         for output in multiscript.app().all_outputs:
             output_version_config = output.new_output_version_config()

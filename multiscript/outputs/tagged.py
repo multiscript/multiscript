@@ -2,8 +2,10 @@
 from enum import Enum, auto
 import logging
 from typing import Text
-from multiscript.bible.content import BibleStreamHandler
 
+from bibleref import BibleRangeList
+
+from multiscript.bible.content import BibleStreamHandler
 from multiscript.outputs.fileset import FileSetOutput
 from multiscript.plan.symbols import column_symbols
 
@@ -131,7 +133,7 @@ class TaggedOutput(FileSetOutput):
         # Fill in grouped passage tags.
         for group_index in range(len(runner.bible_ranges.groups)):
             tag = Tags.PASSAGE_GROUP.value.format(group_index + 1)
-            range_group = runner.bible_ranges.groups[group_index]
+            range_group = BibleRangeList(runner.bible_ranges.groups[group_index])
             self.replace_tag_directly(document, tag, range_group.str())
 
         # Fill in copyright tags

@@ -1,7 +1,6 @@
 from enum import Enum, auto
 
 from bibleref.ref import BibleBook, BibleVerse, BibleRange
-from bible.version import BibleVersion
 
 PART_NAME_LEN_WIDTH   = 25 # For justifying string representations of BibleContentParts
 
@@ -9,7 +8,7 @@ PART_NAME_LEN_WIDTH   = 25 # For justifying string representations of BibleConte
 class BibleContent:
     def __init__(self):
         self._bible_range: BibleRange = None
-        self.bible_version: BibleVersion = None
+        self.bible_version: 'BibleVersion' = None
         self.body: BibleStream = BibleStream(self)
         self.copyright_text: str = ""
 

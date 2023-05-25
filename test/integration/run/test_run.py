@@ -66,9 +66,17 @@ class TestRun(unittest.TestCase):
 
         plan.template_path = template_path
 
+        # If you need to examine the test output, you can use lines like these instead of the following with statement
+        # test_output_dir = Path("/Users/james/Desktop/Test_Full_Run/Output/").resolve()
+        # test_output_dir.mkdir(parents=True, exist_ok=True)
+        # if True:
         with tempfile.TemporaryDirectory() as test_output_dir:
             # Dir for plan output to be tested against what's expected
 
+            # If you need to examine the test output, you can use lines like these instead of the following with statement
+            # expected_expansion_dir = Path("/Users/james/Desktop/Test_Full_Run/Expected/").resolve()
+            # expected_expansion_dir.mkdir(parents=True, exist_ok=True)
+            # if True:
             with tempfile.TemporaryDirectory() as expected_expansion_dir:
                 # Dir for expansion of expected output
 

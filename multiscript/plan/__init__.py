@@ -4,7 +4,6 @@ from pathlib import Path
 import traceback
 
 import multiscript
-from multiscript.bible.version import BibleVersion
 from multiscript.config.plan import PlanConfigGroup
 from multiscript.util import serialize
 
@@ -38,7 +37,7 @@ class Plan:
         self.bible_passages: str = None
         
         # A list of all the BibleVersions in the plan.
-        self.bible_versions: list[BibleVersion] = []
+        self.bible_versions: list[multiscript.bible.version.BibleVersion] = []
 
         # A list of lists of Boolean values. The top-level list represents the list of columns.
         # Each sub-list contains Boolean values to indicate whether the corresponding version in

@@ -154,7 +154,7 @@ class GetBibleDotNetVersion(BibleVersion):
         super().__init__(source, id, name, lang, abbrev)
 
     def load_content(self, bible_range: BibleRange, bible_content):
-        book_code = GetBibleDotNetVersion.book_codes[bible_range.book]
+        book_code = GetBibleDotNetVersion.book_codes[bible_range.start.book]
         bible_content.copyright_text = self.copyright_text
         content_body = bible_content.body
         content_body.strip_text = True
@@ -164,7 +164,7 @@ class GetBibleDotNetVersion(BibleVersion):
         bible_ranges = bible_range.split(by_chap=True, num_verses=None)
         for indiv_range in bible_ranges:
             indiv_range: BibleRange = indiv_range
-            url = f'https://getbible.net/v2/{self.id}/{book_code}/{indiv_range.start.chap}.json'
+            url = f'https://getbible.net/v2/{self.id}/{book_code}/{indiv_range.start.chap_num}.json'
             response = requests.get(url)
             resp_dict = response.json()
             
