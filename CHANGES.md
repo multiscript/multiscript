@@ -1,3 +1,5 @@
+- 0.14.0
+  - Uses new Bible reference parser: [bibleref](https://pypi.org/project/bibleref/) (also by the Multiscript project)
 - 0.13.0
   - Various minor improvements:
     - Reorder version columns

@@ -132,7 +132,7 @@ class TaggedOutput(FileSetOutput):
         for group_index in range(len(runner.bible_ranges.groups)):
             tag = Tags.PASSAGE_GROUP.value.format(group_index + 1)
             range_group = runner.bible_ranges.groups[group_index]
-            self.replace_tag_directly(document, tag, range_group.string(nobook=True, showgroups=True))
+            self.replace_tag_directly(document, tag, range_group.str())
 
         # Fill in copyright tags
         versions = [element.version if element.version is not None else None for element in version_combo]

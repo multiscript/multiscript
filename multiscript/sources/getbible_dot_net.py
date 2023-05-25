@@ -4,9 +4,10 @@ import bs4          # Beautiful Soup library
 import requests
 import urllib
 
+from bibleref import BibleBook, BibleRange, BibleVerse
+
 from multiscript.sources.base import BibleSource
 from multiscript.bible.version import BibleVersion
-from multiscript.bible.reference import BibleBook, BibleRange, BibleVerse
 
 
 
@@ -89,12 +90,12 @@ class GetBibleDotNetVersion(BibleVersion):
                   BibleBook.Josh:       "6",
                   BibleBook.Judg:       "7",
                   BibleBook.Ruth:       "8",
-                  BibleBook._1Sam:      "9",
-                  BibleBook._2Sam:      "10",
-                  BibleBook._1Kgs:      "11",
-                  BibleBook._2Kgs:      "12",
-                  BibleBook._1Chr:      "13",
-                  BibleBook._2Chr:      "14",
+                  BibleBook.ISam:       "9",
+                  BibleBook.IISam:      "10",
+                  BibleBook.IKgs:       "11",
+                  BibleBook.IIKgs:      "12",
+                  BibleBook.IChr:       "13",
+                  BibleBook.IIChr:      "14",
                   BibleBook.Ezra:       "15",
                   BibleBook.Neh:        "16",
                   BibleBook.Esth:       "17",
@@ -126,25 +127,25 @@ class GetBibleDotNetVersion(BibleVersion):
                   BibleBook.John:       "43",
                   BibleBook.Acts:       "44",
                   BibleBook.Rom:        "45",
-                  BibleBook._1Cor:      "46",
-                  BibleBook._2Cor:      "47",
+                  BibleBook.ICor:       "46",
+                  BibleBook.IICor:      "47",
                   BibleBook.Gal:        "48",
                   BibleBook.Eph:        "49",
                   BibleBook.Phil:       "50",
                   BibleBook.Col:        "51",
-                  BibleBook._1Thess:    "52",
-                  BibleBook._2Thess:    "53",
-                  BibleBook._1Tim:      "54",
-                  BibleBook._2Tim:      "55",
+                  BibleBook.ITh:        "52",
+                  BibleBook.IITh:       "53",
+                  BibleBook.ITim:       "54",
+                  BibleBook.IITim:      "55",
                   BibleBook.Titus:      "56",
                   BibleBook.Phlm:       "57",
                   BibleBook.Heb:        "58",
-                  BibleBook.James:      "59",
-                  BibleBook._1Pet:      "60",
-                  BibleBook._2Pet:      "61",
-                  BibleBook._1Jn:       "62",
-                  BibleBook._2Jn:       "63",
-                  BibleBook._3Jn:       "64",
+                  BibleBook.Jam:        "59",
+                  BibleBook.IPet:       "60",
+                  BibleBook.IIPet:      "61",
+                  BibleBook.IJn:        "62",
+                  BibleBook.IIJn:       "63",
+                  BibleBook.IIIJn:      "64",
                   BibleBook.Jude:       "65",
                   BibleBook.Rev:        "66"
                   }
@@ -152,7 +153,7 @@ class GetBibleDotNetVersion(BibleVersion):
     def __init__(self, source=None, id=None, name=None, lang=None, abbrev=None):
         super().__init__(source, id, name, lang, abbrev)
 
-    def load_content(self, bible_range, bible_content):
+    def load_content(self, bible_range: BibleRange, bible_content):
         book_code = GetBibleDotNetVersion.book_codes[bible_range.book]
         bible_content.copyright_text = self.copyright_text
         content_body = bible_content.body
@@ -162,13 +163,14 @@ class GetBibleDotNetVersion(BibleVersion):
 
         bible_ranges = bible_range.split(by_chap=True, num_verses=None)
         for indiv_range in bible_ranges:
+            indiv_range: BibleRange = indiv_range
             url = f'https://getbible.net/v2/{self.id}/{book_code}/{indiv_range.start.chap}.json'
             response = requests.get(url)
             resp_dict = response.json()
             
             for verse_dict in resp_dict['verses']:
                 verse_num = int(verse_dict['verse'])
-                verse_ref = BibleVerse(indiv_range.book, indiv_range.start.chap, verse_num)
+                verse_ref = BibleVerse(indiv_range.start.book, indiv_range.start.chap_num, verse_num)
                 if bible_range.contains(verse_ref):
                     content_body.current_verse = verse_ref
                     content_body.add_start_verse_num()

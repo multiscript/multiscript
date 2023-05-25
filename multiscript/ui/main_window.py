@@ -5,8 +5,9 @@ import sys
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import Qt
 
+from bibleref.ref import BibleRangeList, BibleRefParsingError
+
 import multiscript
-from multiscript.bible.reference import BibleRangeList
 from multiscript import plan
 from multiscript.plan.symbols import column_symbols
 from multiscript.qt_custom.models import ItemListTableModel
@@ -331,7 +332,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #
         # Validate window data
         #
-        if len(BibleRangeList.new_from_text(self.passagesLineEdit.text())) == 0:
+        try:
+            bible_range_list = BibleRangeList(self.passagesLineEdit.text())
+        except BibleRefParsingError as e:
+            bible_range_list = []
+
+        if len(bible_range_list) == 0:
             # No Bible passages
             self.passagesLineEdit.setStyleSheet("border: 2px solid red")
             return

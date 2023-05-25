@@ -6,6 +6,7 @@ from multiscript.bible.content import BibleStreamHandler
 from multiscript.config.app import AppConfig
 from multiscript.config.plan import PlanConfig
 from multiscript.config.version import VersionConfig
+from multiscript.plugins.base import Plugin
 
 
 _logger = logging.getLogger(__name__)
@@ -22,19 +23,19 @@ class BibleOutput:
     TaggedOutput (itself a subclass of FileSetOutput).
     '''
     def __init__(self, plugin):
-        self.plugin = plugin    # The plugin that created this BibleOutput
-        self.id = None
-        self.name = None
-        self._accepted_template_exts = []
+        self.plugin: Plugin = plugin    # The plugin that created this BibleOutput
+        self.id: str = None
+        self.name: str = None
+        self._accepted_template_exts: list[str] = []
 
     @property
-    def long_id(self):
+    def long_id(self) -> str:
         '''Returns the long id of this object, which is globally unique in the app.
         For a BibleOutput this is a combination of its plugin long_id and the BibleOutput's (short) id.'''
         return self.plugin.long_id + "/" + self.id
 
     @property
-    def accepted_template_exts(self):
+    def accepted_template_exts(self) -> list[str]:
         '''Returns a list of the template file extensions accepted by this BibleOutput (e.g. ['.txt','.docx'])
         '''
         return self._accepted_template_exts
