@@ -184,7 +184,7 @@ class BibleStream(BibleStreamHandler):
 
         # If necessary, add any missing chap number
         if self.insert_missing_chap_num and \
-           self.current_verse is not None and self.current_verse == self.current_verse.first_verse() and \
+           self.current_verse is not None and self.current_verse.is_first_in_chap() and \
            (len(self.tokens) == 0 or self.tokens[-1].type is not BibleStreamTokenType.END_CHAP_NUM):
             
             self.add_start_chap_num()
