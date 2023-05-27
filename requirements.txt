@@ -1,7 +1,7 @@
 # Pinned requirements
 PySide6-Essentials==6.4.1
 beautifulsoup4==4.11.1
-bibleref==0.13.0
+bibleref==0.14.0
 dmgbuild==1.6.0
 pluginlib==0.9
 pyinstaller==5.7.0
