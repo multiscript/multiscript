@@ -1,3 +1,5 @@
+import contextlib
+from enum import Enum, auto
 import filecmp
 import os
 from pathlib import Path
@@ -49,15 +51,20 @@ def is_same(dir1, dir2):
 
 class TestRun(unittest.TestCase):
 
-    def test_full_run(self, create_expected_output=False):
+    class TestMode(Enum):
+        TEST    = auto()    # Run the test as normal
+        CREATE  = auto()    # Create the expected output, rather than testing for it
+        OBSERVE = auto()    # Observe output: Use known instead of temp directories, don't unzip word docs, don't test
+
+    def test_full_run(self, mode=TestMode.OBSERVE):
         ''' Runs a test plan and tests whether the output matches what is expected.
 
-        Run the test plan once with create_expected_ouput set to True to generate the expected
-        output files.
+        mode is one of the TestMode enum values.
         '''
-        plan_path = (Path(__file__) / Path("../../../data/integration/run/test_full_run/full_run.mplan")).resolve()
-        template_path = (Path(__file__) / Path("../../../../multiscript/templates/Default Template.docx")).resolve()
+        plan_path = Path(__file__, "../../../data/integration/run/test_full_run/full_run.mplan").resolve()
+        template_path = Path(__file__, "../../../../multiscript/templates/Default Template.docx").resolve()
         expected_output_path = plan_path.parent / Path("full_run_expected")
+        observe_base_path = Path("~/Desktop/TestFullRun/").expanduser()
 
         error_list = []
         plan = multiscript.plan.load(plan_path, error_list)
@@ -66,35 +73,44 @@ class TestRun(unittest.TestCase):
 
         plan.template_path = template_path
 
-        # If you need to examine the test output, you can use lines like these instead of the following with statement
-        # test_output_dir = Path("/Users/james/Desktop/Test_Full_Run/Output/").resolve()
-        # test_output_dir.mkdir(parents=True, exist_ok=True)
-        # if True:
-        with tempfile.TemporaryDirectory() as test_output_dir:
-            # Dir for plan output to be tested against what's expected
+        if mode is TestRun.TestMode.TEST:
+            test_output_context_manager = tempfile.TemporaryDirectory()
+            expected_expansion_context_manager = tempfile.TemporaryDirectory()
+        elif mode is TestRun.TestMode.CREATE:
+            expected_output_path.mkdir(parents=True, exist_ok=True)
+            test_output_context_manager = contextlib.nullcontext(expected_output_path)
+            expected_expansion_context_manager = contextlib.nullcontext(None)
+        elif mode is TestRun.TestMode.OBSERVE:
+            test_output_dir = Path(observe_base_path, "Output/")
+            test_output_dir.mkdir(parents=True, exist_ok=True)
+            test_output_context_manager = contextlib.nullcontext(test_output_dir)
 
-            # If you need to examine the test output, you can use lines like these instead of the following with statement
-            # expected_expansion_dir = Path("/Users/james/Desktop/Test_Full_Run/Expected/").resolve()
-            # expected_expansion_dir.mkdir(parents=True, exist_ok=True)
-            # if True:
-            with tempfile.TemporaryDirectory() as expected_expansion_dir:
+            expected_expansion_dir = Path(observe_base_path, "Expected/")
+            expected_expansion_dir.mkdir(parents=True, exist_ok=True)
+            expected_expansion_context_manager = contextlib.nullcontext(expected_expansion_dir)
+        else:
+            self.fail("Unknown test mode")
+
+        with test_output_context_manager as test_output_dir:
+            # Dir for plan output to be tested against what's expected
+            with expected_expansion_context_manager as expected_expansion_dir:
                 # Dir for expansion of expected output
 
                 test_output_path = Path(test_output_dir)
-                if create_expected_output:
-                    plan.output_dir_path = expected_output_path
-                else:
-                    plan.output_dir_path = test_output_path
+                plan.output_dir_path = test_output_path
 
                 plan_runner = multiscript.plan.runner.PlanRunner(plan)
                 plan_runner.run()
 
-                if create_expected_output:
+                if mode is TestRun.TestMode.CREATE:
                     return
 
                 # Copy expected output into expansion directory
                 for file in expected_output_path.iterdir():
                     shutil.copy(file, expected_expansion_dir)
+
+                if mode is TestRun.TestMode.OBSERVE:
+                    return
 
                 # Expand expected output
                 for output_file_path in Path(expected_expansion_dir).glob("*.docx"):
