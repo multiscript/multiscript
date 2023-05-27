@@ -135,7 +135,7 @@ class BibleStream(BibleStreamHandler):
             # If our range is a Psalm, and Psalms contain titles, we don't need to insert the
             # verse number. So only proceed if those conditions *don't* hold.
             bible_range = self.bible_content.bible_range
-            if bible_range is None or bible_range.book is not BibleBook.Psa or not self.psalms_include_titles:
+            if bible_range is None or bible_range.start.book is not BibleBook.Psa or not self.psalms_include_titles:
                 self._expected_token_type = None # Prevents infinite recursion
                 self._insert_space_before_text = False   # We don't want extra space here
                 self.add_start_verse_num()
