@@ -56,7 +56,7 @@ class TestRun(unittest.TestCase):
         CREATE  = auto()    # Create the expected output, rather than testing for it
         OBSERVE = auto()    # Observe output: Use known instead of temp directories, don't unzip word docs, don't test
 
-    def test_full_run(self, mode=TestMode.OBSERVE):
+    def test_full_run(self, mode=TestMode.TEST):
         ''' Runs a test plan and tests whether the output matches what is expected.
 
         mode is one of the TestMode enum values.
