@@ -4,7 +4,7 @@
      1. Create `release-vX.Y.Z` branch from `main`
      1. Make development changes on the release branch.
      1. Update version numbers in `VERSION` and 'CHANGES.md`
-     1. Commit and squash `release-vX.Y.Z` into `main`
+     1. Commit, then squash `release-vX.Y.Z` into `main`
      1. Can delete `release-vX.Y.Z` branch at this point.
      1. Remove old `dist/` directory
      1. `python build.py`
