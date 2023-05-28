@@ -12,11 +12,9 @@ A Multiscript plan describes the Bible passage references, Bible versions, outpu
 Here are the basic features of a plan:
 
 ### Bible Passages
-This is the list of Bible passages you want to collate. Many common English abbreviations for book names will be accepted. At the moment, you always have to include the book name (i.e. references like `Mark 1:1-5; 2:1-5` won't work, so use `Mark 1:1-5; Mark 2:1-5` instead).
+This is the list of Bible passages you want to collate. Most common English abbreviations for book names will be accepted, and multiple passages can be listed using commas and semicolons. For example: Mark 3:5-4:7; 5:6-8, 10; Matt 10-11; 15
 
-Passages separated by a comma are considered to be part of one *group*. Usually this means they'll appear in a single table under a combined heading, separated by an ellipsis (...).
-
-Passages separated by a semicolon are considered to be in separate groups (i.e. separate tables).
+Passages separated by a comma are considered to be part of one *group*. Usually this means they'll appear in a single table under a combined heading, separated by an ellipsis (...). Passages separated by a semicolon are considered to be in separate groups (i.e. separate tables). Semicolons also mean that any number that follows is considered to be a chapter number.
 
 ### Bible Versions
 This is the list of versions you wish to combine. Click **Add Versions to Set** to add versions to the plan.
