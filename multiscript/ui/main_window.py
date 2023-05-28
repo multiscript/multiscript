@@ -522,7 +522,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(self.plan.path.stem + "[*]")
         self.setWindowModified(self.plan.changed)
 
-        self.rowSummaryLabel.setText(self.tr("{0} version(s) in the set".format(self.versionModel.rowCount())))
+        self.rowSummaryLabel.setText(self.tr("{0} version(s) in the plan".format(self.versionModel.rowCount())))
         self.columnSummaryLabel.setText(self.tr("{0} version(s) per Bible passage".format(
                                         len(self.get_all_version_columns()))))
 

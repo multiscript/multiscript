@@ -580,10 +580,10 @@ class Ui_MainWindow(object):
         self.passagesLineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"For example: Gen 1:1-5, 26-27; John 1:1-18; 2:1-11", None))
         self.versionsTableLabel.setText(QCoreApplication.translate("MainWindow", u"\n"
 "Bible Versions", None))
-        self.addRowsButton.setText(QCoreApplication.translate("MainWindow", u"Add Versions to Set...", None))
+        self.addRowsButton.setText(QCoreApplication.translate("MainWindow", u"Add Versions to Plan...", None))
         self.removeRowsButton.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
         self.editButton.setText(QCoreApplication.translate("MainWindow", u"Edit...", None))
-        self.rowSummaryLabel.setText(QCoreApplication.translate("MainWindow", u"Versions in set", None))
+        self.rowSummaryLabel.setText(QCoreApplication.translate("MainWindow", u"Versions in plan", None))
         self.addColumnButton.setText(QCoreApplication.translate("MainWindow", u"Add Version Per Passage", None))
         self.removeColumnButton.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
         self.columnSummaryLabel.setText(QCoreApplication.translate("MainWindow", u"Versions per passage", None))

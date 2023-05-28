@@ -17,7 +17,7 @@ This is the list of Bible passages you want to collate. Most common English abbr
 Passages separated by a comma are considered to be part of one *group*. Usually this means they'll appear in a single table under a combined heading, separated by an ellipsis (...). Passages separated by a semicolon are considered to be in separate groups (i.e. separate tables). Semicolons also mean that any number that follows is considered to be a chapter number.
 
 ### Bible Versions
-This is the list of versions you wish to combine. Click **Add Versions to Set** to add versions to the plan.
+This is the list of versions you wish to combine. Click **Add Versions to Plan** to add versions to the plan.
 
 The version *columns* (i.e. Version A, Version B etc.) control how the versions are combined. It's easiest to think of each column in this list as a Bible passage column in your output document. You then tick which versions you want to appear in each column.
 

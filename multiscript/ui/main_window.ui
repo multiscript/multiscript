@@ -232,7 +232,7 @@ Bible Versions</string>
                <item>
                 <widget class="QPushButton" name="addRowsButton">
                  <property name="text">
-                  <string>Add Versions to Set...</string>
+                  <string>Add Versions to Plan...</string>
                  </property>
                  <property name="autoDefault">
                   <bool>true</bool>
@@ -268,7 +268,7 @@ Bible Versions</string>
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>Versions in set</string>
+                  <string>Versions in plan</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
