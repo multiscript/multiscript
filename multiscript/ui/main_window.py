@@ -336,6 +336,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             bible_range_list = BibleRangeList(self.passagesLineEdit.text())
         except BibleRefParsingError as e:
             bible_range_list = []
+            self.passagesLineEdit.setSelection(e.start_pos, (e.end_pos-e.start_pos)+1)
+            QtWidgets.QToolTip.showText(self.passagesLineEdit.mapToGlobal(QtCore.QPoint(0,0)), str(e),
+                                        None, QtCore.QRect(), 2000)
 
         if len(bible_range_list) == 0:
             # No Bible passages
