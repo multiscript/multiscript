@@ -1,7 +1,7 @@
 ; Script for generating Windows installer using Inno Setup
 
 #define MyAppName "Multiscript"
-#define MyAppVersion "0.13.0"
+#define MyAppVersion "0.14.0"
 #define MyAppPublisher "Multiscript"
 #define MyAppURL "https://www.multiscript.app/"
 #define MyAppExeName "Multiscript_.exe"
