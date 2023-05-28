@@ -336,7 +336,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             bible_range_list = BibleRangeList(self.passagesLineEdit.text())
         except BibleRefParsingError as err:
             bible_range_list = []
-            self.passagesLineEdit.setSelection(err.start_pos, (err.end_pos-err.start_pos)+1)
+            self.passagesLineEdit.setSelection(err.start_pos, err.end_pos-err.start_pos)
             QtWidgets.QToolTip.showText(self.passagesLineEdit.mapToGlobal(
                                             QtCore.QPoint(150,
                                                           self.passagesLineEdit.height() * -2.25)), str(err),
