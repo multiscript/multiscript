@@ -577,7 +577,7 @@ class Ui_MainWindow(object):
         self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"Multiscript", None))
         self.togglePlanNotesButton.setText(QCoreApplication.translate("MainWindow", u"Hide Plan Notes", None))
         self.passagesLabel.setText(QCoreApplication.translate("MainWindow", u"Bible Passages", None))
-        self.passagesLineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"For example: Gen 1:1-5, Gen 1:26-27; John 1:1-18, John 2:1-11", None))
+        self.passagesLineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"For example: Gen 1:1-5, 26-27; John 1:1-18; 2:1-11", None))
         self.versionsTableLabel.setText(QCoreApplication.translate("MainWindow", u"\n"
 "Bible Versions", None))
         self.addRowsButton.setText(QCoreApplication.translate("MainWindow", u"Add Versions to Set...", None))

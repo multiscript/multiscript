@@ -205,7 +205,7 @@
            <item>
             <widget class="QLineEdit" name="passagesLineEdit">
              <property name="placeholderText">
-              <string>For example: Gen 1:1-5, Gen 1:26-27; John 1:1-18, John 2:1-11</string>
+              <string>For example: Gen 1:1-5, 26-27; John 1:1-18; 2:1-11</string>
              </property>
             </widget>
            </item>
