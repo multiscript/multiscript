@@ -1,5 +1,5 @@
 - 0.14.0
-  - Uses a band new Bible reference parser: [bibleref](https://pypi.org/project/bibleref/) (also by the
+  - Uses a brand new Bible reference parser: [bibleref](https://pypi.org/project/bibleref/) (also by the
     Multiscript project). For the first time, book names do not need to be repeated, and commas and semicolons in
     Bible references work as expected. For example: Mark 3:1-4:2; 5:6-8, 10; Matt 10; 11. As before, passages
     separated by a comma are considered to be part of one group (i.e. usually appear in a single table, separated by an ellipsis). Passages separated by a semicolon are considered to be in separate groups (i.e. separate tables).
