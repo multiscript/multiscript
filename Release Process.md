@@ -16,3 +16,4 @@
   1. Create a new release tag on `main`, named `vX.Y.Z`. Include as assets:
      - `Multiscript.dmg`
      - `multiscript_installer.exe`
+  1. Update current version number on website.
