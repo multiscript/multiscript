@@ -5,8 +5,9 @@ import sys
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import Qt
 
+from bibleref.ref import BibleRangeList, BibleRefParsingError
+
 import multiscript
-from multiscript.bible.reference import BibleRangeList
 from multiscript import plan
 from multiscript.plan.symbols import column_symbols
 from multiscript.qt_custom.models import ItemListTableModel
@@ -331,7 +332,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #
         # Validate window data
         #
-        if len(BibleRangeList.new_from_text(self.passagesLineEdit.text())) == 0:
+        try:
+            bible_range_list = BibleRangeList(self.passagesLineEdit.text())
+        except BibleRefParsingError as err:
+            bible_range_list = []
+            self.passagesLineEdit.setSelection(err.start_pos, err.end_pos-err.start_pos)
+            QtWidgets.QToolTip.showText(self.passagesLineEdit.mapToGlobal(
+                                            QtCore.QPoint(150,
+                                                          self.passagesLineEdit.height() * -2.25)), str(err),
+                                        None, QtCore.QRect(), 3000)
+
+        if len(bible_range_list) == 0:
             # No Bible passages
             self.passagesLineEdit.setStyleSheet("border: 2px solid red")
             return
@@ -511,7 +522,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(self.plan.path.stem + "[*]")
         self.setWindowModified(self.plan.changed)
 
-        self.rowSummaryLabel.setText(self.tr("{0} version(s) in the set".format(self.versionModel.rowCount())))
+        self.rowSummaryLabel.setText(self.tr("{0} version(s) in the plan".format(self.versionModel.rowCount())))
         self.columnSummaryLabel.setText(self.tr("{0} version(s) per Bible passage".format(
                                         len(self.get_all_version_columns()))))
 

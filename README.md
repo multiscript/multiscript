@@ -24,5 +24,5 @@ Use these instructions if you’re building from the source. Multiscript has bee
 1. `pip install -r requirements.txt` (Install our dependencies)
 1. At this point, if you want to run the build from source, execute: `python -m multiscript`
 1. `python build.py` (Build the executable self-contained application from source)
-   * The resulting `dist` directory will contain the built application.
+   * The resulting `dist` directory will contain the built application, plus installer or disk image.
 
