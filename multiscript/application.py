@@ -255,7 +255,7 @@ class MultiscriptBaseApplication:
                         self._known_plugins[plugin_type][plugin_name] = plugin_class
                         new_plugins[plugin_type][plugin_name] = plugin_class
         except Exception as exception:
-            _logger.debug(f"\t\tThe was a problem trying to load plugins using these args: {plugin_loader_args}")
+            _logger.debug(f"\t\tThere was a problem trying to load plugins using these args: {plugin_loader_args}")
             _logger.exception(exception)
 
         return new_plugins  # Return only the newly loaded plugins

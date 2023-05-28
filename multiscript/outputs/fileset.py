@@ -4,6 +4,7 @@ from pathlib import Path
 
 import multiscript
 from multiscript.outputs.base import BibleOutput
+from multiscript.plan.runner import PlanRunner
 from multiscript.plan.symbols import column_symbols
 
 
@@ -26,7 +27,7 @@ class FileSetOutput(BibleOutput):
         extension.
         '''
         super().__init__(plugin)
-        self.output_file_ext = "" # e.g. ".output"
+        self.output_file_ext: str = "" # e.g. ".output"
 
     def generate_combo_item(self, runner, version_combo, template_obj=None, is_template=False):
         '''Overrides BibleOutput.generate_combo_item(). The item returned is the path
@@ -108,8 +109,8 @@ class FileSetOutput(BibleOutput):
         filename += (".template" if is_template else "") + self.output_file_ext
         return filename
     
-    def get_item_stem(self, runner, version_combo):
-        item_name = runner.bible_ranges[0].string(abbrev=True, periods=True, nospace=True)
+    def get_item_stem(self, runner: PlanRunner, version_combo):
+        item_name = runner.bible_ranges[0].str(abbrev=True, alt_sep=True, nospace=True)
 
         if len(runner.bible_ranges) > 1:
             item_name += " +" + str(len(runner.bible_ranges)-1)

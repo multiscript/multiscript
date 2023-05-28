@@ -1,25 +1,24 @@
 from enum import Enum, auto
 
-from multiscript.bible.reference import BibleBook, BibleVerse, BibleRange
+from bibleref.ref import BibleBook, BibleVerse, BibleRange
 
 PART_NAME_LEN_WIDTH   = 25 # For justifying string representations of BibleContentParts
 
 
 class BibleContent:
     def __init__(self):
-        self._bible_range = None
-        self.bible_version = None
-        self.body = BibleStream(self)
-        # TODO: Turn copyright_text into a BibleStream
-        self.copyright_text = ""
+        self._bible_range: BibleRange = None
+        self.bible_version: 'BibleVersion' = None
+        self.body: BibleStream = BibleStream(self)
+        self.copyright_text: str = ""
 
     @property
-    def bible_range(self):
+    def bible_range(self) -> BibleRange:
         return self._bible_range
     
     @bible_range.setter
-    def bible_range(self, value):
-        self._bible_range = value
+    def bible_range(self, value: BibleRange):
+        self._bible_range: BibleRange = value
         self.body.current_verse = self._bible_range.start
 
     def __str__(self):
@@ -67,13 +66,13 @@ class BibleStreamHandler:
 
 class BibleStream(BibleStreamHandler):
     def __init__(self, bible_content=None):
-        self.bible_content = bible_content
-        self.tokens = []
-        self.current_verse = None
+        self.bible_content: BibleContent = bible_content
+        self.tokens: list[BibleStreamToken] = []
+        self.current_verse: BibleVerse = None
         
-        self.in_chap_num = False
-        self.in_verse_num = False
-        self.small_caps_level = 0
+        self.in_chap_num: bool = False
+        self.in_verse_num: bool = False
+        self.small_caps_level: int = 0
 
         #
         # Switches for various behavioural features
@@ -136,7 +135,7 @@ class BibleStream(BibleStreamHandler):
             # If our range is a Psalm, and Psalms contain titles, we don't need to insert the
             # verse number. So only proceed if those conditions *don't* hold.
             bible_range = self.bible_content.bible_range
-            if bible_range is None or bible_range.book is not BibleBook.Psa or not self.psalms_include_titles:
+            if bible_range is None or bible_range.start.book is not BibleBook.Psa or not self.psalms_include_titles:
                 self._expected_token_type = None # Prevents infinite recursion
                 self._insert_space_before_text = False   # We don't want extra space here
                 self.add_start_verse_num()
@@ -185,12 +184,11 @@ class BibleStream(BibleStreamHandler):
 
         # If necessary, add any missing chap number
         if self.insert_missing_chap_num and \
-           self.current_verse is not None and self.current_verse.verse == self.current_verse.min_verse() and \
+           self.current_verse is not None and self.current_verse.is_first_in_chap() and \
            (len(self.tokens) == 0 or self.tokens[-1].type is not BibleStreamTokenType.END_CHAP_NUM):
             
-            chap_num = self.current_verse.chap
             self.add_start_chap_num()
-            self.add_text(str(chap_num))
+            self.add_text(str(self.current_verse.chap_num))
             self.add_end_chap_num()
             self.add_token(BibleStartVerseNumToken(self, self.current_verse))
             self._insert_space_before_text = False  # We don't want extra space here
@@ -223,7 +221,7 @@ class BibleStream(BibleStreamHandler):
 
             # For the text we just added, use the verse metadata of the previous token.
             if len(self.tokens) > 1:
-                self.tokens[-1].bible_verse = self.tokens[-2].bible_verse.copy()
+                self.tokens[-1].bible_verse = BibleVerse(self.tokens[-2].bible_verse)
 
     def __str__(self):
         string = ""
@@ -250,13 +248,12 @@ class BibleStreamTokenType(Enum):
 
 class BibleStreamToken:
     def __init__(self, bible_stream, bible_verse):
-        self.bible_stream = bible_stream
-        self.bible_verse = bible_verse
-        self.type = None        # A member of BibleStreamTokenType. For testing the type of the token
-                                # faster than calling isinstance()
-        self.is_start = False   # True for tokens that represent the start of something
-        self.is_end = False     # True for tokens that represent the end of something
-        self.has_text = False   # True for tokens that contain text
+        self.bible_stream: BibleStream = bible_stream
+        self.bible_verse: BibleVerse = bible_verse
+        self.type: BibleStreamTokenType = None # For testing the type of the token faster than calling isinstance()
+        self.is_start: bool = False   # True for tokens that represent the start of something
+        self.is_end: bool = False     # True for tokens that represent the end of something
+        self.has_text: bool = False   # True for tokens that contain text
 
     def copyTokenTo(self, bible_stream_handler):
         '''Subclasses to override.
@@ -266,7 +263,7 @@ class BibleStreamToken:
     def __str__(self):
         string = ""
         if self.bible_verse is not None:
-            string += self.bible_verse.string(abbrev=True) + " "
+            string += self.bible_verse.str(abbrev=True) + " "
         string += self._token_name_for_str().ljust(PART_NAME_LEN_WIDTH) + "|"
         return string
 

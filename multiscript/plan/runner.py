@@ -2,10 +2,13 @@
 import logging
 from operator import attrgetter
 
+from bibleref.ref import BibleRange, BibleRangeList
 import multiscript
 from multiscript.bible.content import BibleContent
-from multiscript.bible.reference import BibleRangeList
-from multiscript.plan import combinations
+from multiscript.bible.version import BibleVersion
+from multiscript.outputs.base import OutputPlanRun
+from multiscript.plan import combinations, Plan
+from multiscript.plan.combinations import BibleVersionCombo, BibleVersionColumn
 from multiscript.plan.monitor import PlanMonitorCollection
 from multiscript.util.exception import MultiscriptException
 
@@ -16,23 +19,30 @@ class PlanRunner:
     and writing the Bible passages to the outputs.
     '''
     def __init__(self, plan, monitor=None):
-        self.plan = plan
-        self.monitors = PlanMonitorCollection(self, monitor)
-        self.total_progress_steps = 0
-        self.progress_step_count = 0
+        self.plan: Plan = plan
+        self.monitors: PlanMonitorCollection = PlanMonitorCollection(self, monitor)
+        self.total_progress_steps: int = 0
+        self.progress_step_count: int = 0
 
-        self.bible_ranges = []      # List of BibleRanges to be processed
-        self._all_versions = {}     # Dict of all versions being used.
-                                    #   Keys: versions Vals: True (we're using the dict as an ordered set)
-        self.version_cols = []      # List of VersionColumns
-        self.bible_contents = {}    # Uses BibleVersions as keys to a list of BibleContents (one
-                                    #   one for each range in self.bible_ranges)
-        self.output_runs = {}       # Dict of OutputPlanRun by output long_id
+        # BibleRangeList to be processed
+        self.bible_ranges: BibleRangeList = BibleRangeList([])
+        
+        # Dict of all versions being used.
+        # Keys: versions Vals: True (we're using the dict as an ordered set)
+        self._all_versions: dict[BibleVersion, bool] = {}  
+        
+        self.version_cols: list[BibleVersionColumn] = []
+        
+        # Uses BibleVersions as keys to a list of BibleContents (one for each range in self.bible_ranges)
+        self.bible_contents: dict[BibleVersion, list[BibleContent]] = {}    
+        
+        # Dict of OutputPlanRun by output long_id
+        self.output_runs: dict[str, OutputPlanRun] = {}
 
         #
         # Convert the data in the plan into the required form for this runner.
         #
-        self.bible_ranges = BibleRangeList.new_from_text(plan.bible_passages)
+        self.bible_ranges = BibleRangeList(plan.bible_passages)
 
         all_versions = plan.bible_versions
         for plan_version_column in plan.version_selection:
@@ -58,11 +68,11 @@ class PlanRunner:
         self.version_cols.sort(key=attrgetter('symbol_index'))
 
     @property
-    def all_versions(self):
-        return self._all_versions.keys()
+    def all_versions(self) -> list[BibleVersion]:
+        return list(self._all_versions.keys())
 
     @property
-    def all_version_combos(self):
+    def all_version_combos(self) -> list[BibleVersionCombo]:
         return combinations.get_all_version_combos(self.version_cols)
 
     def run(self):
