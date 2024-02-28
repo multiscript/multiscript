@@ -47,7 +47,7 @@ class GetBibleDotNetSource(BibleSource):
         
         Return all of the BibleVersions available for this BibleSource.
         '''
-        response = requests.get('https://getbible.net/v2/translations.json')
+        response = requests.get('https://api.getbible.net/v2/translations.json')
         resp_dict = response.json()
         versions = []
         for key, vers_dict in resp_dict.items():
@@ -164,7 +164,7 @@ class GetBibleDotNetVersion(BibleVersion):
         bible_ranges = bible_range.split(by_chap=True, num_verses=None)
         for indiv_range in bible_ranges:
             indiv_range: BibleRange = indiv_range
-            url = f'https://getbible.net/v2/{self.id}/{book_code}/{indiv_range.start.chap_num}.json'
+            url = f'https://api.getbible.net/v2/{self.id}/{book_code}/{indiv_range.start.chap_num}.json'
             response = requests.get(url)
             resp_dict = response.json()
             

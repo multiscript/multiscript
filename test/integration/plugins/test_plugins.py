@@ -1,13 +1,13 @@
 from pathlib import Path
 import unittest
 
-from test.application import TEST_APP
+from test.application import TEST_APP, MultiscriptAppTestCase
 
 TEST_PLUGIN_ID = "app_multiscript_test_plugin"
 TEST_PLUGIN_PATH = (Path(__file__) / Path("../../../data/integration/plugins/test_plugin_add_and_remove/app_multiscript_test_plugin-0.9.0.mplugin")).resolve()
 
 
-class TestPlan(unittest.TestCase):
+class TestPlan(MultiscriptAppTestCase):
     def test_plugin_add_and_remove(self):
         test_plugin_instance = TEST_APP.plugin(TEST_PLUGIN_ID)
         self.assertIsNone(test_plugin_instance)

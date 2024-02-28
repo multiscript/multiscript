@@ -4,10 +4,10 @@ from collections import Counter
 from multiscript.plugins import BUILTIN_PLUGIN_ID
 from multiscript.sources.getbible_dot_net import GetBibleDotNetSource
 
-from test.application import TEST_APP
+from test.application import TEST_APP, MultiscriptAppTestCase
 
 
-class TestBibleSource(unittest.TestCase):
+class TestBibleSource(MultiscriptAppTestCase):
     def test_builtin_source_list(self):
         builtin_plugin = TEST_APP.plugin(BUILTIN_PLUGIN_ID)
         source_classes = [type(source) for source in builtin_plugin.all_sources]

@@ -1,3 +1,5 @@
+- 0.15.0
+  - Update to new v2 API for GetBible.net
 - 0.14.0
   - Uses a brand new Bible reference parser: [bibleref](https://pypi.org/project/bibleref/) (also by the
     Multiscript project). For the first time, book names do not need to be repeated, and commas and semicolons in

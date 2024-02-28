@@ -2,10 +2,10 @@ import unittest
 import sys
 
 from multiscript.util.exception_catcher import *
-from test.application import TEST_APP
+from test.application import TEST_APP, MultiscriptAppTestCase
 
 
-class TestExceptionCatcher(unittest.TestCase):
+class TestExceptionCatcher(MultiscriptAppTestCase):
     def test_exception_catcher_context_manager(self):
         existing_hook = sys.excepthook
         with catch_unhandled_exceptions() as catcher:
