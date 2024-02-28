@@ -8,7 +8,7 @@ import unittest
 import tempfile
 import zipfile
 
-from test.application import TEST_APP
+from test.application import TEST_APP, MultiscriptAppTestCase
 import multiscript.plan
 import multiscript.plan.runner
 
@@ -49,7 +49,7 @@ def is_same(dir1, dir2):
     return True
 
 
-class TestRun(unittest.TestCase):
+class TestRun(MultiscriptAppTestCase):
 
     class TestMode(Enum):
         TEST     = auto()    # Run the test as normal

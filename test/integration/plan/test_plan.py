@@ -6,7 +6,7 @@ import unittest
 
 from multiscript.plan import Plan, load
 from multiscript.plugins import BUILTIN_PLUGIN_ID
-from test.application import TEST_APP
+from test.application import TEST_APP, MultiscriptAppTestCase
 
 
 def text_diff(path1, path2):
@@ -17,7 +17,7 @@ def text_diff(path1, path2):
     return ''.join(difflib.unified_diff(path1_lines, path2_lines))
 
 
-class TestPlan(unittest.TestCase):
+class TestPlan(MultiscriptAppTestCase):
     def test_plan_save_and_load(self):
         versions = []
         for source in TEST_APP.plugin(BUILTIN_PLUGIN_ID).all_sources:

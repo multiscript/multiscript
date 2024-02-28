@@ -4,9 +4,9 @@ from collections import Counter
 from multiscript.outputs.word import WordOutput
 from multiscript.outputs.plain_text import PlainTextOutput
 
-from test.application import TEST_APP
+from test.application import TEST_APP, MultiscriptAppTestCase
 
-class TestBibleOutput(unittest.TestCase):
+class TestBibleOutput(MultiscriptAppTestCase):
     def test_builtin_output_list(self):
         output_classes = [type(output) for output in TEST_APP.all_outputs]
         
