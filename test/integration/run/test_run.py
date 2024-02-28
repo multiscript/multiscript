@@ -52,9 +52,10 @@ def is_same(dir1, dir2):
 class TestRun(unittest.TestCase):
 
     class TestMode(Enum):
-        TEST    = auto()    # Run the test as normal
-        CREATE  = auto()    # Create the expected output, rather than testing for it
-        OBSERVE = auto()    # Observe output: Use known instead of temp directories, don't unzip word docs, don't test
+        TEST     = auto()    # Run the test as normal
+        CREATE   = auto()    # Create the expected output, rather than testing for it
+        OBSERVE  = auto()    # Observe output: Use known instead of temp directories, don't unzip word docs, don't test
+        OBS_TEST = auto()    # Observe output: Use known instead of temp directories, don't unzip word docs, do test
 
     def test_full_run(self, mode=TestMode.TEST):
         ''' Runs a test plan and tests whether the output matches what is expected.
@@ -80,7 +81,7 @@ class TestRun(unittest.TestCase):
             expected_output_path.mkdir(parents=True, exist_ok=True)
             test_output_context_manager = contextlib.nullcontext(expected_output_path)
             expected_expansion_context_manager = contextlib.nullcontext(None)
-        elif mode is TestRun.TestMode.OBSERVE:
+        elif mode is TestRun.TestMode.OBSERVE or mode is TestRun.TestMode.OBS_TEST:
             test_output_dir = Path(observe_base_path, "Output/")
             test_output_dir.mkdir(parents=True, exist_ok=True)
             test_output_context_manager = contextlib.nullcontext(test_output_dir)
