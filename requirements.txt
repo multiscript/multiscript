@@ -1,11 +1,11 @@
 # Pinned requirements
-PySide6-Essentials==6.4.1
-beautifulsoup4==4.11.1
-bibleref==0.15.0
-dmgbuild==1.6.0
-pluginlib==0.9
-pyinstaller==5.7.0
-python-docx==0.8.11
-requests==2.28.1
-semver==2.13.0
-stdlibs==2022.10.9
+PySide6-Essentials==6.6.3
+beautifulsoup4==4.12.3
+bibleref==0.16.0
+dmgbuild==1.6.1
+pluginlib==0.9.2
+pyinstaller==6.6.0
+python-docx==1.1.0
+requests==2.31.0
+semver==3.0.2
+stdlibs==2024.1.28

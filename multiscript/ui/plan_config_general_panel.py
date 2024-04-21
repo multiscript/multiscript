@@ -28,4 +28,4 @@ class GeneralPlanConfigPanel(ConfigWidget, Ui_GeneralPlanConfigPanel):
         config.confirm_after_template_expansion = self.confirmAfterTemplateExpansionCheckBox.isChecked()
     
     def allowConfirmationsCheckbox_stateChanged(self, state):
-        self.confirmAfterTemplateExpansionCheckBox.setEnabled(state == Qt.CheckState.Checked)
+        self.confirmAfterTemplateExpansionCheckBox.setEnabled(state == Qt.CheckState.Checked.value)
