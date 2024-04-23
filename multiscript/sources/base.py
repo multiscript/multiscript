@@ -39,8 +39,13 @@ class BibleSource:
         '''
         return None
 
-    def get_all_versions(self):
+    def get_all_versions(self, progress_reporter: 'VersionProgressReporter'):
         '''Return all of the BibleVersions available for this BibleSource.
+
+        If creating the list of all available versions is an expensive operation, and progress_reporter is not None,
+        the source may instead call methods on progress_reporter to return sub-lists of versions as they become
+        available. Versions reported on progress_reporter should not also be in the final list returned by this
+        method.
         '''
         return []
 
@@ -64,6 +69,27 @@ class BibleSource:
         return f"{self.__class__.__name__}({self.id})" + "\n" + \
         pformat(self.__dict__)
 
+
+class VersionProgressReporter:
+    '''An instance of this class can be passed to BibleSource.get_all_versions() to allow that method
+    to report available versions progressively, in the case that returning the list of all available
+    versions is expensive.'''
+    def add_to_total_steps(self, num_steps: int):
+        '''Add num_steps to the total maximum steps required for collecting the version list.'''
+        pass
+
+    def add_to_current_steps(self, num_steps: int):
+        '''Add num_steps to the current number of completed steps for collecting the version list.'''
+        pass
+    
+    def add_versions(self, bible_versions: list[BibleVersion]):
+        '''Add bible_versions to this list of available versions. These versions should not later also be
+        returned by get_all_versions()'''
+        pass
+
+    def is_cancelled(self):
+        '''Returns true if the caller of get_all_versions() wants the operation to be cancelled.'''
+        pass
 
 class SourceAppConfig(AppConfig):
     '''A subclass of AppConfig for storing app-related config for

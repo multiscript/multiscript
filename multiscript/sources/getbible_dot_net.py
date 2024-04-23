@@ -6,9 +6,8 @@ import urllib
 
 from bibleref import BibleBook, BibleRange, BibleVerse
 
-from multiscript.sources.base import BibleSource
+from multiscript.sources.base import BibleSource, VersionProgressReporter
 from multiscript.bible.version import BibleVersion
-
 
 
 class GetBibleDotNetSource(BibleSource):
@@ -42,7 +41,7 @@ class GetBibleDotNetSource(BibleSource):
         '''
         return None
 
-    def get_all_versions(self):
+    def get_all_versions(self, progress_reporter: VersionProgressReporter):
         '''Overridden from BibleVersion.
         
         Return all of the BibleVersions available for this BibleSource.
