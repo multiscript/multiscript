@@ -17,4 +17,4 @@ class TestBibleSource(MultiscriptAppTestCase):
 
     def test_getbible_dot_net_source(self):
         source = TEST_APP.source('multiscript-builtin/getbible.net')
-        source.get_all_versions()
+        source.get_all_versions(None)

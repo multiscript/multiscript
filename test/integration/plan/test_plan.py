@@ -21,7 +21,7 @@ class TestPlan(MultiscriptAppTestCase):
     def test_plan_save_and_load(self):
         versions = []
         for source in TEST_APP.plugin(BUILTIN_PLUGIN_ID).all_sources:
-            versions += source.get_all_versions()
+            versions += source.get_all_versions(None)
         
         with tempfile.TemporaryDirectory() as tempdir_name:
             plan_path = Path(tempdir_name) / "temp_plan.mplan"
