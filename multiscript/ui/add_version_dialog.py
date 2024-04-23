@@ -3,13 +3,15 @@ from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import Qt
 
 import multiscript
+from multiscript.bible.version import BibleVersion
+from multiscript.sources.base import VersionProgressReporter
 from multiscript.ui.add_version_dialog_generated import Ui_AddVersionDialog
-from multiscript.qt_custom.concurrency import call_nonblock
+from multiscript.qt_custom.concurrency import call_nonblock, main_thread, wait_main_thread
 from multiscript.qt_custom.models import ItemListTableModel, ItemListFilterSortProxyModel
 from multiscript.qt_custom.model_columns import AttributeColumn, BooleanColumn
 
 
-class AddVersionDialog(QtWidgets.QDialog, Ui_AddVersionDialog):
+class AddVersionDialog(QtWidgets.QDialog, Ui_AddVersionDialog, VersionProgressReporter):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.is_open = False
@@ -88,28 +90,35 @@ class AddVersionDialog(QtWidgets.QDialog, Ui_AddVersionDialog):
         super().done(result)
 
     def refresh_list(self):
+        self.refreshButton.setEnabled(False)
         self.versionModel.clear_items()
         self.pending_results.clear()
         self.statusLabel.setText(self.tr("Loading..."))
         self.progressBar.setMaximum(len(self.sources))
         self.progressBar.setValue(0)
         for source in self.sources:
-            pending_result = call_nonblock(source.get_all_versions, callback=self.add_versions)
+            # We call get_all_versions(), passing ourselves as the VersionProgressReporter
+            pending_result = call_nonblock(source.get_all_versions, self, callback=self.add_source_versions)
             self.pending_results.add(pending_result)
     
-    def add_versions(self, pending_result):
+    def add_source_versions(self, pending_result):
         if pending_result in self.pending_results:
-            self.progressBar.setValue(self.progressBar.value() + 1)
             self.pending_results.remove(pending_result)
-            self.versionModel.append_items(pending_result.value)
+            self.progressBar.setValue(self.progressBar.value() + 1)
+            self.append_versions(pending_result.value)
+            # Resizing columns to contents is an expensive operation, so we only do it once per source.
             self.versionTable.resizeColumnsToContents()
-        else:
-            # Must be a pending result from a previous invocation of the dialog. We ignore it
-            pass
-        if len(self.pending_results) == 0:
-            version_count = self.versionModel.rowCount()
-            self.statusLabel.setText(self.tr("Loading finished") +
-                                     f" ({version_count} " + self.tr("versions") + ")")
+            if len(self.pending_results) == 0:
+                self.refreshButton.setEnabled(True)
+                self.set_status_text(self.tr("Loading finished "))
+
+    def append_versions(self, bible_versions):
+        self.versionModel.append_items(bible_versions)
+        self.set_status_text(self.tr("Loading..."))
+
+    def set_status_text(self, base_text):
+        self.statusLabel.setText(base_text + " (" + str(self.versionModel.rowCount()) + " " + 
+                                 self.tr("versions") + ")")
 
     def cleanup(self):
         self.pending_results.clear()
@@ -127,3 +136,30 @@ class AddVersionDialog(QtWidgets.QDialog, Ui_AddVersionDialog):
 
     def on_edit_button_toggled(self, checked):
         self.sidebarForm.setVisible(checked)
+
+    #
+    # VersionProgressReporterd methods
+    #
+
+    @main_thread
+    def add_to_total_steps(self, num_steps: int):
+        '''Add num_steps to the total maximum steps required for collecting the version list.'''
+        self.progressBar.setMaximum(self.progressBar.maximum() + num_steps)
+
+    @main_thread
+    def add_to_current_steps(self, num_steps: int):
+        '''Add num_steps to the current number of completed steps for collecting the version list.'''
+        self.progressBar.setValue(self.progressBar.value() + num_steps)
+    
+    @main_thread
+    def add_versions(self, bible_versions: list[BibleVersion]):
+        '''Add bible_versions to this list of available versions. These versions should not later also be
+        returned by get_all_versions()'''
+        self.append_versions(bible_versions)
+
+    def is_cancelled(self):
+        '''Returns true if the caller of get_all_versions() wants the operation to be cancelled.'''
+        # If the form has been closed, consider the operation cancelled.
+        # We need to check self.is_open on the main thread, but return the value on the calling thread.
+        # We therefore use wait_main_thread, with a simple lambda function to retrieve self.is_open
+        return wait_main_thread(lambda: not self.is_open).value
