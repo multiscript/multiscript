@@ -31,6 +31,7 @@ class VersionForm(Form, Ui_VersionForm):
                 if output_version_config_subform is not None:
                     self.output_version_config_subforms[output_long_id] = output_version_config_subform
                     self.outputsTabWidget.addTab(output_version_config_subform, output.name)
+                    self.outputsTabWidget.adjustSize()
 
     def add_mappings(self):
         self.add_model_column_and_widget(

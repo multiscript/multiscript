@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'version_config_word_panel.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.4.1
+## Created by: Qt User Interface Compiler version 6.6.3
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -23,13 +23,13 @@ class Ui_WordVersionConfigPanel(object):
     def setupUi(self, WordVersionConfigPanel):
         if not WordVersionConfigPanel.objectName():
             WordVersionConfigPanel.setObjectName(u"WordVersionConfigPanel")
-        WordVersionConfigPanel.resize(342, 90)
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        WordVersionConfigPanel.resize(340, 91)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(WordVersionConfigPanel.sizePolicy().hasHeightForWidth())
         WordVersionConfigPanel.setSizePolicy(sizePolicy)
-        WordVersionConfigPanel.setMinimumSize(QSize(0, 90))
+        WordVersionConfigPanel.setMinimumSize(QSize(340, 91))
         self.gridLayout = QGridLayout(WordVersionConfigPanel)
         self.gridLayout.setObjectName(u"gridLayout")
         self.fontNameLabel = QLabel(WordVersionConfigPanel)
@@ -56,10 +56,11 @@ class Ui_WordVersionConfigPanel(object):
 
         self.gridLayout.addWidget(self.fontNameFontComboBox, 0, 1, 1, 1)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout.addItem(self.verticalSpacer, 3, 1, 1, 1)
 
+        self.gridLayout.setColumnStretch(1, 1)
 
         self.retranslateUi(WordVersionConfigPanel)
 
