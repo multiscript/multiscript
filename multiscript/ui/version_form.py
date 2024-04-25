@@ -31,6 +31,7 @@ class VersionForm(Form, Ui_VersionForm):
                 if output_version_config_subform is not None:
                     self.output_version_config_subforms[output_long_id] = output_version_config_subform
                     self.outputsTabWidget.addTab(output_version_config_subform, output.name)
+                    self.outputsTabWidget.adjustSize()
 
     def add_mappings(self):
         self.add_model_column_and_widget(
@@ -75,6 +76,10 @@ class VersionForm(Form, Ui_VersionForm):
                 AttributeColumn("Notes", lambda version: version.notes,
                                 lambda version, value: setattr(version, "notes", value.strip()), hide=False),
                 self.notesTextEdit, property_name="markdown"
+        )
+        self.add_model_column_and_widget(
+                AttributeColumn("Font Family", "font_family", hide=True),
+                self.fontFamilyFontComboBox
         )
   
         for output_long_id, output_version_config_subform in self.output_version_config_subforms.items():

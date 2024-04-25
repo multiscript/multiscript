@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'main_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.4.1
+## Created by: Qt User Interface Compiler version 6.6.3
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -75,7 +75,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.splitter = QSplitter(self.centralwidget)
         self.splitter.setObjectName(u"splitter")
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.splitter.sizePolicy().hasHeightForWidth())
@@ -102,7 +102,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addWidget(self.appIconLabel)
 
-        self.horizontalSpacer_4 = QSpacerItem(6, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        self.horizontalSpacer_4 = QSpacerItem(6, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer_4)
 
@@ -115,7 +115,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addWidget(self.titleLabel)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer)
 
@@ -129,7 +129,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.togglePlanNotesButton)
 
-        self.verticalSpacer = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Preferred)
+        self.verticalSpacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
 
         self.verticalLayout.addItem(self.verticalSpacer)
 
@@ -198,7 +198,7 @@ class Ui_MainWindow(object):
 
         self.rowSummaryLabel = QLabel(self.mainAreaWidget)
         self.rowSummaryLabel.setObjectName(u"rowSummaryLabel")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy1.setHorizontalStretch(1)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.rowSummaryLabel.sizePolicy().hasHeightForWidth())
@@ -214,7 +214,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
         self.versionTable = ItemListTableView(self.mainAreaWidget)
         self.versionTable.setObjectName(u"versionTable")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(1)
         sizePolicy2.setHeightForWidth(self.versionTable.sizePolicy().hasHeightForWidth())
@@ -307,7 +307,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_6.addWidget(self.templateShowButton)
 
-        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_6.addItem(self.horizontalSpacer_8)
 
@@ -350,7 +350,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_7.addWidget(self.outputDirShowButton)
 
-        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_7.addItem(self.horizontalSpacer_5)
 
@@ -380,7 +380,7 @@ class Ui_MainWindow(object):
         self.footerLayout = QHBoxLayout(self.footerAreaWidget)
         self.footerLayout.setObjectName(u"footerLayout")
         self.footerLayout.setContentsMargins(0, 12, 0, 18)
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.footerLayout.addItem(self.horizontalSpacer_2)
 
@@ -408,7 +408,7 @@ class Ui_MainWindow(object):
         self.sidePanelWidget = QWidget(self.splitter)
         self.sidePanelWidget.setObjectName(u"sidePanelWidget")
         self.sidePanelWidget.setEnabled(True)
-        sizePolicy3 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.sidePanelWidget.sizePolicy().hasHeightForWidth())
@@ -419,7 +419,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.setContentsMargins(-1, 18, -1, -1)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer_3)
 
@@ -435,7 +435,7 @@ class Ui_MainWindow(object):
 
         self.planNotesTextEdit = QTextEdit(self.sidePanelWidget)
         self.planNotesTextEdit.setObjectName(u"planNotesTextEdit")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding)
         sizePolicy4.setHorizontalStretch(0)
         sizePolicy4.setVerticalStretch(0)
         sizePolicy4.setHeightForWidth(self.planNotesTextEdit.sizePolicy().hasHeightForWidth())

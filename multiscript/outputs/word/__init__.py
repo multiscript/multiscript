@@ -228,9 +228,9 @@ class WordOutput(TaggedOutput):
         '''
         cursor.current_para.style = get_style(document, Styles.PARAGRAPH.value)
         cursor.new_para_style = get_style(document, Styles.PARAGRAPH.value)
-        font_name = bible_content.bible_version.output_config[self.long_id].font_name
-        if font_name is not None and len(font_name) > 0:
-            cursor.run_font_name = font_name
+        font_family = bible_content.bible_version.font_family
+        if font_family is not None and len(font_family) > 0:
+            cursor.run_font_name = font_family
         font_size = bible_content.bible_version.output_config[self.long_id].font_size
         if font_size is not None and float(font_size) > 0:
             cursor.run_font_size = font_size
@@ -377,7 +377,6 @@ class WordPlanConfig(OutputPlanConfig):
 class WordVersionConfig(OutputVersionConfig):
     def __init__(self, bible_output):
         super().__init__(bible_output)
-        self.font_name = None
         self.font_size = 0
 
     def new_config_subform(self):
