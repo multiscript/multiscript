@@ -31,7 +31,6 @@ class VersionForm(Form, Ui_VersionForm):
                 if output_version_config_subform is not None:
                     self.output_version_config_subforms[output_long_id] = output_version_config_subform
                     self.outputsTabWidget.addTab(output_version_config_subform, output.name)
-                    self.outputsTabWidget.adjustSize()
 
     def add_mappings(self):
         self.add_model_column_and_widget(
@@ -78,6 +77,10 @@ class VersionForm(Form, Ui_VersionForm):
                 self.notesTextEdit, property_name="markdown"
         )
         self.add_model_column_and_widget(
+                AttributeColumn("Auto Choose Font", "auto_font", hide=True),
+                self.autoFontCheckBox
+        )
+        self.add_model_column_and_widget(
                 AttributeColumn("Font Family", "font_family", hide=True),
                 self.fontFamilyFontComboBox
         )
@@ -92,16 +95,3 @@ class VersionForm(Form, Ui_VersionForm):
         result = version_notes_dialog.exec()
         if result == QtWidgets.QDialog.DialogCode.Accepted:
             self.notesTextEdit.setMarkdown(version_notes_dialog.getNotes())
-
-
-        # Old code showing how to handle checkboxes:
-        # self.add_model_column_and_widget(
-        #         AttributeColumn("Set Font Name", lambda version: version.word.set_font,
-        #                         lambda version, value: setattr(version.word, "set_font", value), hide=True),
-        #         self.checkBoxFontName
-        # )
-        # self.add_model_column_and_widget(
-        #         AttributeColumn("Set Font Size", lambda version: version.word.set_font_size,
-        #                         lambda version, value: setattr(version.word, "set_font_size", value), hide=True),
-        #         self.checkBoxFontSize
-        # )

@@ -64,6 +64,27 @@ class BibleStreamHandler:
         pass
 
 
+class TextOnlyHandler(BibleStreamHandler):
+    def __init__(self):
+        self.text = ""
+        self._capitalize = False
+    
+    def add_text(self, text: str):
+        self.text = self.text + (text.upper() if self.capitalize() else text)
+
+    def add_end_paragraph(self):
+        self.text = self.text + "\n\n"
+
+    def add_line_break(self):
+        self.text = self.text + "\n"
+
+    def add_start_small_caps(self):
+        self._capitalize = True
+
+    def add_end_small_caps(self):
+        self._capitalize = False
+
+
 class BibleStream(BibleStreamHandler):
     def __init__(self, bible_content=None):
         self.bible_content: BibleContent = bible_content
@@ -118,6 +139,12 @@ class BibleStream(BibleStreamHandler):
     def copyStreamTo(self, bible_stream_handler):
         for token in self.tokens:
             token.copyTokenTo(bible_stream_handler)
+
+    def all_text(self):
+        '''Returns only the basic plain text in the BibleStream.'''
+        text_receiver = TextOnlyHandler()
+        self.copyStreamTo(text_receiver)
+        return text_receiver.text
 
     def add_token(self, token):
         if self._expected_token_type is not None and token.type is not self._expected_token_type:
