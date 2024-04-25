@@ -26,6 +26,7 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -36,7 +37,6 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": null,
                         "font_size": 0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
@@ -72,6 +72,7 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -82,7 +83,6 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": "",
                         "font_size": 0.0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
@@ -118,6 +118,7 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -128,7 +129,6 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": "",
                         "font_size": 0.0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
@@ -164,6 +164,7 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -174,7 +175,6 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": null,
                         "font_size": 0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
@@ -210,6 +210,7 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -220,7 +221,6 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": null,
                         "font_size": 0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
@@ -256,6 +256,7 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -266,7 +267,6 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": null,
                         "font_size": 0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
