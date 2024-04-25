@@ -77,6 +77,10 @@ class VersionForm(Form, Ui_VersionForm):
                                 lambda version, value: setattr(version, "notes", value.strip()), hide=False),
                 self.notesTextEdit, property_name="markdown"
         )
+        self.add_model_column_and_widget(
+                AttributeColumn("Font Family", "font_family", hide=True),
+                self.fontFamilyFontComboBox
+        )
   
         for output_long_id, output_version_config_subform in self.output_version_config_subforms.items():
             bible_output = multiscript.app().output(output_long_id)

@@ -296,6 +296,14 @@ def _deserialize(file_app_version, error_list, obj_type, input_dict):
             plugin = multiscript.app().plugin(input_dict[PLUGIN_ID_KEY])
             source = plugin.source(input_dict[BIBLESOURCE_ID_KEY])
             new_obj = source.new_bible_version()
+
+            if file_app_version < semver.VersionInfo.parse("0.16.0"):
+                try:
+                    new_obj.font_family = input_dict["output_config"]["multiscript-builtin/word"].font_name
+                    del input_dict["output_config"]["multiscript-builtin/word"].font_name
+                except Exception:
+                    _logger.info(f"Plan version < 0.16.0: Didn't find a font-family in version id {input_dict['id']}")
+
         except Exception as e:
             raise BibleVersionNotFoundError(input_dict[PLUGIN_ID_KEY], input_dict[PLUGIN_NAME_KEY],
                                             input_dict[BIBLESOURCE_ID_KEY], input_dict[BIBLESOURCE_NAME_KEY],

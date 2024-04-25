@@ -18,6 +18,7 @@ class BibleVersion:
         self.abbrev = abbrev                # Shortcut to set user version abbrev
         self.notes: str = ""                     # String data of version notes
         self.notes_type: str = "text/markdown"   # Media-type of plan notes. Currently only "text/markdown" supported.
+        self.font_family: str = ""          # Font-family to use for this version.
 
         # Dict of OutputVersionConfig by output long_id
         self.output_config: dict[str, 'OutputVersionConfig'] = {}
