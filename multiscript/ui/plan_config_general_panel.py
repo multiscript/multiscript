@@ -13,7 +13,7 @@ class GeneralPlanConfigPanel(ConfigWidget, Ui_GeneralPlanConfigPanel):
     def setupUi(self):
         super().setupUi(self)
         self.allowConfirmationsCheckBox.stateChanged.connect(self.allowConfirmationsCheckbox_stateChanged)
-        self.allowConfirmationsCheckbox_stateChanged(self.allowConfirmationsCheckBox.checkState())
+        self.allowConfirmationsCheckbox_stateChanged(self.allowConfirmationsCheckBox.checkState().value)
     
     def load_config(self, config):
         '''Load the contents of config into this widget.

@@ -14,7 +14,8 @@ class PlainTextPlanConfigPanel(ConfigWidget, Ui_PlainTextPlanConfigPanel):
         
     def setupUi(self):
         super().setupUi(self)
-        self.insertParaTabCheckBox.stateChanged.connect(self.on_insert_para_tab_chceckbox_state_changed)
+        self.insertParaTabCheckBox.stateChanged.connect(self.on_insert_para_tab_checkbox_state_changed)
+        self.on_insert_para_tab_checkbox_state_changed(self.insertParaTabCheckBox.checkState().value)
     
     def load_config(self, config):
         '''Load the contents of config into this widget.
@@ -37,5 +38,5 @@ class PlainTextPlanConfigPanel(ConfigWidget, Ui_PlainTextPlanConfigPanel):
         config.skip_initial_para = self.skipInitialParaCheckBox.isChecked()
         config.use_poetry_tabs = self.usePoetryTabsCheckBox.isChecked()
 
-    def on_insert_para_tab_chceckbox_state_changed(self, state):
+    def on_insert_para_tab_checkbox_state_changed(self, state):
         self.skipInitialParaCheckBox.setEnabled(state == Qt.CheckState.Checked.value)

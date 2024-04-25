@@ -21,6 +21,8 @@ class VersionForm(Form, Ui_VersionForm):
     def setupUi(self):
         super().setupUi(self)
         self.moreButton.clicked.connect(self.edit_version_notes)
+        self.autoFontCheckBox.stateChanged.connect(self.autoFontCheckBox_stateChanged)
+        self.autoFontCheckBox_stateChanged(self.autoFontCheckBox.checkState().value)
 
         self.output_version_config_subforms = {}
         for output in multiscript.app().all_outputs:
@@ -95,3 +97,7 @@ class VersionForm(Form, Ui_VersionForm):
         result = version_notes_dialog.exec()
         if result == QtWidgets.QDialog.DialogCode.Accepted:
             self.notesTextEdit.setMarkdown(version_notes_dialog.getNotes())
+
+    def autoFontCheckBox_stateChanged(self, state):
+        self.fontFamilyLabel.setEnabled(state == Qt.CheckState.Unchecked.value)
+        self.fontFamilyFontComboBox.setEnabled(state == Qt.CheckState.Unchecked.value)

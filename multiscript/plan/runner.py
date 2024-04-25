@@ -18,8 +18,8 @@ _logger = logging.getLogger(__name__)
 
 
 # TODO:
-# Don't auto select for legacy plans with chosen fonts
-# Install fonts
+# Install fonts where possible, with confirmation.
+
 
 class PlanRunner:
     '''This class oversees the process of running a Plan: reading the Bible passages from the sources,
@@ -164,7 +164,7 @@ class PlanRunner:
                     script_display += f" ({text_info.script_variant})"
 
                 if text_info.main_script in ignored_scripts:
-                    _logger.info(f"\tIgnoring font selection for {script_display} script in {bible_version.abbrev}.")
+                    _logger.info(f"\tFont family not selected for {script_display} script in {bible_version.abbrev}.")
                 else:
                     font_family = self.font_finder.find_family(text_info)
                     bible_version.font_family = font_family
