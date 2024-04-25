@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>369</width>
-    <height>89</height>
+    <width>370</width>
+    <height>144</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,16 @@
       <string>Keep existing output files instead of recreating them</string>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="ignoredScriptsLabel">
+     <property name="text">
+      <string>Don't automatically select fonts for these Unicode scripts:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="ignoredScriptsLineEdit"/>
    </item>
    <item>
     <spacer name="verticalSpacer">

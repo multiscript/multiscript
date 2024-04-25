@@ -70,13 +70,13 @@ class TextOnlyHandler(BibleStreamHandler):
         self._capitalize = False
     
     def add_text(self, text: str):
-        self.text = self.text + (text.upper() if self.capitalize() else text)
+        self.text += (text.upper() if self._capitalize else text)
 
     def add_end_paragraph(self):
-        self.text = self.text + "\n\n"
+        self.text += "\n\n"
 
     def add_line_break(self):
-        self.text = self.text + "\n"
+        self.text += "\n"
 
     def add_start_small_caps(self):
         self._capitalize = True

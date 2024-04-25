@@ -3,6 +3,8 @@ import logging
 from operator import attrgetter
 
 from bibleref.ref import BibleRange, BibleRangeList
+from fontfinder import FontFinder
+
 import multiscript
 from multiscript.bible.content import BibleContent
 from multiscript.bible.version import BibleVersion
@@ -13,6 +15,11 @@ from multiscript.plan.monitor import PlanMonitorCollection
 from multiscript.util.exception import MultiscriptException
 
 _logger = logging.getLogger(__name__)
+
+
+# TODO:
+# Don't auto select for legacy plans with chosen fonts
+# Install fonts
 
 class PlanRunner:
     '''This class oversees the process of running a Plan: reading the Bible passages from the sources,
@@ -38,6 +45,8 @@ class PlanRunner:
         
         # Dict of OutputPlanRun by output long_id
         self.output_runs: dict[str, OutputPlanRun] = {}
+
+        self.font_finder = FontFinder()
 
         #
         # Convert the data in the plan into the required form for this runner.
@@ -78,12 +87,17 @@ class PlanRunner:
     def run(self):
         self.calc_total_progress_steps()
         self.load_bible_content()
+        self.select_auto_fonts()
         self.create_bible_outputs()
         _logger.info("Finished")
 
     def calc_total_progress_steps(self):
         self.total_progress_steps += len(self.bible_ranges) * len(self.all_versions)
         
+        for bible_version in self._all_versions.keys():
+            if bible_version.auto_font:
+                self.total_progress_steps += 1
+
         for output in multiscript.app().outputs_for_ext(self.base_template_path.suffix):
             try:
                 self.total_progress_steps += output.get_total_progress_steps(self)
@@ -131,6 +145,34 @@ class PlanRunner:
             except Exception as exception:
                 _logger.debug(f"The source {source.name} raised an exception:")
                 _logger.exception(exception)
+
+    def select_auto_fonts(self):
+        _logger.info("Selecting fonts:")
+
+        ignored_scripts_str = multiscript.app().app_config_group.general.ignored_scripts
+        ignored_scripts = {string.strip() for string in ignored_scripts_str.split(',')}
+
+        for bible_version in self._all_versions.keys():
+            if bible_version.auto_font:
+                bible_text = ""
+                for bible_contents in self.bible_contents[bible_version]:
+                    bible_text += bible_contents.body.all_text()
+                
+                text_info = self.font_finder.analyse(bible_text)
+                script_display = text_info.main_script
+                if text_info.script_variant != "":
+                    script_display += f" ({text_info.script_variant})"
+
+                if text_info.main_script in ignored_scripts:
+                    _logger.info(f"\tIgnoring font selection for {script_display} script in {bible_version.abbrev}.")
+                else:
+                    font_family = self.font_finder.find_family(text_info)
+                    bible_version.font_family = font_family
+                    bible_version.auto_font = False
+                    self.plan.changed = True
+                    _logger.info(f"\tSelected {font_family} for {script_display} script in {bible_version.abbrev}.")
+                
+                self.increment_progress_step_count()
 
     def create_bible_outputs(self):
         _logger.info("Creating outputs:")

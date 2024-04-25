@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>373</width>
+    <width>375</width>
     <height>612</height>
    </rect>
   </property>
@@ -221,7 +221,7 @@
    <item row="16" column="1">
     <widget class="QCheckBox" name="autoFontCheckBox">
      <property name="text">
-      <string>Automatically choose font family</string>
+      <string>Automatically select font family</string>
      </property>
     </widget>
    </item>

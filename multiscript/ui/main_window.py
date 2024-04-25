@@ -367,6 +367,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         progress_dialog = ProgressDialog(None, self.plan)
         progress_dialog.exec()
 
+        # Running the plan may modify the plan by automatically selecting fonts.
+        self.update_read_only_widgets_from_plan()
+
     def load_plan(self, path=None, new_plan=False):
         # Check if we need to save the existing plan
         cancel = False

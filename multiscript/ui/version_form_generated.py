@@ -24,7 +24,7 @@ class Ui_VersionForm(object):
     def setupUi(self, VersionForm):
         if not VersionForm.objectName():
             VersionForm.setObjectName(u"VersionForm")
-        VersionForm.resize(373, 612)
+        VersionForm.resize(375, 612)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -218,6 +218,6 @@ class Ui_VersionForm(object):
         self.userSectionLabel.setText(QCoreApplication.translate("VersionForm", u"Labels in User Language", None))
         self.userLangLabel.setText(QCoreApplication.translate("VersionForm", u"Language", None))
         self.otherDetailsSectionLabel.setText(QCoreApplication.translate("VersionForm", u"Other Version Details", None))
-        self.autoFontCheckBox.setText(QCoreApplication.translate("VersionForm", u"Automatically choose font family", None))
+        self.autoFontCheckBox.setText(QCoreApplication.translate("VersionForm", u"Automatically select font family", None))
     # retranslateUi
 
