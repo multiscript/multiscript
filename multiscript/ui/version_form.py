@@ -7,10 +7,6 @@ from multiscript.ui.version_form_generated import Ui_VersionForm
 from multiscript.ui.version_notes_dialog import VersionNotesDialog
 from multiscript.qt_custom.model_columns import AttributeColumn
 
-#
-# TODO: Ensure form expands to minimum size.
-#
-
 
 class VersionForm(Form, Ui_VersionForm):
 
