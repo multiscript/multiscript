@@ -185,7 +185,6 @@ class PlanRunner:
             font_families = [bible_version.font_family for bible_version in self._all_versions.keys() if \
                              bible_version.font_family is not None and bible_version.font_family != ""]
             _logger.info("Checking installed fonts...")
-            print(self.font_finder.not_installed_families(font_families))
             if len(self.font_finder.not_installed_families(font_families)) == 0:
                 _logger.info("All font families already installed.")
                 return

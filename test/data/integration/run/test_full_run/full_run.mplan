@@ -1,7 +1,9 @@
 {
-    "app_version": "0.13.0",
+    "app_version": "0.15.0",
     "__object__": {
         "__type__": "Plan",
+        "notes": "",
+        "notes_type": "text/markdown",
         "bible_passages": "Gen 1:1-4, Gen 1:27-31; Mark 1:1-3, Mark 1:14-19",
         "bible_versions": [
             {
@@ -26,6 +28,10 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "notes": "",
+                "notes_type": "text/markdown",
+                "auto_font": true,
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -36,8 +42,7 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": null,
-                        "font_size": 0,
+                        "font_size": 0.0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
                         "__bibleoutput_id__": "word",
@@ -72,6 +77,10 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "notes": "",
+                "notes_type": "text/markdown",
+                "auto_font": true,
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -82,7 +91,6 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": "",
                         "font_size": 0.0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
@@ -118,6 +126,10 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "notes": "",
+                "notes_type": "text/markdown",
+                "auto_font": true,
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -128,7 +140,6 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": "",
                         "font_size": 0.0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
@@ -164,6 +175,10 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "notes": "",
+                "notes_type": "text/markdown",
+                "auto_font": true,
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -174,8 +189,7 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": null,
-                        "font_size": 0,
+                        "font_size": 0.0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
                         "__bibleoutput_id__": "word",
@@ -210,6 +224,10 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "notes": "",
+                "notes_type": "text/markdown",
+                "auto_font": true,
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -220,8 +238,7 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": null,
-                        "font_size": 0,
+                        "font_size": 0.0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
                         "__bibleoutput_id__": "word",
@@ -256,6 +273,10 @@
                     "lang": "",
                     "abbrev": ""
                 },
+                "notes": "",
+                "notes_type": "text/markdown",
+                "auto_font": true,
+                "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -266,8 +287,7 @@
                             "id": "word",
                             "name": "MS Word"
                         },
-                        "font_name": null,
-                        "font_size": 0,
+                        "font_size": 0.0,
                         "__plugin_id__": "multiscript-builtin",
                         "__plugin_name__": "Builtin Plugin",
                         "__bibleoutput_id__": "word",
