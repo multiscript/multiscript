@@ -193,7 +193,7 @@ class PlanRunner:
             if len(fonts_for_download) == 0:
                 _logger.info("No fonts available for download.")
                 return
-            if False: # TODO: Add check to see if settings prevent download.
+            if not multiscript.app().app_config_group.general.download_and_install_fonts:
                 _logger.info("Settings don't allow font download.")
                 return
             

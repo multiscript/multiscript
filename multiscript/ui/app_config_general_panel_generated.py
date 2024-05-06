@@ -22,7 +22,7 @@ class Ui_GeneralAppConfigPanel(object):
     def setupUi(self, GeneralAppConfigPanel):
         if not GeneralAppConfigPanel.objectName():
             GeneralAppConfigPanel.setObjectName(u"GeneralAppConfigPanel")
-        GeneralAppConfigPanel.resize(370, 144)
+        GeneralAppConfigPanel.resize(370, 167)
         self.verticalLayout = QVBoxLayout(GeneralAppConfigPanel)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.savePlansBeforeExecutionCheckBox = QCheckBox(GeneralAppConfigPanel)
@@ -50,6 +50,11 @@ class Ui_GeneralAppConfigPanel(object):
 
         self.verticalLayout.addWidget(self.ignoredScriptsLineEdit)
 
+        self.downloadAndInstallFontsCheckBox = QCheckBox(GeneralAppConfigPanel)
+        self.downloadAndInstallFontsCheckBox.setObjectName(u"downloadAndInstallFontsCheckBox")
+
+        self.verticalLayout.addWidget(self.downloadAndInstallFontsCheckBox)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
@@ -66,5 +71,6 @@ class Ui_GeneralAppConfigPanel(object):
         self.keepExistingTemplateFilesCheckBox.setText(QCoreApplication.translate("GeneralAppConfigPanel", u"Keep existing template files instead of recreating them", None))
         self.keepExistingOutputFilesCheckbox.setText(QCoreApplication.translate("GeneralAppConfigPanel", u"Keep existing output files instead of recreating them", None))
         self.ignoredScriptsLabel.setText(QCoreApplication.translate("GeneralAppConfigPanel", u"Don't automatically select fonts for these Unicode scripts:", None))
+        self.downloadAndInstallFontsCheckBox.setText(QCoreApplication.translate("GeneralAppConfigPanel", u"Download and install fonts when available", None))
     # retranslateUi
 

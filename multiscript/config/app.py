@@ -62,6 +62,7 @@ class GeneralAppConfig(AppConfig):
         self.keep_existing_template_files = True
         self.keep_existing_output_files = False
         self.ignored_scripts = "Latin, Greek, Cyrillic"
+        self.download_and_install_fonts = True
 
     def new_config_widget(self):
         return GeneralAppConfigPanel(None)
