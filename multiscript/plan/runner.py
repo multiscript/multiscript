@@ -47,7 +47,6 @@ class PlanRunner:
         self.output_runs: dict[str, OutputPlanRun] = {}
 
         self.font_finder = fontfinder.FontFinder()
-        # TODO: Consider adjusting FontFinder.family_font_prefs to download fewer font variants?
 
         #
         # Convert the data in the plan into the required form for this runner.
@@ -220,7 +219,7 @@ class PlanRunner:
                             bytes_written += file.write(chunk)
                             kb_written = int(bytes_written / 1024) 
                             self.monitors.set_substatus_text(
-                                f"Downloading {font_info.fullname} (file {font_index+1} of {font_total_count} - " +
+                                f"Downloading {font_info.fullname} (font file {font_index+1} of {font_total_count} - " +
                                 f"{kb_written}K)...")
                             self.monitors.allow_cancel()
                     fonts_for_install.append(font_info)
