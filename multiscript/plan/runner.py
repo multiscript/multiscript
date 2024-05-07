@@ -21,10 +21,6 @@ from multiscript.util.exception import MultiscriptException
 _logger = logging.getLogger(__name__)
 
 
-# TODO:
-# Install fonts where possible, with confirmation.
-
-
 class PlanRunner:
     '''This class oversees the process of running a Plan: reading the Bible passages from the sources,
     and writing the Bible passages to the outputs.
