@@ -1,12 +1,10 @@
 # Release Process
 
   1. On Mac:
-     1. Create `release-vX.Y.Z` branch from `main`
-     1. Make development changes on the release branch.
      1. Update version numbers in `VERSION`, `multiscript.iss` and `CHANGES.md`
      1. Update version numbers in test plans (by searching for previous version number).
-     1. Commit, then squash `release-vX.Y.Z` into `main`
-     1. Can delete `release-vX.Y.Z` branch at this point.
+     1. Confirm all tests pass.
+     1. Commit.
      1. Remove old `dist/` directory
      1. `python build.py`
   1. On Windows:
