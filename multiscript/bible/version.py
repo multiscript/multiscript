@@ -18,6 +18,7 @@ class BibleVersion:
         self.abbrev = abbrev                # Shortcut to set user version abbrev
         self.notes: str = ""                     # String data of version notes
         self.notes_type: str = "text/markdown"   # Media-type of plan notes. Currently only "text/markdown" supported.
+        self.auto_font: bool = True         # True if the font-family should be chosen automatically on next plan run.
         self.font_family: str = ""          # Font-family to use for this version.
 
         # Dict of OutputVersionConfig by output long_id

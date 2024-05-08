@@ -1,8 +1,14 @@
 
 import logging
 from operator import attrgetter
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
+import requests
 
 from bibleref.ref import BibleRange, BibleRangeList
+import fontfinder
+
 import multiscript
 from multiscript.bible.content import BibleContent
 from multiscript.bible.version import BibleVersion
@@ -13,6 +19,7 @@ from multiscript.plan.monitor import PlanMonitorCollection
 from multiscript.util.exception import MultiscriptException
 
 _logger = logging.getLogger(__name__)
+
 
 class PlanRunner:
     '''This class oversees the process of running a Plan: reading the Bible passages from the sources,
@@ -38,6 +45,8 @@ class PlanRunner:
         
         # Dict of OutputPlanRun by output long_id
         self.output_runs: dict[str, OutputPlanRun] = {}
+
+        self.font_finder = fontfinder.FontFinder()
 
         #
         # Convert the data in the plan into the required form for this runner.
@@ -78,12 +87,18 @@ class PlanRunner:
     def run(self):
         self.calc_total_progress_steps()
         self.load_bible_content()
+        self.select_auto_fonts()
+        self.download_and_install_fonts()
         self.create_bible_outputs()
         _logger.info("Finished")
 
     def calc_total_progress_steps(self):
         self.total_progress_steps += len(self.bible_ranges) * len(self.all_versions)
         
+        for bible_version in self._all_versions.keys():
+            if bible_version.auto_font:
+                self.total_progress_steps += 1
+
         for output in multiscript.app().outputs_for_ext(self.base_template_path.suffix):
             try:
                 self.total_progress_steps += output.get_total_progress_steps(self)
@@ -104,33 +119,125 @@ class PlanRunner:
 
         _logger.info("Loading Bible versions:")
 
-        for version in self.all_versions:
-            _logger.info(f"\tLoading {version.abbrev}:")
-            content_list = []
+        try:
+            for version in self.all_versions:
+                _logger.info(f"\tLoading {version.abbrev}:")
+                content_list = []
 
-            for bible_range in self.bible_ranges:
-                content = BibleContent()
-                content.bible_version = version
-                content.bible_range = bible_range
-                _logger.info(f"\t\tLoading {str(bible_range)}")
-                self.monitors.set_substatus_text(f"Loading {version.abbrev} {str(bible_range)}")
+                for bible_range in self.bible_ranges:
+                    content = BibleContent()
+                    content.bible_version = version
+                    content.bible_range = bible_range
+                    _logger.info(f"\t\tLoading {str(bible_range)}")
+                    self.monitors.set_substatus_text(f"Loading {version.abbrev} {str(bible_range)}")
+                    try:
+                        version.load_content(bible_range, content)
+                    except Exception as exception:
+                        _logger.exception(exception)
+                        self.monitors.request_confirmation(f"<b>There was an error loading {str(bible_range)} " +
+                                                        f"for the {version.abbrev}.</b>")
+                    content_list.append(content)
+                    
+                    # Noe: self.increment_progress_step_count() allows cancellation, which means a CancelError
+                    # can be raised during this call.
+                    self.increment_progress_step_count()
+
+                self.bible_contents[version] = content_list
+        finally:
+            # Allow sources to clean up after themselves, even if we had an unhandled exception, which could
+            # include a CancelError.
+            for source in all_sources:
                 try:
-                    version.load_content(bible_range, content)
+                    source.bible_content_loaded(self)
                 except Exception as exception:
+                    _logger.debug(f"The source {source.name} raised an exception:")
                     _logger.exception(exception)
-                    self.monitors.request_confirmation(f"<b>There was an error loading {str(bible_range)} " +
-                                                       f"for the {version.abbrev}.</b>")
-                content_list.append(content)
+
+    def select_auto_fonts(self):
+        _logger.info("Selecting fonts:")
+
+        ignored_scripts_str = multiscript.app().app_config_group.general.ignored_scripts
+        ignored_scripts = {string.strip() for string in ignored_scripts_str.split(',')}
+
+        for bible_version in self._all_versions.keys():
+            if bible_version.auto_font:
+                bible_text = ""
+                for bible_contents in self.bible_contents[bible_version]:
+                    bible_text += bible_contents.body.all_text()
+                
+                text_info = self.font_finder.analyse(bible_text)
+                script_display = text_info.main_script
+                if text_info.script_variant != "":
+                    script_display += f" ({text_info.script_variant})"
+
+                if text_info.main_script in ignored_scripts:
+                    _logger.info(f"\tFont family not selected for {script_display} script in {bible_version.abbrev}.")
+                else:
+                    font_family = self.font_finder.find_family(text_info)
+                    bible_version.font_family = font_family
+                    bible_version.auto_font = False
+                    self.plan.changed = True
+                    _logger.info(f"\tSelected {font_family} for {script_display} script in {bible_version.abbrev}.")
+                
                 self.increment_progress_step_count()
 
-            self.bible_contents[version] = content_list
+    def download_and_install_fonts(self):
+        try:
+            font_families = [bible_version.font_family for bible_version in self._all_versions.keys() if \
+                             bible_version.font_family is not None and bible_version.font_family != ""]
+            _logger.info("Checking installed fonts...")
+            if len(self.font_finder.not_installed_families(font_families)) == 0:
+                _logger.info("All font families already installed.")
+                return
+            
+            fonts_for_download = self.font_finder.find_family_fonts_to_download(font_families)
+            if len(fonts_for_download) == 0:
+                _logger.info("No fonts available for download.")
+                return
+            if not multiscript.app().app_config_group.general.download_and_install_fonts:
+                _logger.info("Settings don't allow font download.")
+                return
+            
+            self.total_progress_steps += len(fonts_for_download) + 1 # One step per download + one for install
+            self.update_progress()
+            # print(fonts_for_download)
+            families_for_download = {font_info.family_name: 1 for font_info in fonts_for_download}.keys()                    
+            _logger.info("Preparing to download these font families:")
+            for font_family in families_for_download:
+                _logger.info(f"\t{font_family}")    
+            self.monitors.request_confirmation("Press <b>Continue</b> to download and install fonts for " +
+                                                "this plan...")
+            
+            _logger.info("Dowloading fonts:")
+            with TemporaryDirectory() as tempdir:
+                # Download fonts
+                fonts_for_install = []
+                font_total_count = len(fonts_for_download)
+                for font_index in range(font_total_count):
+                    # We make a copy so as not to affect the original FontInfo object
+                    font_info = fonts_for_download[font_index].copy()
+                    _logger.info(f"\tDownloading {font_info.filename}")
+                    response = requests.get(font_info.url, stream=True)
+                    font_info.downloaded_path = Path(tempdir) / font_info.filename
+                    bytes_written = 0
+                    with open(font_info.downloaded_path, 'wb') as file:
+                        for chunk in response.iter_content(chunk_size=128):
+                            bytes_written += file.write(chunk)
+                            kb_written = int(bytes_written / 1024) 
+                            self.monitors.set_substatus_text(
+                                f"Downloading {font_info.fullname} (font file {font_index+1} of {font_total_count} - " +
+                                f"{kb_written}K)...")
+                            self.monitors.allow_cancel()
+                    fonts_for_install.append(font_info)
+                    self.increment_progress_step_count()
 
-        for source in all_sources:
-            try:
-                source.bible_content_loaded(self)
-            except Exception as exception:
-                _logger.debug(f"The source {source.name} raised an exception:")
-                _logger.exception(exception)
+                # Install fonts
+                _logger.info("Installing fonts...")
+                self.font_finder.install_fonts(fonts_for_install)
+                self.increment_progress_step_count()
+                                                            
+        except fontfinder.UnsupportedPlatformException:
+            _logger.info(f"Font download and installation not currently supported on this platform.")
 
     def create_bible_outputs(self):
         _logger.info("Creating outputs:")
@@ -145,9 +252,12 @@ class PlanRunner:
 
     def increment_progress_step_count(self):
         self.progress_step_count += 1
-        self.monitors.set_progress_percent(int(self.progress_step_count / self.total_progress_steps * 100))
+        self.update_progress()
         self.monitors.allow_cancel()
 
+    def update_progress(self):
+        self.monitors.set_progress_percent(int(self.progress_step_count / self.total_progress_steps * 100))
+       
 
 class CancelError(MultiscriptException):
     def __init__(self):

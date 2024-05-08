@@ -30,6 +30,7 @@
                 },
                 "notes": "",
                 "notes_type": "text/markdown",
+                "auto_font": true,
                 "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
@@ -78,6 +79,7 @@
                 },
                 "notes": "",
                 "notes_type": "text/markdown",
+                "auto_font": true,
                 "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
@@ -126,6 +128,7 @@
                 },
                 "notes": "",
                 "notes_type": "text/markdown",
+                "auto_font": true,
                 "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {
@@ -174,6 +177,7 @@
                 },
                 "notes": "",
                 "notes_type": "text/markdown",
+                "auto_font": true,
                 "font_family": "",
                 "output_config": {
                     "multiscript-builtin/word": {

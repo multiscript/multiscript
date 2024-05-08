@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>373</width>
+    <width>375</width>
     <height>612</height>
    </rect>
   </property>
@@ -23,62 +23,28 @@
    <item row="4" column="1">
     <widget class="QLineEdit" name="nativeNameLineEdit"/>
    </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="nativeLangLabel">
+   <item row="9" column="0">
+    <widget class="QLabel" name="userNameLabel">
      <property name="text">
-      <string>Language</string>
+      <string>Version Name</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
-    <widget class="QLineEdit" name="nativeLangLineEdit"/>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="nativeAbbrevLineEdit"/>
    </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="userAbbrevLabel">
-     <property name="text">
-      <string>Abbreviation</string>
+   <item row="18" column="0" colspan="2">
+    <widget class="QTabWidget" name="outputsTabWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
    </item>
-   <item row="19" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="idLineEdit"/>
-   </item>
-   <item row="11" column="0">
-    <widget class="QLabel" name="userLangLabel">
-     <property name="text">
-      <string>Language</string>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="1">
-    <widget class="QLineEdit" name="userLangLineEdit"/>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="sourceLineEdit">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="sourceLabel">
-     <property name="text">
-      <string>Source</string>
-     </property>
-    </widget>
+   <item row="10" column="1">
+    <widget class="QLineEdit" name="userAbbrevLineEdit"/>
    </item>
    <item row="14" column="0">
     <widget class="QLabel" name="notesLabel">
@@ -90,26 +56,32 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QLabel" name="nativeSectionLabel">
+   <item row="6" column="1">
+    <widget class="QLineEdit" name="nativeLangLineEdit"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="sourceLabel">
      <property name="text">
-      <string>Labels in Native Language</string>
+      <string>Source</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="idLabel">
+   <item row="10" column="0">
+    <widget class="QLabel" name="userAbbrevLabel">
      <property name="text">
-      <string>Version ID</string>
+      <string>Abbreviation</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="userNameLabel">
-     <property name="text">
-      <string>Version Name</string>
+   <item row="17" column="1">
+    <widget class="QFontComboBox" name="fontFamilyFontComboBox">
+     <property name="currentText">
+      <string/>
      </property>
     </widget>
+   </item>
+   <item row="11" column="1">
+    <widget class="QLineEdit" name="userLangLineEdit"/>
    </item>
    <item row="14" column="1" rowspan="2">
     <widget class="QTextEdit" name="notesTextEdit">
@@ -130,43 +102,44 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="nativeNameLabel">
+   <item row="2" column="1">
+    <widget class="QLabel" name="nativeSectionLabel">
      <property name="text">
-      <string>Version Name</string>
+      <string>Labels in Native Language</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
-    <widget class="QLabel" name="userSectionLabel">
+   <item row="6" column="0">
+    <widget class="QLabel" name="nativeLangLabel">
      <property name="text">
-      <string>Labels in User Language</string>
+      <string>Language</string>
      </property>
     </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="idLineEdit"/>
    </item>
    <item row="9" column="1">
     <widget class="QLineEdit" name="userNameLineEdit"/>
+   </item>
+   <item row="17" column="0">
+    <widget class="QLabel" name="fontFamilyLabel">
+     <property name="text">
+      <string>Font Family</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="idLabel">
+     <property name="text">
+      <string>Version ID</string>
+     </property>
+    </widget>
    </item>
    <item row="5" column="0">
     <widget class="QLabel" name="nativeAbbrevLabel">
      <property name="text">
       <string>Abbreviation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QLineEdit" name="nativeAbbrevLineEdit"/>
-   </item>
-   <item row="10" column="1">
-    <widget class="QLineEdit" name="userAbbrevLineEdit"/>
-   </item>
-   <item row="17" column="0" colspan="2">
-    <widget class="QTabWidget" name="outputsTabWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
      </property>
     </widget>
    </item>
@@ -197,24 +170,58 @@
      </item>
     </layout>
    </item>
-   <item row="16" column="0">
-    <widget class="QLabel" name="fontFamilyLabel">
+   <item row="4" column="0">
+    <widget class="QLabel" name="nativeNameLabel">
      <property name="text">
-      <string>Font Family</string>
+      <string>Version Name</string>
      </property>
     </widget>
    </item>
-   <item row="16" column="1">
-    <widget class="QFontComboBox" name="fontFamilyFontComboBox">
-     <property name="currentText">
-      <string/>
+   <item row="20" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="8" column="1">
+    <widget class="QLabel" name="userSectionLabel">
+     <property name="text">
+      <string>Labels in User Language</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
+    <widget class="QLabel" name="userLangLabel">
+     <property name="text">
+      <string>Language</string>
      </property>
     </widget>
    </item>
    <item row="12" column="1">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="otherDetailsSectionLabel">
      <property name="text">
       <string>Other Version Details</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="sourceLineEdit">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="16" column="1">
+    <widget class="QCheckBox" name="autoFontCheckBox">
+     <property name="text">
+      <string>Automatically select font family</string>
      </property>
     </widget>
    </item>

@@ -7,10 +7,6 @@ from multiscript.ui.version_form_generated import Ui_VersionForm
 from multiscript.ui.version_notes_dialog import VersionNotesDialog
 from multiscript.qt_custom.model_columns import AttributeColumn
 
-#
-# TODO: Ensure form expands to minimum size.
-#
-
 
 class VersionForm(Form, Ui_VersionForm):
 
@@ -21,6 +17,8 @@ class VersionForm(Form, Ui_VersionForm):
     def setupUi(self):
         super().setupUi(self)
         self.moreButton.clicked.connect(self.edit_version_notes)
+        self.autoFontCheckBox.stateChanged.connect(self.autoFontCheckBox_stateChanged)
+        self.autoFontCheckBox_stateChanged(self.autoFontCheckBox.checkState().value)
 
         self.output_version_config_subforms = {}
         for output in multiscript.app().all_outputs:
@@ -31,7 +29,6 @@ class VersionForm(Form, Ui_VersionForm):
                 if output_version_config_subform is not None:
                     self.output_version_config_subforms[output_long_id] = output_version_config_subform
                     self.outputsTabWidget.addTab(output_version_config_subform, output.name)
-                    self.outputsTabWidget.adjustSize()
 
     def add_mappings(self):
         self.add_model_column_and_widget(
@@ -78,6 +75,10 @@ class VersionForm(Form, Ui_VersionForm):
                 self.notesTextEdit, property_name="markdown"
         )
         self.add_model_column_and_widget(
+                AttributeColumn("Auto Choose Font", "auto_font", hide=True),
+                self.autoFontCheckBox
+        )
+        self.add_model_column_and_widget(
                 AttributeColumn("Font Family", "font_family", hide=True),
                 self.fontFamilyFontComboBox
         )
@@ -93,15 +94,6 @@ class VersionForm(Form, Ui_VersionForm):
         if result == QtWidgets.QDialog.DialogCode.Accepted:
             self.notesTextEdit.setMarkdown(version_notes_dialog.getNotes())
 
-
-        # Old code showing how to handle checkboxes:
-        # self.add_model_column_and_widget(
-        #         AttributeColumn("Set Font Name", lambda version: version.word.set_font,
-        #                         lambda version, value: setattr(version.word, "set_font", value), hide=True),
-        #         self.checkBoxFontName
-        # )
-        # self.add_model_column_and_widget(
-        #         AttributeColumn("Set Font Size", lambda version: version.word.set_font_size,
-        #                         lambda version, value: setattr(version.word, "set_font_size", value), hide=True),
-        #         self.checkBoxFontSize
-        # )
+    def autoFontCheckBox_stateChanged(self, state):
+        self.fontFamilyLabel.setEnabled(state == Qt.CheckState.Unchecked.value)
+        self.fontFamilyFontComboBox.setEnabled(state == Qt.CheckState.Unchecked.value)
