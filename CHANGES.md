@@ -1,3 +1,11 @@
+- 0.16.0
+  - New font-related features:
+    - Automatically select fonts for Bible versions (which can be overridden).
+    - When available, automatically download and install fonts used by Bible versions.
+    - Both these new features currently limited to the Google Noto font collection.
+  - Improve UI updating when listing available versions is a long-running operation (by allowing Bible sources
+    to report progressive results).
+  - Update dependencies (including to Qt 6.6 and Pyinstaller 6.6)
 - 0.15.0
   - Update to new v2 API for GetBible.net
 - 0.14.0
