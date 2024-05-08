@@ -119,33 +119,39 @@ class PlanRunner:
 
         _logger.info("Loading Bible versions:")
 
-        for version in self.all_versions:
-            _logger.info(f"\tLoading {version.abbrev}:")
-            content_list = []
+        try:
+            for version in self.all_versions:
+                _logger.info(f"\tLoading {version.abbrev}:")
+                content_list = []
 
-            for bible_range in self.bible_ranges:
-                content = BibleContent()
-                content.bible_version = version
-                content.bible_range = bible_range
-                _logger.info(f"\t\tLoading {str(bible_range)}")
-                self.monitors.set_substatus_text(f"Loading {version.abbrev} {str(bible_range)}")
+                for bible_range in self.bible_ranges:
+                    content = BibleContent()
+                    content.bible_version = version
+                    content.bible_range = bible_range
+                    _logger.info(f"\t\tLoading {str(bible_range)}")
+                    self.monitors.set_substatus_text(f"Loading {version.abbrev} {str(bible_range)}")
+                    try:
+                        version.load_content(bible_range, content)
+                    except Exception as exception:
+                        _logger.exception(exception)
+                        self.monitors.request_confirmation(f"<b>There was an error loading {str(bible_range)} " +
+                                                        f"for the {version.abbrev}.</b>")
+                    content_list.append(content)
+                    
+                    # Noe: self.increment_progress_step_count() allows cancellation, which means a CancelError
+                    # can be raised during this call.
+                    self.increment_progress_step_count()
+
+                self.bible_contents[version] = content_list
+        finally:
+            # Allow sources to clean up after themselves, even if we had an unhandled exception, which could
+            # include a CancelError.
+            for source in all_sources:
                 try:
-                    version.load_content(bible_range, content)
+                    source.bible_content_loaded(self)
                 except Exception as exception:
+                    _logger.debug(f"The source {source.name} raised an exception:")
                     _logger.exception(exception)
-                    self.monitors.request_confirmation(f"<b>There was an error loading {str(bible_range)} " +
-                                                       f"for the {version.abbrev}.</b>")
-                content_list.append(content)
-                self.increment_progress_step_count()
-
-            self.bible_contents[version] = content_list
-
-        for source in all_sources:
-            try:
-                source.bible_content_loaded(self)
-            except Exception as exception:
-                _logger.debug(f"The source {source.name} raised an exception:")
-                _logger.exception(exception)
 
     def select_auto_fonts(self):
         _logger.info("Selecting fonts:")
