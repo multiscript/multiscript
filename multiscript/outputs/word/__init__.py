@@ -168,6 +168,7 @@ class WordOutput(TaggedOutput):
 
         if is_first:
             # The first row will be the version name tags.
+            table.show_header_row = True
             for column_index in range(len(table_text_array[0])):
                 cell = table.cell(0, column_index)
                 paragraph = cell.paragraphs[0]
@@ -311,7 +312,15 @@ class WordDocCursor(TaggedDocCursor):
         else:
             # Add table before current paragraph
             self.current_para._p.addprevious(table._tbl)
-        
+
+        # By default, turn off all special rows and columns
+        table.show_header_row = False
+        table.show_total_row = False
+        table.show_header_column = False
+        table.show_last_column = False
+        table.show_banded_rows = False
+        table.show_banded_columns = False
+
         return table
     
 
