@@ -57,7 +57,7 @@ class TestRun(MultiscriptAppTestCase):
         OBSERVE  = auto()    # Observe output: Use known instead of temp directories, don't unzip word docs, don't test
         OBS_TEST = auto()    # Observe output: Use known instead of temp directories, don't unzip word docs, do test
 
-    def test_full_run(self, mode=TestMode.TEST):
+    def test_full_run(self, mode=TestMode.OBSERVE):
         ''' Runs a test plan and tests whether the output matches what is expected.
 
         mode is one of the TestMode enum values.
