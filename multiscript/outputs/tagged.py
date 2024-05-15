@@ -45,6 +45,15 @@ class TaggedOutput(FileSetOutput):
     def __init__(self, plugin):
         super().__init__(plugin)
 
+    def setup(self, runner):
+        '''Overriden from BibleOutput.setup(). Called prior to looping through the version
+        combos.
+
+        We use this method to set some defaults for the run.
+        '''
+        super().setup(runner)
+        runner.output_runs[self.long_id].text_join = "\n...\n" # Default text for MSC_TEXT_JOIN tag.
+
     def expand_base_template(self, runner, document):
         '''Overrides FileSetOutput.expand_base_template(). Called if the newly loaded document is
         actually the base template. Handles tags in the base template that expand to other tags
@@ -63,7 +72,7 @@ class TaggedOutput(FileSetOutput):
                 self.insert_passage_group_tag(runner, document, cursor, is_first, tag_text)
 
                 table_text_array = [] # List of rows, each of which is a list of column text                
-                # For the first table, include the MS_VER_NAME tags
+                # For the first table, include the MSC_VER_NAME tags
                 if is_first:
                     table_text_row = []
                     for column_index in range(len(runner.version_cols)):
@@ -73,7 +82,7 @@ class TaggedOutput(FileSetOutput):
                 table_text_row = ["" for column_index in range(len(runner.version_cols))]
                 range_index = 0
                 for bible_range in range_group:
-                    # Include MS_TEXT tags for the bible content body
+                    # Include MSC_TEXT tags for the bible content body
                     for column_index in range(len(runner.version_cols)):
                         table_text_row[column_index] += Tags.TEXT.value.format(contents_index + 1,
                                                                                column_symbols[column_index])
@@ -90,7 +99,7 @@ class TaggedOutput(FileSetOutput):
         # Check if all copyright tags are present
         all_copyright_tags_found = True
         for column_index in range(len(runner.version_cols)):
-            tag = "[MS_COPYRIGHT_{0}]".format(column_symbols[column_index])
+            tag = Tags.COPYRIGHT.value.format(column_symbols[column_index])
             all_copyright_tags_found = self.text_found(document, tag)
             if not all_copyright_tags_found:
                 break
@@ -100,10 +109,6 @@ class TaggedOutput(FileSetOutput):
             table_text_row = []
             for column_index in range(len(runner.version_cols)):
                 table_text_row.append(Tags.COPYRIGHT.value.format(column_symbols[column_index]))
-            # If cursor is not None, we've already expanded an MS_ALL_TABLES tag, so insert the
-            # copyright table should be inserted at the current cursor location.
-            # We didn't expand an MS_ALL_TABLES tag, so cursor is None, and the copyright table
-            # should be inserted the end of the document.
             self.insert_copyright_table(runner, document, cursor, [table_text_row])
 
     def begin_fill_document(self, runner, version_combo, document, is_template):
@@ -135,6 +140,15 @@ class TaggedOutput(FileSetOutput):
             tag = Tags.PASSAGE_GROUP.value.format(group_index + 1)
             range_group = BibleRangeList(runner.bible_ranges.groups[group_index])
             self.replace_tag_directly(document, tag, range_group.str())
+
+        # Fill in all text join tags present
+        tag = Tags.TEXT_JOIN.value
+        cursor = self.replace_tag_with_cursor(document, tag)
+        while cursor is not None:
+            self.format_text_join_tag(document, cursor)
+            cursor.add_text(runner.output_runs[self.long_id].text_join)
+            # Check if there's another text join tag present
+            cursor = self.replace_tag_with_cursor(document, tag)
 
         # Fill in copyright tags
         versions = [element.version if element.version is not None else None for element in version_combo]
@@ -227,6 +241,12 @@ class TaggedOutput(FileSetOutput):
         '''
         pass
  
+    def format_text_join_tag(self, document, cursor):
+        '''Abstract method. Subclasses can override to perform formatting needed prior to the text join
+        being inserted. The supplied cursor will be at the insertion point.
+        '''
+        pass
+
     def format_bible_text_tag(self, document, contents_index, column_symbol, bible_content, cursor):
         '''Abstract method. Subclasses can override to perform formatting needed prior to Bible content
         being inserted. The supplied cursor will be at the insertion point.

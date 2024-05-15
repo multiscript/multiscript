@@ -56,6 +56,15 @@ class WordOutput(TaggedOutput):
     def new_output_plan_run(self, plan):
         return WordPlanRun(plan)
 
+    def setup(self, runner):
+        '''Overriden from TaggedOutput.setup(). Called prior to looping through the version
+        combos.
+
+        We use this method to set some defaults for the run.
+        '''
+        super().setup(runner)
+        runner.output_runs[self.long_id].text_join = runner.plan.config.outputs[self.long_id].join_passage_text
+        print(ord(runner.output_runs[self.long_id].text_join[0]))
     #
     # Implementation of abstract methods from FileSetOutput
     #
@@ -194,14 +203,6 @@ class WordOutput(TaggedOutput):
                 if line_index < (len(text_lines) - 1):
                     paragraph = cell.add_paragraph()
 
-        # We replace any TEXT_JOIN tags with the appropriate joining text.
-        for column_index in range(len(table_text_array[-1])):
-            cell = table.cell(-1, column_index)
-            for paragraph in cell.paragraphs:
-                if paragraph.text == Tags.TEXT_JOIN.value:
-                    paragraph.text = runner.plan.config.outputs[self.long_id].join_passage_text
-                    paragraph.style = get_style(document, Styles.JOIN.value)
-
     def insert_copyright_table(self, runner, document, cursor, table_text_array):
         '''Called when expanding base template tags. If cursor is not None, inserts a copyright
         table at the current cursor point. If cursor is None, inserts a copyright table at the
@@ -224,8 +225,13 @@ class WordOutput(TaggedOutput):
             paragraph = cell.paragraphs[0]
             paragraph.add_run(table_text_array[0][column_index])
 
+    def format_text_join_tag(self, document, cursor):
+        '''Overridden from TaggedOuput. Performs any formatting needed prior to join text being inserted.
+        '''
+        cursor.current_para.style = get_style(document, Styles.JOIN.value)
+
     def format_bible_text_tag(self, document, contents_index, column_symbol, bible_content, cursor):
-        '''Performs any formatting needed prior to Bible content being inserted.
+        '''Overridden from TaggedOuput. Performs any formatting needed prior to Bible content being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.PARAGRAPH.value)
         cursor.new_para_style = get_style(document, Styles.PARAGRAPH.value)
@@ -237,7 +243,7 @@ class WordOutput(TaggedOutput):
             cursor.run_font_size = font_size
 
     def format_copyright_text_tag(self, document, bible_content, cursor):
-        '''Performs any formatting needed prior to copyright text being inserted.
+        '''Overridden from TaggedOuput. Performs any formatting needed prior to copyright text being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.COPYRIGHT.value)
 
@@ -292,14 +298,19 @@ class WordDocCursor(TaggedDocCursor):
             self.add_text(text)
 
     def add_text(self, text):
-        self.current_run.add_text(text)
+        # Convert any newlines into new paragraphs
+        text_lines = text.split('\n') 
+        for line_index in range(len(text_lines)):
+            self.current_run.add_text(text_lines[line_index])
+            if line_index < (len(text_lines) - 1):
+                self.add_new_para()
 
     def add_new_table(self, num_rows, num_cols, style=None, after_para=True):
         # Technique is from: 
         # https://github.com/python-openxml/python-docx/issues/156#issuecomment-77674193
 
         table = self.document.add_table(num_rows, num_cols, style)
-        #
+        
         if after_para:
             # Add table after current paragraph. However, just moving the new table after
             # the current paragraph won't automatically update the current paragraph,
@@ -375,7 +386,7 @@ class WordBibleStreamHandler(OutputBibleStreamHandler):
 class WordPlanConfig(OutputPlanConfig):
     def __init__(self, bible_output):
         super().__init__(bible_output)
-        self.join_passage_text = "...\n"
+        self.join_passage_text = "\n...\n"
         self.all_tables_insert_blank_paras = True
         self.generate_pdf = False
 
