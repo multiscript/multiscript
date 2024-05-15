@@ -64,7 +64,7 @@ class WordOutput(TaggedOutput):
         '''
         super().setup(runner)
         runner.output_runs[self.long_id].text_join = runner.plan.config.outputs[self.long_id].join_passage_text
-        print(ord(runner.output_runs[self.long_id].text_join[0]))
+    
     #
     # Implementation of abstract methods from FileSetOutput
     #
