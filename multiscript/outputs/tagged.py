@@ -34,7 +34,12 @@ class Tags(Enum):
     TEXT                    =   "[MSC_TEXT_{0}{1}]"             # Expands to the Bible text. The parameters are
                                                                 #   (in order) the passage number, and the column
                                                                 #   symbol (e.g. 1A)
-    TEXT_JOIN               =   "[MSC_TEXT_JOIN]"               # Expands to the join indicator between group passages
+    TEXT_JOIN               =   "[MSC_TEXT_JOIN_{0}]"           # Expands to the join indicator between group passages
+                                                                #   The parameter is the column symbol (e.g. A, B, C)
+                                                                #   Although all TEXT_JOIN tags are replaced with the
+                                                                #   same text, including the column symbol allows
+                                                                #   some of them to be cleared if there is no
+                                                                #   version for that column.
     COPYRIGHT               =   "[MSC_COPYRIGHT_{0}]"           # Expands to the copyright text for one version
                                                                 #   The parameter is the column symbol (e.g. A,B,C)
 
@@ -86,8 +91,10 @@ class TaggedOutput(FileSetOutput):
                     for column_index in range(len(runner.version_cols)):
                         table_text_row[column_index] += Tags.TEXT.value.format(contents_index + 1,
                                                                                column_symbols[column_index])
-                        if range_index < (len(range_group) -1):
-                            table_text_row[column_index] += "\n" + Tags.TEXT_JOIN.value + "\n"
+                        if range_index < (len(range_group)-1):
+                            table_text_row[column_index] += "\n" + \
+                                                            Tags.TEXT_JOIN.value.format(column_symbols[column_index]) \
+                                                            + "\n"
                         
                     range_index += 1
                     contents_index += 1
@@ -141,26 +148,40 @@ class TaggedOutput(FileSetOutput):
             range_group = BibleRangeList(runner.bible_ranges.groups[group_index])
             self.replace_tag_directly(document, tag, range_group.str())
 
-        # Fill in all text join tags present
-        tag = Tags.TEXT_JOIN.value
-        cursor = self.replace_tag_with_cursor(document, tag)
-        while cursor is not None:
-            self.format_text_join_tag(document, cursor)
-            cursor.add_text(runner.output_runs[self.long_id].text_join)
-            # Check if there's another text join tag present
+        # Loop through versions and handle per-version tags relating to whole document
+        for column_index in range(len(version_combo)):
+            version = version_combo[column_index].version
+            version_column = version_combo[column_index].version_column
+            column_symbol = column_symbols[version_column.symbol_index]
+            if version is not None:
+                bible_content = runner.bible_contents[version][0]
+            else:
+                bible_content = None
+            
+            # Handle TEXT_JOIN tags
+            tag = Tags.TEXT_JOIN.value.format(column_symbol)
             cursor = self.replace_tag_with_cursor(document, tag)
+            while cursor is not None:
+                if version is not None or is_template:
+                    self.format_text_join_tag(document, cursor)
+                    cursor.add_text(runner.output_runs[self.long_id].text_join)
+                else:
+                    # version == None and is_template == False, so we blank out the tag by adding no text
+                    pass
+                # Check if there's another TEXT_JOIN tag present
+                cursor = self.replace_tag_with_cursor(document, tag)
 
-        # Fill in copyright tags
-        versions = [element.version if element.version is not None else None for element in version_combo]
-        bible_contents = [runner.bible_contents[version][0] if version is not None else None for version in versions]
-        for column_index in range(len(bible_contents)):
-            bible_content = bible_contents[column_index]
-            if bible_content is not None:
-                tag = Tags.COPYRIGHT.value.format(column_symbols[column_index])
+            # Handle COPYRIGHT tag
+            tag = Tags.COPYRIGHT.value.format(column_symbol)
+            if version is not None or not is_template:
                 cursor = self.replace_tag_with_cursor(document, tag)
                 if cursor is not None:
-                    self.format_copyright_text_tag(document, bible_content, cursor)
-                    cursor.add_text(bible_content.copyright_text)
+                    if version is not None:
+                        self.format_copyright_text_tag(document, bible_content, cursor)
+                        cursor.add_text(bible_content.copyright_text)
+                    else:
+                        # version == None and is_template == False, so we blank out the tag by adding no text
+                        pass
 
     def fill_bible_content(self, runner, document, contents_index, column_symbol, bible_content):
         '''Overrides FileSetOutput.fill_bible_content(). Inserts the specified bible_content into the document,
