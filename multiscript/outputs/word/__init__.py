@@ -225,10 +225,10 @@ class WordOutput(TaggedOutput):
             paragraph = cell.paragraphs[0]
             paragraph.add_run(table_text_array[0][column_index])
 
-    def format_text_join_tag(self, document, cursor):
-        '''Overridden from TaggedOuput. Performs any formatting needed prior to join text being inserted.
+    def format_passage_tag(self, document, cursor):
+        '''Overridden from TaggedOuput. Performs any formatting needed prior to PASSAGE tag being inserted.
         '''
-        cursor.current_para.style = get_style(document, Styles.JOIN.value)
+        cursor.current_para.style = get_style(document, Styles.PASSAGE.value)
 
     def format_bible_text_tag(self, document, contents_index, column_symbol, bible_content, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to Bible content being inserted.
@@ -240,6 +240,11 @@ class WordOutput(TaggedOutput):
         font_size = bible_content.bible_version.output_config[self.long_id].font_size
         if font_size is not None and float(font_size) > 0:
             cursor.run_font_size = font_size
+
+    def format_text_join_tag(self, document, cursor):
+        '''Overridden from TaggedOuput. Performs any formatting needed prior to join text being inserted.
+        '''
+        cursor.current_para.style = get_style(document, Styles.JOIN.value)
 
     def format_copyright_text_tag(self, document, bible_content, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to copyright text being inserted.

@@ -142,11 +142,19 @@ class TaggedOutput(FileSetOutput):
             replace_text = ", ".join([version.user_labels.lang for version in versions])
             self.replace_tag_directly(document, tag, replace_text)
         
-        # Fill in grouped passage tags.
+        # Fill in PASSAGE_GROUP tags.
         for group_index in range(len(runner.bible_ranges.groups)):
             tag = Tags.PASSAGE_GROUP.value.format(group_index + 1)
             range_group = BibleRangeList(runner.bible_ranges.groups[group_index])
             self.replace_tag_directly(document, tag, range_group.str())
+
+        # Fill in PASSAGE tags.
+        for passage_index in range(len(runner.bible_ranges)):
+            tag = Tags.PASSAGE.value.format(passage_index + 1)
+            cursor = self.replace_tag_with_cursor(document, tag)
+            if cursor is not None:
+                self.format_passage_tag(document, cursor)
+                cursor.add_text(runner.bible_ranges[passage_index].str())
 
         # Loop through versions and handle per-version tags relating to whole document
         for column_index in range(len(version_combo)):
@@ -158,6 +166,18 @@ class TaggedOutput(FileSetOutput):
             else:
                 bible_content = None
             
+            # Handle VER_USER_LANG tags
+            if version is not None or not is_template:
+                tag = Tags.VER_USER_LANG.value.format(column_symbol)
+                ver_user_lang = str(version.user_labels.lang) if version is not None else ""
+                self.replace_tag_directly(document, tag, ver_user_lang)
+
+            # Handle VER_NAME tags
+            if version is not None or not is_template:
+                tag = Tags.VER_NAME.value.format(column_symbol)
+                ver_name = str(version.name) if version is not None else ""
+                self.replace_tag_directly(document, tag, str(bible_content.bible_version.name))
+
             # Handle TEXT_JOIN tags
             tag = Tags.TEXT_JOIN.value.format(column_symbol)
             cursor = self.replace_tag_with_cursor(document, tag)
@@ -194,17 +214,7 @@ class TaggedOutput(FileSetOutput):
         '''Expands direct tags with data from bible_content. Direct tags are those
         that can be replaced as simple strings without the need for a document cursor.
         '''
-        #
-        # TODO: Add more tags that can be used in the template
-        #
-        tag = Tags.PASSAGE.value.format(contents_index + 1)
-        self.replace_tag_directly(document, tag, str(bible_content.bible_range))
-
-        tag = Tags.VER_USER_LANG.value.format(column_symbol)
-        self.replace_tag_directly(document, tag, str(bible_content.bible_version.user_labels.lang))
-
-        tag = Tags.VER_NAME.value.format(column_symbol)
-        self.replace_tag_directly(document, tag, str(bible_content.bible_version.name))
+        pass
 
     def expand_cursor_tags(self, runner, document, contents_index, column_symbol, bible_content):
         '''Expands cursor tags with data from bible_content. Cursor tags are those
@@ -262,20 +272,26 @@ class TaggedOutput(FileSetOutput):
         '''
         pass
  
-    def format_text_join_tag(self, document, cursor):
-        '''Abstract method. Subclasses can override to perform formatting needed prior to the text join
-        being inserted. The supplied cursor will be at the insertion point.
+    def format_passage_tag(self, document, cursor):
+        '''Abstract method. Subclasses can override to perform formatting needed prior to the PASSAGE
+        tag being inserted. The supplied cursor will be at the insertion point.
         '''
         pass
 
     def format_bible_text_tag(self, document, contents_index, column_symbol, bible_content, cursor):
-        '''Abstract method. Subclasses can override to perform formatting needed prior to Bible content
-        being inserted. The supplied cursor will be at the insertion point.
+        '''Abstract method. Subclasses can override to perform formatting needed prior to the Bible content
+        TEXT tag being inserted. The supplied cursor will be at the insertion point.
+        '''
+        pass
+
+    def format_text_join_tag(self, document, cursor):
+        '''Abstract method. Subclasses can override to perform formatting needed prior to the TEXT_JOIN
+        tag being inserted. The supplied cursor will be at the insertion point.
         '''
         pass
 
     def format_copyright_text_tag(self, document, bible_content, cursor):
-        '''Perform any formatting needed prior to copyright text being inserted. The supplied
+        '''Perform any formatting needed prior to COPYRIGHT tag being inserted. The supplied
         cursor will be at the insertion point.
         '''
         pass
