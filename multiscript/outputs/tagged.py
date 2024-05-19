@@ -122,15 +122,21 @@ class TaggedOutput(FileSetOutput):
         COPYRIGHT), rather than individual version combos.
         '''
         if not is_template:
-            # These tags can't be completed if we're building a template, as we won't know all the versions
+            # We only expand these tags if we're not building a template
             tag = Tags.ALL_VERS_USER_LANG.value
             versions = [element.version for element in version_combo if element.version is not None]
             replace_text = ", ".join([version.user_labels.lang for version in versions])
             self.replace_tag_directly(document, tag, replace_text)
 
             tag = Tags.UNIQUE_VERS_USER_LANG.value
-            versions = [element.version for element in version_combo if element.version is not None \
-                                                                  and len(element.version_column) > 1]
+            if not version_combo.is_partial:
+                # For normal version combos, we ignore columns that only contain one version
+                versions = [element.version for element in version_combo if element.version is not None \
+                                                                         and len(element.version_column) > 1]
+            else:
+                # If this is a partial version combo (so some versions are None), then we include
+                # all version columns that are not None
+                versions = [element.version for element in version_combo if element.version is not None]
             replace_text = ", ".join([version.user_labels.lang for version in versions])
             self.replace_tag_directly(document, tag, replace_text)
         
@@ -168,20 +174,21 @@ class TaggedOutput(FileSetOutput):
             if version is not None or not is_template:
                 tag = Tags.VER_NAME.value.format(column_symbol)
                 ver_name = str(version.name) if version is not None else ""
-                self.replace_tag_directly(document, tag, str(bible_content.bible_version.name))
+                self.replace_tag_directly(document, tag, ver_name)
 
             # Handle TEXT_JOIN tags
-            tag = Tags.TEXT_JOIN.value.format(column_symbol)
-            cursor = self.replace_tag_with_cursor(document, tag)
-            while cursor is not None:
-                if version is not None or is_template:
-                    self.format_text_join_tag(document, cursor)
-                    cursor.add_text(runner.output_runs[self.long_id].text_join)
-                else:
-                    # version == None and is_template == False, so we blank out the tag by adding no text
-                    pass
-                # Check if there's another TEXT_JOIN tag present
+            if version is not None or not is_template:
+                tag = Tags.TEXT_JOIN.value.format(column_symbol)
                 cursor = self.replace_tag_with_cursor(document, tag)
+                while cursor is not None:
+                    if version is not None:
+                        self.format_text_join_tag(document, cursor)
+                        cursor.add_text(runner.output_runs[self.long_id].text_join)
+                    else:
+                        # version == None and is_template == False, so we leave the tag blank by adding no text
+                        pass
+                    # Check if there's another TEXT_JOIN tag present
+                    cursor = self.replace_tag_with_cursor(document, tag)
 
             # Handle COPYRIGHT tag
             tag = Tags.COPYRIGHT.value.format(column_symbol)
@@ -192,29 +199,16 @@ class TaggedOutput(FileSetOutput):
                         self.format_copyright_text_tag(document, bible_content, cursor)
                         cursor.add_text(bible_content.copyright_text)
                     else:
-                        # version == None and is_template == False, so we blank out the tag by adding no text
+                        # version == None and is_template == False, so we leave the tag blank by adding no text
                         pass
 
     def fill_bible_content(self, runner, document, contents_index, column_symbol, bible_content):
         '''Overrides FileSetOutput.fill_bible_content(). Inserts the specified bible_content into the document,
         at the specified contents_index and column_symbol.
         '''
-        self.expand_direct_tags(runner, document, contents_index, column_symbol, bible_content)
-        self.expand_cursor_tags(runner, document, contents_index, column_symbol, bible_content)
-
-    def expand_direct_tags(self, runner, document, contents_index, column_symbol, bible_content):
-        '''Expands direct tags with data from bible_content. Direct tags are those
-        that can be replaced as simple strings without the need for a document cursor.
-        '''
-        pass
-
-    def expand_cursor_tags(self, runner, document, contents_index, column_symbol, bible_content):
-        '''Expands cursor tags with data from bible_content. Cursor tags are those
-        that are more complex replacement operations that require the use of a document cursor.
-        '''
         tag = Tags.TEXT.value.format(contents_index + 1, column_symbol)
         cursor = self.replace_tag_with_cursor(document, tag)
-        if cursor is not None:
+        if cursor is not None and bible_content is not None:
             self.format_bible_text_tag(document, contents_index, column_symbol, bible_content, cursor)
             bible_stream_handler = self.new_bible_stream_handler(runner, cursor)
             bible_content.body.copyStreamTo(bible_stream_handler)

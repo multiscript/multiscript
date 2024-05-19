@@ -57,7 +57,8 @@ class FileSetOutput(BibleOutput):
             if runner.plan.config.general.confirm_after_template_expansion:
                 self.save_document(runner, version_combo, document, filepath)
                 runner.monitors.request_confirmation(
-                    "<b>Open</b> and check the expanded template, then click <b>Continue</b> once you have saved any changes.",
+                    "<b>Open</b> and check the expanded template, then click <b>Continue</b> " +
+                    "once you have saved any changes.",
                     filepath)
         
         self.begin_fill_document(runner, version_combo, document, is_template)
@@ -70,9 +71,6 @@ class FileSetOutput(BibleOutput):
                 "<b>Open</b> and check the template, then click <b>Continue</b> once you have saved any changes.",
                 filepath)
 
-        # TODO: Keep a tally of files/outputs that were actually created, and report this in
-        #       progress dialog.
-
         return filepath
     
     def fill_document(self, runner, version_combo, document, is_template):
@@ -80,24 +78,37 @@ class FileSetOutput(BibleOutput):
             symbol_index = element.version_column.symbol_index
             column_symbol = column_symbols[symbol_index]
             version = element.version
-            if version is None:
-                # TODO: Do we need to clear out the template tokens at this point?
+            if version is None and is_template:
+                # No need to fill in Bible content, so skip this version
                 continue
 
-            for contents_index in range(len(runner.bible_contents[version])):
-                bible_content = runner.bible_contents[version][contents_index]
-                _logger.info("\t\t\tFilling passage " + str(contents_index+1) + column_symbol + " with " +
-                             str(bible_content.bible_version.abbrev) + " " + str(bible_content.bible_range))
+            if version is not None:
+                bible_content_count = len(runner.bible_contents[version])
+            else:
+                # Just count Bible content for the first version
+                if len(runner.bible_contents.values()) > 0:
+                    bible_content_count = len(list(runner.bible_contents.values())[0])
+                else:
+                    bible_content_count = 0
+
+            for contents_index in range(bible_content_count):
+                if version is not None:
+                    bible_content = runner.bible_contents[version][contents_index]
+                    _logger.info(f"\t\t\tFilling passage {str(contents_index+1)}{column_symbol} with " +
+                                f"{str(bible_content.bible_version.abbrev)} {str(bible_content.bible_range)}")
+                else:
+                    # _logger.info(f"\t\t\tLeaving passage {str(contents_index+1)}{column_symbol} blank.")
+                    bible_content = None
                 self.fill_bible_content(runner, document, contents_index, column_symbol, bible_content)
 
     def log_keep_existing_filepath(self, runner, filepath, is_template):
-        log_message = "Keeping existing " + ("template " if is_template else "output ") + filepath.name
+        log_message = f"Keeping existing {'template' if is_template else 'output'} {filepath.name}"
         runner.monitors.set_substatus_text(log_message)
         _logger.info("\t\t" + log_message)
 
     def log_combo_item(self, runner, version_combo, is_template):
         filename = self.get_item_filename(runner, version_combo, is_template)
-        log_message = "Creating " + ("template " if is_template else "") + filename
+        log_message = f"Creating {'template ' if is_template else ''}{filename}"
         runner.monitors.set_substatus_text(log_message)
         _logger.info("\t\t" + log_message)
 
@@ -106,7 +117,7 @@ class FileSetOutput(BibleOutput):
 
     def get_item_filename(self, runner, version_combo, is_template):
         filename = self.get_item_stem(runner, version_combo)
-        filename += (".template" if is_template else "") + self.output_file_ext
+        filename += ("_template" if is_template else "") + self.output_file_ext
         return filename
     
     def get_item_stem(self, runner: PlanRunner, version_combo):
