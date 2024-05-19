@@ -16,8 +16,6 @@ class Tags(Enum):
     UNIQUE_VERS_USER_LANG   =   "[MSC_UNIQUE_VERS_USER_LANG]"   # Expands to a list of versions languages (user labels)
                                                                 #   for unique versions in the plan (i.e. ignores
                                                                 #   columns with just one version in them)
-    TWO_PLUS_VERS_USER_LANG =   "[MSC_2+_VERS_USER_LANG]"       # Deprecated. Expands to a list of all the versions'
-                                                                #   languages (user labels), except the first
     VER_USER_LANG           =   "[MSC_VER_USER_LANG_{0}]"       # Expands to one version's lanaguage (user label).
                                                                 #   The parameter is the column symbol (e.g. A,B,C)
     ALL_TABLES              =   "[MSC_ALL_TABLES]"              # For each Bible group, generates a PASSAGE_GROUP
@@ -54,18 +52,18 @@ class TaggedOutput(FileSetOutput):
         '''Overriden from BibleOutput.setup(). Called prior to looping through the version
         combos.
 
-        We use this method to set some defaults for the run.
+        We use this method to set some defaults for the plan run.
         '''
         super().setup(runner)
         runner.output_runs[self.long_id].text_join = "\n...\n" # Default text for MSC_TEXT_JOIN tag.
 
     def expand_base_template(self, runner, document):
         '''Overrides FileSetOutput.expand_base_template(). Called if the newly loaded document is
-        actually the base template. Handles tags in the base template that expand to other tags
+        actually the base template. Expands tags in the base template that turn into to other tags
         (e.g. ALL_TABLES), as well as adding COPYRIGHT tags if they are not yet present in the
         document.
         '''
-        # Expand Tags.ALL_TABLES
+        # Expand ALL_TABLES
         tag = Tags.ALL_TABLES.value        
         cursor = self.replace_tag_with_cursor(document, tag)
         if cursor is not None:
@@ -77,7 +75,7 @@ class TaggedOutput(FileSetOutput):
                 self.insert_passage_group_tag(runner, document, cursor, is_first, tag_text)
 
                 table_text_array = [] # List of rows, each of which is a list of column text                
-                # For the first table, include the MSC_VER_NAME tags
+                # For the first table, include the VER_NAME tags
                 if is_first:
                     table_text_row = []
                     for column_index in range(len(runner.version_cols)):
@@ -87,7 +85,7 @@ class TaggedOutput(FileSetOutput):
                 table_text_row = ["" for column_index in range(len(runner.version_cols))]
                 range_index = 0
                 for bible_range in range_group:
-                    # Include MSC_TEXT tags for the bible content body
+                    # Include TEXT tags for the bible content body
                     for column_index in range(len(runner.version_cols)):
                         table_text_row[column_index] += Tags.TEXT.value.format(contents_index + 1,
                                                                                column_symbols[column_index])
@@ -103,7 +101,7 @@ class TaggedOutput(FileSetOutput):
                 self.insert_passage_group_table(runner, document, cursor, is_first, table_text_array)
                 group_index += 1
 
-        # Check if all copyright tags are present
+        # Check if all COPYRIGHT tags are present
         all_copyright_tags_found = True
         for column_index in range(len(runner.version_cols)):
             tag = Tags.COPYRIGHT.value.format(column_symbols[column_index])
@@ -111,7 +109,7 @@ class TaggedOutput(FileSetOutput):
             if not all_copyright_tags_found:
                 break
         
-        # Insert table of copyright tags if necessary
+        # Insert table of COPYRIGHT tags if necessary
         if not all_copyright_tags_found:
             table_text_row = []
             for column_index in range(len(runner.version_cols)):
@@ -120,7 +118,7 @@ class TaggedOutput(FileSetOutput):
 
     def begin_fill_document(self, runner, version_combo, document, is_template):
         '''Overrides FileSetOutput.begin_file_document(). Called immediately before fill_document().
-        We expand tags that relate to the whole document (e.g. ALL_VERS_USER_LANG, PASSAGE_GROUP,
+        Expands tags that relate to the whole document (e.g. ALL_VERS_USER_LANG, PASSAGE_GROUP,
         COPYRIGHT), rather than individual version combos.
         '''
         if not is_template:
@@ -133,12 +131,6 @@ class TaggedOutput(FileSetOutput):
             tag = Tags.UNIQUE_VERS_USER_LANG.value
             versions = [element.version for element in version_combo if element.version is not None \
                                                                   and len(element.version_column) > 1]
-            replace_text = ", ".join([version.user_labels.lang for version in versions])
-            self.replace_tag_directly(document, tag, replace_text)
-
-            tag = Tags.TWO_PLUS_VERS_USER_LANG.value
-            versions = [element.version for element in version_combo if element.version is not None \
-                                                         and element.version_column.symbol_index > 0]
             replace_text = ", ".join([version.user_labels.lang for version in versions])
             self.replace_tag_directly(document, tag, replace_text)
         
