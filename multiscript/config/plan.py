@@ -36,6 +36,7 @@ class GeneralPlanConfig(PlanConfig):
     def __init__(self):
         self.allow_confirmations = True
         self.confirm_after_template_expansion = False
+        self.create_template_copies = True
 
 
     def new_config_widget(self):

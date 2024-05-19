@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>363</width>
-    <height>77</height>
+    <width>395</width>
+    <height>100</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,11 +29,18 @@
      <item>
       <widget class="QCheckBox" name="confirmAfterTemplateExpansionCheckBox">
        <property name="text">
-        <string>Pause for confirmation after template expansion</string>
+        <string>Pause for confirmation after base template expansion</string>
        </property>
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="createTemplateCopiesCheckBox">
+     <property name="text">
+      <string>Create output copies of templates (without tags)</string>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">

@@ -86,7 +86,9 @@ class BibleOutput:
             prior_template = self.get_template_obj(runner, template_combo)
             template_obj = self.generate_combo_item(runner, template_combo, prior_template, is_template=True)
             template_cache[tuple(template_combo)] = template_obj
-            self.generate_combo_item(runner, template_combo, template_obj, is_template=False)
+            if runner.plan.config.general.create_template_copies:
+                # Use the template we just generated to create a normal output copy of itself
+                self.generate_combo_item(runner, template_combo, template_obj, is_template=False)
         else:
             template_obj = template_cache[tuple(template_combo)]
 
