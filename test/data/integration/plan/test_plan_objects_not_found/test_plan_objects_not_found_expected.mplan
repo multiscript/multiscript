@@ -236,7 +236,8 @@
             "general": {
                 "__type__": "GeneralPlanConfig",
                 "allow_confirmations": false,
-                "confirm_after_template_expansion": false
+                "confirm_after_template_expansion": false,
+                "create_template_copies": true
             },
             "sources": {},
             "outputs": {
