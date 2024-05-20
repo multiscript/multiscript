@@ -182,9 +182,12 @@ class TestRun(MultiscriptAppTestCase):
                 if mode is TestRun.TestMode.CREATE:
                     return
 
-                # Copy expected output into expectation directory
-                for file in expected_output_path.iterdir():
-                    shutil.copy(file, expected_dir)
+                # Copy expected output into expectation directory, using a text copy to handle
+                # any difference in platform line-endings.
+                for source_path in expected_output_path.iterdir():
+                    with open(source_path, 'r') as source_file:
+                        with open(Path(expected_dir, source_path.name), 'w') as dest_file:
+                            dest_file.write(source_file.read())
 
                 if mode is TestRun.TestMode.OBSERVE:
                     return
