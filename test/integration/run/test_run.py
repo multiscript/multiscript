@@ -57,14 +57,14 @@ class TestRun(MultiscriptAppTestCase):
         OBSERVE  = auto()    # Observe output: Use known instead of temp directories, don't unzip word docs, don't test
         OBS_TEST = auto()    # Observe output: Use known instead of temp directories, don't unzip word docs, do test
 
-    def test_full_run(self, mode=TestMode.TEST):
+    def test_word_full_run(self, mode=TestMode.TEST):
         ''' Runs a test plan and tests whether the output matches what is expected.
 
         mode is one of the TestMode enum values.
         '''
-        plan_path = Path(__file__, "../../../data/integration/run/test_full_run/full_run.mplan").resolve()
+        plan_path = Path(__file__, "../../../data/integration/run/test_word_full_run/word_full_run.mplan").resolve()
         template_path = Path(__file__, "../../../../multiscript/templates/Default Template.docx").resolve()
-        expected_output_path = plan_path.parent / Path("full_run_expected")
+        expected_output_path = plan_path.parent / Path("word_full_run_expected")
         observe_base_path = Path("~/Desktop/TestFullRun/").expanduser()
 
         error_list = []
