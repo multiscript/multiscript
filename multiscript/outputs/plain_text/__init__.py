@@ -10,7 +10,6 @@ from multiscript.plan.symbols import column_symbols
 
 _logger = logging.getLogger(__name__)
 
-# TODO: Write extra unit tests.
 
 class PlainTextOutput(TaggedOutput):
     
