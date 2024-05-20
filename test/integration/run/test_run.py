@@ -58,14 +58,14 @@ class TestRun(MultiscriptAppTestCase):
         OBS_TEST = auto()    # Observe output: Use known instead of temp directories, don't unzip word docs, do test
 
     def test_word_full_run(self, mode=TestMode.TEST):
-        ''' Runs a test plan and tests whether the output matches what is expected.
+        ''' Runs a test plan with MS Word template and tests whether the output matches what is expected.
 
         mode is one of the TestMode enum values.
         '''
         plan_path = Path(__file__, "../../../data/integration/run/test_word_full_run/word_full_run.mplan").resolve()
         template_path = Path(__file__, "../../../../multiscript/templates/Default Template.docx").resolve()
         expected_output_path = plan_path.parent / Path("word_full_run_expected")
-        observe_base_path = Path("~/Desktop/TestFullRun/").expanduser()
+        observe_base_path = Path("~/Desktop/TestWordFullRun/").expanduser()
 
         error_list = []
         plan = multiscript.plan.load(plan_path, error_list)
@@ -132,3 +132,61 @@ class TestRun(MultiscriptAppTestCase):
                     output_file_path.unlink() # Removes the file
                     
                 self.assertTrue(is_same(test_output_path, Path(expected_expansion_dir)))
+
+    def test_text_full_run(self, mode=TestMode.TEST):
+        ''' Runs a test plan with plain text template and tests whether the output matches what is expected.
+
+        mode is one of the TestMode enum values.
+        '''
+        plan_path = Path(__file__, "../../../data/integration/run/test_text_full_run/text_full_run.mplan").resolve()
+        template_path = Path(__file__, "../../../../multiscript/templates/Default Template.txt").resolve()
+        expected_output_path = plan_path.parent / Path("text_full_run_expected")
+        observe_base_path = Path("~/Desktop/TestTextFullRun/").expanduser()
+
+        error_list = []
+        plan = multiscript.plan.load(plan_path, error_list)
+        for err in error_list:
+            print(str(err))
+
+        plan.template_path = template_path
+
+        if mode is TestRun.TestMode.TEST:
+            test_output_context_manager = tempfile.TemporaryDirectory()
+            expected_context_manager = tempfile.TemporaryDirectory()
+        elif mode is TestRun.TestMode.CREATE:
+            expected_output_path.mkdir(parents=True, exist_ok=True)
+            test_output_context_manager = contextlib.nullcontext(expected_output_path)
+            expected_context_manager = contextlib.nullcontext(None)
+        elif mode is TestRun.TestMode.OBSERVE or mode is TestRun.TestMode.OBS_TEST:
+            test_output_dir = Path(observe_base_path, "Output/")
+            test_output_dir.mkdir(parents=True, exist_ok=True)
+            test_output_context_manager = contextlib.nullcontext(test_output_dir)
+
+            expected_dir = Path(observe_base_path, "Expected/")
+            expected_dir.mkdir(parents=True, exist_ok=True)
+            expected_context_manager = contextlib.nullcontext(expected_dir)
+        else:
+            self.fail("Unknown test mode")
+
+        with test_output_context_manager as test_output_dir:
+            # Dir for plan output to be tested against what's expected
+            with expected_context_manager as expected_dir:
+                # Dir for expansion of expected output
+
+                test_output_path = Path(test_output_dir)
+                plan.output_dir_path = test_output_path
+
+                plan_runner = multiscript.plan.runner.PlanRunner(plan)
+                plan_runner.run()
+
+                if mode is TestRun.TestMode.CREATE:
+                    return
+
+                # Copy expected output into expectation directory
+                for file in expected_output_path.iterdir():
+                    shutil.copy(file, expected_dir)
+
+                if mode is TestRun.TestMode.OBSERVE:
+                    return
+                    
+                self.assertTrue(is_same(test_output_path, Path(expected_dir)))
