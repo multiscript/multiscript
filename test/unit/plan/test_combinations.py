@@ -3,8 +3,8 @@ import unittest
 from multiscript.plan.combinations import get_all_version_combos, BibleVersionColumn, BibleVersionCombo, BibleVersionComboElement
 from multiscript.sources.base import BibleVersion
 
-class TestBibleReference(unittest.TestCase):
-    def test_get_all_version_combos(self):
+class TestBibleVersionCombos(unittest.TestCase):
+    def test_version_combos(self):
         version_A1 = BibleVersion(abbrev="A1")
         version_B1 = BibleVersion(abbrev="B1")
         version_B2 = BibleVersion(abbrev="B2")
@@ -33,3 +33,10 @@ class TestBibleReference(unittest.TestCase):
 
         actual_version_combos = get_all_version_combos([column_A, column_B, column_C])
         self.assertEqual(expected_combos, actual_version_combos)
+
+        version_combo = BibleVersionCombo([combo_element_A_A1, combo_element_B_B1, combo_element_C_C1])
+        self.assertFalse(version_combo.is_partial)
+        template_combo = BibleVersionCombo([combo_element_A_A1, combo_element_B_B1,
+                                            BibleVersionComboElement(column_C, None)])
+        self.assertTrue(template_combo.is_partial)
+        self.assertEqual(version_combo.template_combo, template_combo)

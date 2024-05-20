@@ -56,6 +56,15 @@ class WordOutput(TaggedOutput):
     def new_output_plan_run(self, plan):
         return WordPlanRun(plan)
 
+    def setup(self, runner):
+        '''Overriden from TaggedOutput.setup(). Called prior to looping through the version
+        combos.
+
+        We use this method to set some defaults for the run.
+        '''
+        super().setup(runner)
+        runner.output_runs[self.long_id].text_join = runner.plan.config.outputs[self.long_id].join_passage_text
+    
     #
     # Implementation of abstract methods from FileSetOutput
     #
@@ -156,7 +165,7 @@ class WordOutput(TaggedOutput):
         cursor.add_text(tag_text)
         
         if runner.plan.config.outputs[self.long_id].all_tables_insert_blank_paras:
-            cursor.add_new_para() # Space para between passage header and text table
+            cursor.add_new_para(copy_style=False) # Space para between passage header and text table
 
     def insert_passage_group_table(self, runner, document, cursor, is_first, table_text_array):
         '''Called when expanding base template tags. Inserts a passage group table at the current
@@ -194,14 +203,6 @@ class WordOutput(TaggedOutput):
                 if line_index < (len(text_lines) - 1):
                     paragraph = cell.add_paragraph()
 
-        # We replace any TEXT_JOIN tags with the appropriate joining text.
-        for column_index in range(len(table_text_array[-1])):
-            cell = table.cell(-1, column_index)
-            for paragraph in cell.paragraphs:
-                if paragraph.text == Tags.TEXT_JOIN.value:
-                    paragraph.text = runner.plan.config.outputs[self.long_id].join_passage_text
-                    paragraph.style = get_style(document, Styles.JOIN.value)
-
     def insert_copyright_table(self, runner, document, cursor, table_text_array):
         '''Called when expanding base template tags. If cursor is not None, inserts a copyright
         table at the current cursor point. If cursor is None, inserts a copyright table at the
@@ -212,7 +213,7 @@ class WordOutput(TaggedOutput):
             # We've already expanded an MS_ALL_TABLES tag, so insert the copyright table
             # at the current cursor location.
             table = cursor.add_new_table(1, len(table_text_array[0]),
-                                            get_style(document, Styles.COPYRIGHT_TABLE_HORIZ.value))                
+                                            get_style(document, Styles.COPYRIGHT_TABLE_HORIZ.value))
         else:
             # We didn't expand an MS_ALL_TABLES tag, so just insert the copyright table at
             # the end of the document
@@ -224,11 +225,15 @@ class WordOutput(TaggedOutput):
             paragraph = cell.paragraphs[0]
             paragraph.add_run(table_text_array[0][column_index])
 
+    def format_passage_tag(self, document, cursor):
+        '''Overridden from TaggedOuput. Performs any formatting needed prior to PASSAGE tag being inserted.
+        '''
+        cursor.current_para.style = get_style(document, Styles.PASSAGE.value)
+
     def format_bible_text_tag(self, document, contents_index, column_symbol, bible_content, cursor):
-        '''Performs any formatting needed prior to Bible content being inserted.
+        '''Overridden from TaggedOuput. Performs any formatting needed prior to Bible content being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.PARAGRAPH.value)
-        cursor.new_para_style = get_style(document, Styles.PARAGRAPH.value)
         font_family = bible_content.bible_version.font_family
         if font_family is not None and len(font_family) > 0:
             cursor.run_font_name = font_family
@@ -236,8 +241,13 @@ class WordOutput(TaggedOutput):
         if font_size is not None and float(font_size) > 0:
             cursor.run_font_size = font_size
 
+    def format_text_join_tag(self, document, cursor):
+        '''Overridden from TaggedOuput. Performs any formatting needed prior to join text being inserted.
+        '''
+        cursor.current_para.style = get_style(document, Styles.JOIN.value)
+
     def format_copyright_text_tag(self, document, bible_content, cursor):
-        '''Performs any formatting needed prior to copyright text being inserted.
+        '''Overridden from TaggedOuput. Performs any formatting needed prior to copyright text being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.COPYRIGHT.value)
 
@@ -250,19 +260,18 @@ class WordDocCursor(TaggedDocCursor):
 
         self.run_font_name = None
         self.run_font_size = None
-        self.new_para_style = None
 
         if self.current_run is None:
             self.add_new_run()
         
-    def add_new_para(self, text=None):
+    def add_new_para(self, text=None, *, copy_style=True):
         prev_para = self.current_para
         new_p = OxmlElement('w:p')
         prev_para._p.addnext(new_p)
         self.current_para = Paragraph(new_p, prev_para._parent)
 
-        if self.new_para_style is not None:
-            self.current_para.style = self.new_para_style
+        if copy_style:
+            self.current_para.style = prev_para.style
 
         #
         # TODO: We may need to copy some properties from the old paragraph to the new.
@@ -291,15 +300,23 @@ class WordDocCursor(TaggedDocCursor):
         if text is not None:
             self.add_text(text)
 
-    def add_text(self, text):
-        self.current_run.add_text(text)
+    def add_text(self, text, *, convert_newlines=True):
+        if convert_newlines:
+            # Convert any newlines into new paragraphs
+            text_lines = text.split('\n')
+        else:
+            text_lines = [text]
+        for line_index in range(len(text_lines)):
+            self.current_run.add_text(text_lines[line_index])
+            if line_index < (len(text_lines) - 1):
+                self.add_new_para(copy_style=True)
 
     def add_new_table(self, num_rows, num_cols, style=None, after_para=True):
         # Technique is from: 
         # https://github.com/python-openxml/python-docx/issues/156#issuecomment-77674193
 
         table = self.document.add_table(num_rows, num_cols, style)
-        #
+        
         if after_para:
             # Add table after current paragraph. However, just moving the new table after
             # the current paragraph won't automatically update the current paragraph,
@@ -307,7 +324,7 @@ class WordDocCursor(TaggedDocCursor):
             # paragraph (which becomes the new current paragraph), and move the table
             # before it. That way we end up with a reference to the current paragraph
             # which is after the table, as we require.
-            self.add_new_para() # Post-table paragraph       
+            self.add_new_para(copy_style=False) # Post-table paragraph       
             self.current_para._p.addprevious(table._tbl)
         else:
             # Add table before current paragraph
@@ -375,7 +392,7 @@ class WordBibleStreamHandler(OutputBibleStreamHandler):
 class WordPlanConfig(OutputPlanConfig):
     def __init__(self, bible_output):
         super().__init__(bible_output)
-        self.join_passage_text = "...\n"
+        self.join_passage_text = "\n...\n"
         self.all_tables_insert_blank_paras = True
         self.generate_pdf = False
 

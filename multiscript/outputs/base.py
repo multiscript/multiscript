@@ -86,6 +86,9 @@ class BibleOutput:
             prior_template = self.get_template_obj(runner, template_combo)
             template_obj = self.generate_combo_item(runner, template_combo, prior_template, is_template=True)
             template_cache[tuple(template_combo)] = template_obj
+            if runner.plan.config.general.create_template_copies:
+                # Use the template we just generated to create a normal output copy of itself
+                self.generate_combo_item(runner, template_combo, template_obj, is_template=False)
         else:
             template_obj = template_cache[tuple(template_combo)]
 
@@ -104,9 +107,8 @@ class BibleOutput:
         The default implementation does nothing except print a log message, and return the version_combo
         itself.
         '''
-        base_log_message = "\t\tCreating "
-        base_log_message += "template" if is_template else "file"
-        _logger.info(base_log_message+  ": " + str(version_combo) + " using template: " + str(template_obj))
+        base_log_message = f"\t\tCreating {'template' if is_template else 'file'}"
+        _logger.info(base_log_message +  f": {str(version_combo)} using template: {str(template_obj)}")
         return version_combo
 
     def new_output_app_config(self):

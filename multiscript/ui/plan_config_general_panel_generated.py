@@ -22,7 +22,7 @@ class Ui_GeneralPlanConfigPanel(object):
     def setupUi(self, GeneralPlanConfigPanel):
         if not GeneralPlanConfigPanel.objectName():
             GeneralPlanConfigPanel.setObjectName(u"GeneralPlanConfigPanel")
-        GeneralPlanConfigPanel.resize(363, 77)
+        GeneralPlanConfigPanel.resize(395, 100)
         self.verticalLayout = QVBoxLayout(GeneralPlanConfigPanel)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.allowConfirmationsCheckBox = QCheckBox(GeneralPlanConfigPanel)
@@ -41,6 +41,11 @@ class Ui_GeneralPlanConfigPanel(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
+        self.createTemplateCopiesCheckBox = QCheckBox(GeneralPlanConfigPanel)
+        self.createTemplateCopiesCheckBox.setObjectName(u"createTemplateCopiesCheckBox")
+
+        self.verticalLayout.addWidget(self.createTemplateCopiesCheckBox)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
@@ -54,6 +59,7 @@ class Ui_GeneralPlanConfigPanel(object):
     def retranslateUi(self, GeneralPlanConfigPanel):
         GeneralPlanConfigPanel.setWindowTitle(QCoreApplication.translate("GeneralPlanConfigPanel", u"Form", None))
         self.allowConfirmationsCheckBox.setText(QCoreApplication.translate("GeneralPlanConfigPanel", u"Pause for confirmation while running plan", None))
-        self.confirmAfterTemplateExpansionCheckBox.setText(QCoreApplication.translate("GeneralPlanConfigPanel", u"Pause for confirmation after template expansion", None))
+        self.confirmAfterTemplateExpansionCheckBox.setText(QCoreApplication.translate("GeneralPlanConfigPanel", u"Pause for confirmation after base template expansion", None))
+        self.createTemplateCopiesCheckBox.setText(QCoreApplication.translate("GeneralPlanConfigPanel", u"Create output copies of templates (without tags)", None))
     # retranslateUi
 

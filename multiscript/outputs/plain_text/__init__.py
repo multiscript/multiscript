@@ -39,17 +39,26 @@ class PlainTextOutput(TaggedOutput):
     def new_output_plan_run(self, plan):
         return PlainTextPlanRun(plan)
 
+    def setup(self, runner):
+        '''Overriden from TaggedOutput.setup(). Called prior to looping through the version
+        combos.
+
+        We use this method to set some defaults for the run.
+        '''
+        super().setup(runner)
+        runner.output_runs[self.long_id].text_join = runner.plan.config.outputs[self.long_id].join_passage_text
+    
     #
     # Implementation of abstract methods from FileSetOutput
     #
 
     def load_document(self, runner, version_combo, template_path):
-        with open(template_path, 'r') as file:
+        with open(template_path, 'r', encoding='utf-8') as file:
             document = PlainTextDocument(file.read())
         return document
     
     def save_document(self, runner, version_combo, document, filepath):
-        with open(filepath, 'w') as file:
+        with open(filepath, 'w', encoding='utf-8') as file:
             file.write(str(document))
 
     #

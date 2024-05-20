@@ -118,7 +118,7 @@ class BibleVersionColumn(MutableSequence):
 
 
 class BibleVersionCombo(MutableSequence):
-    '''A list of VersionComboElements.
+    '''A list of BibleVersionComboElements.
     '''
     def __init__(self, version_combo_elements=None):
         if version_combo_elements is None:           # The underlying list of BibleVersionComboElements
@@ -198,6 +198,11 @@ class BibleVersionCombo(MutableSequence):
 
         return template_combo
 
+    @property
+    def is_partial(self):
+        '''Returns True if any of the elements in this combo have their version set to None.'''
+        return any([element.version == None for element in self.data])
+ 
 
 class BibleVersionComboElement(namedtuple('BibleVersionComboElement', ['version_column', 'version'])):
     __slots__ = () # Ensures our subclassed named tuple is immutable (and therefore better for hashing)
