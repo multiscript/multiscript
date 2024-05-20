@@ -53,12 +53,12 @@ class PlainTextOutput(TaggedOutput):
     #
 
     def load_document(self, runner, version_combo, template_path):
-        with open(template_path, 'r') as file:
+        with open(template_path, 'r', encoding='utf-8') as file:
             document = PlainTextDocument(file.read())
         return document
     
     def save_document(self, runner, version_combo, document, filepath):
-        with open(filepath, 'w') as file:
+        with open(filepath, 'w', encoding='utf-8') as file:
             file.write(str(document))
 
     #
