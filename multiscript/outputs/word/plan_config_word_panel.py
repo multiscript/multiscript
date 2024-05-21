@@ -18,11 +18,9 @@ class WordPlanConfigPanel(ConfigWidget, Ui_WordPlanConfigPanel):
         '''
         self.joinPassageLineEdit.setText(repr(config.join_passage_text)[1:-1]) # Strip leading and trailing quotes
         self.allTablesInsertBlankParasCheckBox.setChecked(config.all_tables_insert_blank_paras)
-        self.generatePDFCheckBox.setChecked(config.generate_pdf)
 
     def save_config(self, config):
         '''Save the contents of this widget into config.
         '''
         config.join_passage_text = ast.literal_eval("'" + self.joinPassageLineEdit.text() + "'")
         config.all_tables_insert_blank_paras = self.allTablesInsertBlankParasCheckBox.isChecked()
-        config.generate_pdf = self.generatePDFCheckBox.isChecked()

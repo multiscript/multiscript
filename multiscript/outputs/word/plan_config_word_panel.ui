@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>449</width>
-    <height>174</height>
+    <width>347</width>
+    <height>80</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,35 +42,9 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QCheckBox" name="allTablesInsertBlankParasCheckBox">
      <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="allTablesGroupBox">
-     <property name="title">
-      <string>When automatically inserting tables (using [MS_ALL_TABLES] tag):</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QCheckBox" name="allTablesInsertBlankParasCheckBox">
-        <property name="text">
-         <string>Insert blank paragraphs before and after tables</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="generatePDFCheckBox">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>FUTURE: Generate PDF files (requires MS Word to be installed)</string>
+      <string>Insert blank paragraphs before and after new tables</string>
      </property>
     </widget>
    </item>
