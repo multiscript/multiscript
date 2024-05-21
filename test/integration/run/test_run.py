@@ -184,7 +184,7 @@ class TestRun(MultiscriptAppTestCase):
 
                 # Copy expected output into expectation directory, using a text copy to handle
                 # any difference in platform line-endings.
-                for source_path in expected_output_path.iterdir():
+                for source_path in expected_output_path.glob("*.txt"):
                     with open(source_path, 'r', encoding='utf-8') as source_file:
                         with open(Path(expected_dir, source_path.name), 'w', encoding='utf-8') as dest_file:
                             text = source_file.read()

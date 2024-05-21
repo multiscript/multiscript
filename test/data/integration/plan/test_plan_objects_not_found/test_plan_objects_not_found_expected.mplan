@@ -30,6 +30,8 @@
                 },
                 "notes": "",
                 "notes_type": "text/markdown",
+                "copyright": "General public license for distribution for any purpose",
+                "copyright_type": "text/plain",
                 "auto_font": true,
                 "font_family": "",
                 "output_config": {
@@ -49,7 +51,6 @@
                         "__bibleoutput_name__": "MS Word"
                     }
                 },
-                "copyright_text": "General public license for distribution for any purpose",
                 "__plugin_id__": "multiscript-builtin",
                 "__plugin_name__": "Builtin Plugin",
                 "__biblesource_id__": "getbible.net",
@@ -79,6 +80,8 @@
                 },
                 "notes": "",
                 "notes_type": "text/markdown",
+                "copyright": "Public Domain",
+                "copyright_type": "text/plain",
                 "auto_font": true,
                 "font_family": "",
                 "output_config": {
@@ -98,7 +101,6 @@
                         "__bibleoutput_name__": "MS Word"
                     }
                 },
-                "copyright_text": "Public Domain",
                 "__plugin_id__": "multiscript-builtin",
                 "__plugin_name__": "Builtin Plugin",
                 "__biblesource_id__": "getbible.net",
@@ -128,6 +130,8 @@
                 },
                 "notes": "",
                 "notes_type": "text/markdown",
+                "copyright": "Public Domain",
+                "copyright_type": "text/plain",
                 "auto_font": true,
                 "font_family": "",
                 "output_config": {
@@ -147,7 +151,6 @@
                         "__bibleoutput_name__": "MS Word"
                     }
                 },
-                "copyright_text": "Public Domain",
                 "__plugin_id__": "multiscript-builtin",
                 "__plugin_name__": "Builtin Plugin",
                 "__biblesource_id__": "getbible.net",
@@ -177,6 +180,8 @@
                 },
                 "notes": "",
                 "notes_type": "text/markdown",
+                "copyright": "Permission to distribute granted to CrossWire",
+                "copyright_type": "text/plain",
                 "auto_font": true,
                 "font_family": "",
                 "output_config": {
@@ -196,7 +201,6 @@
                         "__bibleoutput_name__": "MS Word"
                     }
                 },
-                "copyright_text": "Permission to distribute granted to CrossWire",
                 "__plugin_id__": "multiscript-builtin",
                 "__plugin_name__": "Builtin Plugin",
                 "__biblesource_id__": "getbible.net",

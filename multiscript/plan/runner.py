@@ -131,7 +131,7 @@ class PlanRunner:
                     _logger.info(f"\t\tLoading {str(bible_range)}")
                     self.monitors.set_substatus_text(f"Loading {version.abbrev} {str(bible_range)}")
                     try:
-                        version.load_content(bible_range, content)
+                        version.load_content(bible_range, content, self)
                     except Exception as exception:
                         _logger.exception(exception)
                         self.monitors.request_confirmation(f"<b>There was an error loading {str(bible_range)} " +

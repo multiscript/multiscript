@@ -13,13 +13,15 @@ class BibleVersion:
         self.id: str = id
         self.user_labels: BibleVersionLabels = BibleVersionLabels()
         self.native_labels: BibleVersionLabels = BibleVersionLabels()
-        self.name = name                    # Shortcut to set user version name
-        self.lang = lang                    # Shortcut to set user version lang
-        self.abbrev = abbrev                # Shortcut to set user version abbrev
-        self.notes: str = ""                     # String data of version notes
-        self.notes_type: str = "text/markdown"   # Media-type of plan notes. Currently only "text/markdown" supported.
-        self.auto_font: bool = True         # True if the font-family should be chosen automatically on next plan run.
-        self.font_family: str = ""          # Font-family to use for this version.
+        self.name = name                        # Shortcut to set user version name
+        self.lang = lang                        # Shortcut to set user version lang
+        self.abbrev = abbrev                    # Shortcut to set user version abbrev
+        self.notes: str = ""                    # String data of version notes
+        self.notes_type: str = "text/markdown"  # Media-type of plan notes. Currently only "text/markdown" supported.
+        self.copyright: str = ""                # String data of copyright text.
+        self.copyright_type: str = "text/plain" # Media-type of copyright text. Currently only "text/plain" supported
+        self.auto_font: bool = True             # True if the font-family should be auto chosen on next plan run.
+        self.font_family: str = ""              # Font-family to use for this version.
 
         # Dict of OutputVersionConfig by output long_id
         self.output_config: dict[str, 'OutputVersionConfig'] = {}
@@ -77,7 +79,7 @@ class BibleVersion:
     def abbrev(self, value: str):
         self.user_labels.abbrev = value if value is not None else ""
 
-    def load_content(self, bible_range, bible_content):
+    def load_content(self, bible_range, bible_content, plan_runner=None):
         pass        
 
     def __repr__(self):

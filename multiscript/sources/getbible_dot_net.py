@@ -8,6 +8,7 @@ from bibleref import BibleBook, BibleRange, BibleVerse
 
 from multiscript.sources.base import BibleSource, VersionProgressReporter
 from multiscript.bible.version import BibleVersion
+from multiscript.plan.runner import PlanRunner
 
 
 class GetBibleDotNetSource(BibleSource):
@@ -55,7 +56,7 @@ class GetBibleDotNetSource(BibleSource):
             version.user_labels.name = vers_dict['translation']
             version.user_labels.abbrev = vers_dict['abbreviation'].upper()
             version.user_labels.lang = vers_dict['language']
-            version.copyright_text = vers_dict['distribution_license']
+            version.copyright = vers_dict['distribution_license']
             versions.append(version)
         return versions
 
@@ -152,9 +153,8 @@ class GetBibleDotNetVersion(BibleVersion):
     def __init__(self, source=None, id=None, name=None, lang=None, abbrev=None):
         super().__init__(source, id, name, lang, abbrev)
 
-    def load_content(self, bible_range: BibleRange, bible_content):
+    def load_content(self, bible_range: BibleRange, bible_content, plan_runner: PlanRunner):
         book_code = GetBibleDotNetVersion.book_codes[bible_range.start.book]
-        bible_content.copyright_text = self.copyright_text
         content_body = bible_content.body
         content_body.strip_text = True
         content_body.insert_missing_whitespace = True

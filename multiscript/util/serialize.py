@@ -302,11 +302,17 @@ def _deserialize(file_app_version, error_list, obj_type, input_dict):
                     input_dict["font_family"] = input_dict["output_config"]["multiscript-builtin/word"].font_name
                     del input_dict["output_config"]["multiscript-builtin/word"].font_name
                 except Exception:
-                    _logger.info(f"Plan version < 0.16.0: Didn't find a font-family in version id {input_dict['id']}")
+                    _logger.info(f"Plan version<0.16.0: Didn't find a font-family in version id {input_dict['id']}")
 
                 if input_dict['font_family'] != "":
-                    _logger.info(f"Plan version < 0.16.0: Don't auto-override font for version id {input_dict['id']}")
+                    _logger.info(f"Plan version<0.16.0: Don't auto-override font for version id {input_dict['id']}")
                     input_dict["auto_font"] = False
+            if file_app_version < semver.VersionInfo.parse("0.17.0"):
+                try:
+                    input_dict["copyright"] = input_dict["copyright_text"]
+                    del input_dict["copyright_text"]
+                except Exception:
+                    pass
 
         except Exception as e:
             raise BibleVersionNotFoundError(input_dict[PLUGIN_ID_KEY], input_dict[PLUGIN_NAME_KEY],

@@ -5,7 +5,11 @@ import multiscript
 from multiscript.qt_custom.forms import Form
 from multiscript.ui.version_form_generated import Ui_VersionForm
 from multiscript.ui.version_notes_dialog import VersionNotesDialog
+from multiscript.ui.edit_copyright_dialog import EditCopyrightDialog
 from multiscript.qt_custom.model_columns import AttributeColumn
+
+
+CUSTOM_PROPERTY = "custom_property"
 
 
 class VersionForm(Form, Ui_VersionForm):
@@ -17,6 +21,7 @@ class VersionForm(Form, Ui_VersionForm):
     def setupUi(self):
         super().setupUi(self)
         self.moreButton.clicked.connect(self.edit_version_notes)
+        self.copyrightButton.clicked.connect(self.edit_copyright_text)
         self.autoFontCheckBox.stateChanged.connect(self.autoFontCheckBox_stateChanged)
         self.autoFontCheckBox_stateChanged(self.autoFontCheckBox.checkState().value)
 
@@ -74,6 +79,15 @@ class VersionForm(Form, Ui_VersionForm):
                                 lambda version, value: setattr(version, "notes", value.strip()), hide=False),
                 self.notesTextEdit, property_name="markdown"
         )
+        # We don't directly display the copyright text in this form, instead providing a button to open
+        # a separate dialog for editing the copyright text. However, it's easiest if we still
+        # store the copyright text on a widget. The approach we've used is to actually store the copyright
+        # text on the QPushButton object, under a custom property name.
+        self.add_model_column_and_widget(
+                AttributeColumn("Copyright", lambda version: version.copyright,
+                                lambda version, value: setattr(version, "copyright", value.strip()), hide=True),
+                self.copyrightButton, property_name=CUSTOM_PROPERTY
+        )
         self.add_model_column_and_widget(
                 AttributeColumn("Auto Choose Font", "auto_font", hide=True),
                 self.autoFontCheckBox
@@ -93,6 +107,13 @@ class VersionForm(Form, Ui_VersionForm):
         result = version_notes_dialog.exec()
         if result == QtWidgets.QDialog.DialogCode.Accepted:
             self.notesTextEdit.setMarkdown(version_notes_dialog.getNotes())
+
+    def edit_copyright_text(self):
+        edit_copyright_dialog = EditCopyrightDialog(None)
+        edit_copyright_dialog.setCopyright(self.copyrightButton.property(CUSTOM_PROPERTY))
+        result = edit_copyright_dialog.exec()
+        if result == QtWidgets.QDialog.DialogCode.Accepted:
+            self.copyrightButton.setProperty(CUSTOM_PROPERTY, edit_copyright_dialog.getCopyright())
 
     def autoFontCheckBox_stateChanged(self, state):
         self.fontFamilyLabel.setEnabled(state == Qt.CheckState.Unchecked.value)

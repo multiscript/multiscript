@@ -10,7 +10,6 @@ class BibleContent:
         self._bible_range: BibleRange = None
         self.bible_version: 'BibleVersion' = None
         self.body: BibleStream = BibleStream(self)
-        self.copyright_text: str = ""
 
     @property
     def bible_range(self) -> BibleRange:
@@ -28,7 +27,7 @@ class BibleContent:
             string += "Version: " + str(self.bible_version.name) + "\n"
         string += "Range: " + str(self.bible_range) + "\n"
         string += str(self.body)
-        string += "\nCopyright: " + self.copyright_text + "\n"
+        string += f"\nCopyright: {self.bible_version.copyright}\n"
         return string
 
 

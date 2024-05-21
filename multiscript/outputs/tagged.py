@@ -197,7 +197,7 @@ class TaggedOutput(FileSetOutput):
                 if cursor is not None:
                     if version is not None:
                         self.format_copyright_text_tag(document, bible_content, cursor)
-                        cursor.add_text(bible_content.copyright_text)
+                        cursor.add_text(bible_content.bible_version.copyright)
                     else:
                         # version == None and is_template == False, so we leave the tag blank by adding no text
                         pass
