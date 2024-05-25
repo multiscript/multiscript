@@ -18,6 +18,7 @@ from multiscript.sources.base import BibleSource, SourceAppConfig, SourcePlanCon
 from multiscript.outputs.base import BibleOutput, OutputVersionConfig, OutputAppConfig, OutputPlanConfig
 from multiscript.util.exception import MultiscriptException
 
+
 _logger = logging.getLogger(__name__)
 
 APP_VERSION_KEY         = "app_version"
@@ -186,7 +187,7 @@ def _serialize(orig_obj, output_dict):
         output_dict["__path__"] = str(orig_obj)
     elif isinstance(orig_obj, Plan):
         obj_type = "Plan"
-        del output_dict["path"]
+        del output_dict["_path"]
         del output_dict["changed"]
         del output_dict["new"]
         del output_dict["_orig_path"]
@@ -280,6 +281,18 @@ def _deserialize(file_app_version, error_list, obj_type, input_dict):
 
     elif obj_type == "Plan":
         new_obj = Plan()
+
+        if file_app_version < semver.VersionInfo.parse("0.17.0"):
+            try:
+                input_dict["_template_path"] = input_dict["template_path"]
+                del input_dict["template_path"]
+            except Exception:
+                _logger.info(f"Plan version<0.17.0: Didn't find template_path")
+            try:
+                input_dict["_output_dir_path"] = input_dict["output_dir_path"]
+                del input_dict["output_dir_path"]
+            except Exception:
+                _logger.info(f"Plan version<0.17.0: Didn't find output_dir_path")
 
     elif obj_type == "BibleSource":
         try:

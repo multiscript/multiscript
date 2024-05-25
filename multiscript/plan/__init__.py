@@ -1,4 +1,5 @@
 
+import logging
 from pprint import pformat
 from pathlib import Path
 import traceback
@@ -6,6 +7,9 @@ import traceback
 import multiscript
 from multiscript.config.plan import PlanConfigGroup
 from multiscript.util import serialize
+
+
+_logger = logging.getLogger(__name__)
 
 PLAN_FILE_EXTENSION = ".mplan"
 PLAN_FILE_FILTER = "*" + PLAN_FILE_EXTENSION
@@ -15,14 +19,14 @@ DEFAULT_PLAN_FILENAME = "Default Plan" + PLAN_FILE_EXTENSION
 
 class Plan:
     def __init__(self):
-        # Set the default path to the user's Documents directory, plus an untitled file name
-        self.path: Path = multiscript.app().app_docs_path / UNTITLED_PLAN_NAME
-
-        # Classes using Plan should set changed to True if this plan has been modified and not yet saved.
-        self.changed: bool = False
+        # Path this plan has been saved to or will be saved to.
+        self._path: Path = multiscript.app().app_docs_path / UNTITLED_PLAN_NAME
 
         # True until the plan is saved or loaded for the first time.
         self.new: bool = True
+
+        # Classes using Plan should set changed to True if this plan has been modified and not yet saved.
+        self.changed: bool = False
 
         # If the path renamed due to missing plugins, store the original path here, but only until the plan
         # is saved, when _orig_path is reset to None.
@@ -45,9 +49,75 @@ class Plan:
         self.version_selection: list[list[bool]] = [[], []]
 
         # TODO: Do better than hard-coding to the word document. Specify in app settings?
-        self.template_path: Path = multiscript.app().default_template_path
-        self.output_dir_path: Path = multiscript.app().output_dir_path
+        self._template_path: Path = multiscript.app().default_template_path
+        self._output_dir_path: Path = multiscript.app().output_dir_path
         self.config: PlanConfigGroup = PlanConfigGroup()
+
+    @property
+    def path(self) -> Path:
+        '''Returns the path of this plan.'''
+        return self._path
+
+    @path.setter
+    def path(self, path: Path):
+        '''Sets the path of this plan. The path must be absolute.
+        If the current template or output directory paths are now in the same parent directory of this plan
+        (or a subdirectory), their values are converted to relative paths.'''
+        # Save paths that can be relative to this path
+        template_abspath = self.template_abspath
+        output_dir_abspath = self.output_dir_abspath
+        # Update this plan's path
+        self._path = path
+        # Recalculate paths that can be relative to this path
+        self.template_path = template_abspath
+        self.output_dir_path = output_dir_abspath
+
+    @property
+    def template_path(self) -> Path:
+        '''Returns the path of the template. May be absolute or relative to the parent directory of this plan.'''
+        return self._template_path
+
+    @template_path.setter
+    def template_path(self, template_path: Path):
+        '''Sets the template path. May be absolute or relative to the parent directory of this plan.
+        If the path is absolute but is in the parent directory of this plan or a subdirectory, the path
+        is converted to a relative path.'''
+        if template_path.is_absolute() and template_path.is_relative_to(self.path.parent):
+            self._template_path = template_path.relative_to(self.path.parent)
+        else:
+            self._template_path = template_path
+
+    @property
+    def template_abspath(self) -> Path:
+        '''Returns the path of the template, and will always be the absolute path.'''
+        if not self._template_path.is_absolute():
+            return Path(self.path.parent, self._template_path)
+        else:
+            return self._template_path
+
+    @property
+    def output_dir_path(self) -> Path:
+        '''Returns the path of the output directory. May be absolute or relative to the parent directory of this
+        plan.'''
+        return self._output_dir_path
+
+    @output_dir_path.setter
+    def output_dir_path(self, output_dir_path: Path):
+        '''Sets the outpur directory path. May be absolute or relative to the parent directory of this plan.
+        If the path is absolute but is in the parent directory of this plan or a subdirectory, the path
+        is converted to a relative path.'''
+        if output_dir_path.is_absolute() and output_dir_path.is_relative_to(self.path.parent):
+            self._output_dir_path = output_dir_path.relative_to(self.path.parent)
+        else:
+            self._output_dir_path = output_dir_path
+
+    @property
+    def output_dir_abspath(self) -> Path:
+        '''Returns the path of the outpud directory, and will always be the absolute path.'''
+        if not self._output_dir_path.is_absolute():
+            return Path(self.path.parent, self._output_dir_path)
+        else:
+            return self._output_dir_path
 
     @property
     def is_default_plan(self) -> bool:
@@ -113,12 +183,11 @@ def load(path, error_list=None):
 
     # Handle any paths parameters that don't exist.
     blank_plan = Plan() # Provides our default values
-    template_path = Path(plan.template_path) # In case we've somehow received a string, we convert it to a Path
-    if not template_path.exists():
+    if plan.template_path.is_absolute() and not plan.template_path.exists():
+        _logger.info(f"Template absolute path {path.template_path} not found, so replacing.")
         plan.template_path = blank_plan.template_path
-
-    output_dir_path = Path(plan.output_dir_path) # In case we've somehow received a string, we convert it to a Path
-    if not output_dir_path.exists():
+    if plan.output_dir_path.is_absolute() and not plan.output_dir_path.exists():
+        _logger.info(f"Output dir absolute path {path.output_dir_path} not found, so replacing.")
         plan.output_dir_path = blank_plan.output_dir_path
 
     return plan

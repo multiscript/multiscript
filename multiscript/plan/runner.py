@@ -61,8 +61,8 @@ class PlanRunner:
                     column_version_list.append(all_versions[row_index])
             self._add_version_list(column_version_list)
 
-        self.base_template_path = plan.template_path
-        self.output_dir_path = plan.output_dir_path
+        self.base_template_path = plan.template_abspath
+        self.output_dir_path = plan.output_dir_abspath
 
         for output in multiscript.app().outputs_for_ext(self.base_template_path.suffix):
             self.output_runs[output.long_id] = output.new_output_plan_run(self.plan)
@@ -85,6 +85,7 @@ class PlanRunner:
         return combinations.get_all_version_combos(self.version_cols)
 
     def run(self):
+        self.plan.output_dir_abspath.mkdir(parents=True, exist_ok=True)
         self.calc_total_progress_steps()
         self.load_bible_content()
         self.select_auto_fonts()
