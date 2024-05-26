@@ -303,24 +303,28 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     #
 
     def on_template_show_button_clicked(self, checked):
-        if self.plan.template_path is not None and self.plan.template_path.exists():
-            launch_file(self.plan.template_path.parent)
+        if self.plan.template_abspath is not None and self.plan.template_abspath.exists():
+            launch_file(self.plan.template_abspath.parent)
 
     def on_output_dir_show_button_clicked(self, checked):
-        if self.plan.output_dir_path is not None and self.plan.output_dir_path.exists():
-            launch_file(self.plan.output_dir_path)
+        if self.plan.output_dir_path is not None:
+            # If the output dir is a relative path that doesn't exist yet, create it.
+            if not self.plan.output_dir_path.is_absolute():
+                self.plan.output_dir_abspath.mkdir(parents=True, exist_ok=True)
+            if self.plan.output_dir_abspath.exists():
+                launch_file(self.plan.output_dir_abspath)
 
     def on_template_browse_button_clicked(self, checked):
         filters = ' '.join([('*' + ext) for ext in multiscript.app().all_accepted_template_exts])
         template_path, selected_filter = QtWidgets.QFileDialog.getOpenFileName(self, self.tr("Select Template"),
-                                                                   str(self.plan.template_path), filters)
+                                                                   str(self.plan.template_abspath), filters)
         if len(template_path) > 0:
             self.plan.template_path = pathlib.Path(template_path)
             self.set_plan_changed()
 
     def on_output_dir_browse_button_clicked(self, checked):
         output_dir_path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr("Select Destination Folder"),
-                                                                   str(self.plan.output_dir_path))
+                                                                   str(self.plan.output_dir_abspath))
         if len(output_dir_path) > 0:
             self.plan.output_dir_path = pathlib.Path(output_dir_path)
             self.set_plan_changed()
@@ -531,15 +535,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                         len(self.get_all_version_columns()))))
 
         template_path = self.plan.template_path
+        template_abspath = self.plan.template_abspath
         self.templatePathLabel.setText(template_path.name)
         self.templatePathLabel.setToolTip(str(template_path))
-        self.templateIconLabel.setFileIconFromPath(template_path)
+        self.templateIconLabel.setFileIconFromPath(template_abspath)
         self.templateIconLabel.setToolTip(str(template_path))
 
         output_dir_path = self.plan.output_dir_path
+        output_dir_abspath = self.plan.output_dir_abspath
         self.outputDirPathLabel.setText(output_dir_path.name)
         self.outputDirPathLabel.setToolTip(str(output_dir_path))
-        self.outputDirIconLabel.setFileIconFromPath(output_dir_path)
+        self.outputDirIconLabel.setFileIconFromPath(output_dir_abspath)
         self.outputDirIconLabel.setToolTip(str(output_dir_path))
 
     #
