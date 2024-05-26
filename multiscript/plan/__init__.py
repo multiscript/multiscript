@@ -63,14 +63,13 @@ class Plan:
         '''Sets the path of this plan. The path must be absolute.
         If the current template or output directory paths are now in the same parent directory of this plan
         (or a subdirectory), their values are converted to relative paths.'''
-        # Save paths that can be relative to this path
-        template_abspath = self.template_abspath
-        output_dir_abspath = self.output_dir_abspath
-        # Update this plan's path
         self._path = path
-        # Recalculate paths that can be relative to this path
-        self.template_path = template_abspath
-        self.output_dir_path = output_dir_abspath
+        if self.template_path.is_absolute():
+            # Set the property to its current value to give an opportunity to make it relative if necessary
+            self.template_path = self.template_path
+        if self.output_dir_path.is_absolute():
+            # Set the property to its current value to give an opportunity to make it relative if necessary
+            self.output_dir_path = self.output_dir_path
 
     @property
     def template_path(self) -> Path:
