@@ -308,6 +308,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def on_output_dir_show_button_clicked(self, checked):
         if self.plan.output_dir_path is not None:
+            # If the output dir is a relative path that doesn't exist yet, create it.
             if not self.plan.output_dir_path.is_absolute():
                 self.plan.output_dir_abspath.mkdir(parents=True, exist_ok=True)
             if self.plan.output_dir_abspath.exists():

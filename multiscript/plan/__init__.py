@@ -48,7 +48,7 @@ class Plan:
         # self.bible_versions is selected for that column. By default we start with two empty version columns.
         self.version_selection: list[list[bool]] = [[], []]
 
-        # TODO: Do better than hard-coding to the word document. Specify in app settings?
+        # TODO: Should there be a setting to specify the default template?
         self._template_path: Path = multiscript.app().default_template_path
         self._output_dir_path: Path = multiscript.app().output_dir_path
         self.config: PlanConfigGroup = PlanConfigGroup()
@@ -61,6 +61,7 @@ class Plan:
     @path.setter
     def path(self, path: Path):
         '''Sets the path of this plan. The path must be absolute.
+        
         If the current template or output directory paths are now in the same parent directory of this plan
         (or a subdirectory), their values are converted to relative paths.'''
         self._path = path
