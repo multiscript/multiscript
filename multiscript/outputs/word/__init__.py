@@ -70,11 +70,13 @@ class WordOutput(TaggedOutput):
     #
 
     def load_document(self, runner, version_combo, template_path):
+        super().load_document(runner, version_combo, template_path)
         document = docx.Document(template_path)
         return document
     
     def save_document(self, runner, version_combo, document, filepath):
         document.save(filepath)
+        super().save_document(runner, version_combo, document, filepath)
 
     #
     # Implementation of abstract methods from TaggedOutput

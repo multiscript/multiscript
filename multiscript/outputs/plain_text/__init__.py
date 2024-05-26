@@ -52,6 +52,7 @@ class PlainTextOutput(TaggedOutput):
     #
 
     def load_document(self, runner, version_combo, template_path):
+        super().load_document(runner, version_combo, template_path)
         with open(template_path, 'r', encoding='utf-8') as file:
             document = PlainTextDocument(file.read())
         return document
@@ -59,6 +60,7 @@ class PlainTextOutput(TaggedOutput):
     def save_document(self, runner, version_combo, document, filepath):
         with open(filepath, 'w', encoding='utf-8') as file:
             file.write(str(document))
+        super().save_document(runner, version_combo, document, filepath)
 
     #
     # Implementation of abstract methods from TaggedOutput

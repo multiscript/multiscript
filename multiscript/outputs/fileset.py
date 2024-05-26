@@ -1,11 +1,15 @@
 
+from dataclasses import dataclass
 import logging
+import os
 from pathlib import Path
+from typing import Any
 
 import multiscript
 from multiscript.outputs.base import BibleOutput
 from multiscript.plan.runner import PlanRunner
 from multiscript.plan.symbols import column_symbols
+from multiscript.util import serialize
 
 
 _logger = logging.getLogger(__name__)
@@ -28,6 +32,25 @@ class FileSetOutput(BibleOutput):
         '''
         super().__init__(plugin)
         self.output_file_ext: str = "" # e.g. ".output"
+
+    def setup(self, runner):
+        '''Overriden from BibleOutput.setup(). Called prior to looping through the version
+        combos.
+
+        We use this method to set up the cache of file metadata for the run.
+        '''
+        super().setup(runner)
+        file_metadata: dict[str, 'FileMetaData'] = {}
+        runner.fileset_metadata = file_metadata
+
+    def cleanup(self, runner):
+        '''Overriden from BibleOutput.cleanup(). Called after looping through the version
+        combos.
+
+        We use this method to save up the cache of file metadata for the run.
+        '''
+        super().cleanup(runner)
+        serialize.save(runner.fileset_metadata, runner.output_dir_path / "_metadata.json")
 
     def generate_combo_item(self, runner, version_combo, template_obj=None, is_template=False):
         '''Overrides BibleOutput.generate_combo_item(). The item returned is the path
@@ -144,14 +167,16 @@ class FileSetOutput(BibleOutput):
         '''Subclasses must override this method to returns a document representation of the
         template at template_path, suitable for expansion and filling with content,
         to later be saved as a new file. The document object itself is opaque to FileSetOuput.
+        Before loading the document, subclasses should call super().load_document().
         '''
         return object()
     
     def save_document(self, runner, version_combo, document, filepath):
         '''Subclasses must override this method to save the document as a new file.
         The document object itself is opaque to FileSetOuput.
+        After saving the document, subclasses should call super().save_document().
         '''
-        pass
+        runner.fileset_metadata[str(filepath)] = FileMetaData(filepath)
 
     def expand_base_template(self, runner, document):
         '''Called if the newly loaded document is actually the base template. Subclasses
@@ -179,3 +204,17 @@ class FileSetOutput(BibleOutput):
         into the document.
         '''
         pass
+
+
+@dataclass
+class FileMetaData:
+    size:   int     # Size in bytes
+    mtime:  float   # Modification time in seconds
+
+    def __init__(self, pathlike=None):
+        if pathlike is not None:
+            stat_result = Path(pathlike).stat()
+        else:
+            stat_result = os.stat_result()
+        self.size = stat_result.st_size
+        self.mtime = stat_result.st_mtime
