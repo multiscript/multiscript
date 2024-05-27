@@ -1,11 +1,10 @@
 
 from dataclasses import dataclass
+import filecmp
 import logging
-import os
 from pathlib import Path
-from typing import Any
+import shutil
 
-import multiscript
 from multiscript.outputs.base import BibleOutput
 from multiscript.plan.runner import PlanRunner
 from multiscript.plan.symbols import column_symbols
@@ -13,6 +12,8 @@ from multiscript.util import serialize
 
 
 _logger = logging.getLogger(__name__)
+
+METADATA_FILENAME = "_metadata.json"
 
 
 class FileSetOutput(BibleOutput):
@@ -40,8 +41,13 @@ class FileSetOutput(BibleOutput):
         We use this method to set up the cache of file metadata for the run.
         '''
         super().setup(runner)
-        file_metadata: dict[str, 'FileMetaData'] = {}
-        runner.fileset_metadata = file_metadata
+        empty_file_metadata: dict[str, 'FileMetaData'] = {}
+        metadata_path = runner.output_dir_path / METADATA_FILENAME
+        if metadata_path.exists():
+            runner.fileset_metadata = serialize.load(metadata_path)
+            _logger.info("\t\tFound existing file metadata.")
+        else:
+            runner.fileset_metadata = empty_file_metadata
 
     def cleanup(self, runner):
         '''Overriden from BibleOutput.cleanup(). Called after looping through the version
@@ -50,7 +56,10 @@ class FileSetOutput(BibleOutput):
         We use this method to save up the cache of file metadata for the run.
         '''
         super().cleanup(runner)
-        serialize.save(runner.fileset_metadata, runner.output_dir_path / "_metadata.json")
+        serialize.save(runner.fileset_metadata, runner.output_dir_path / METADATA_FILENAME)
+
+    def cache_file_metadata(self, runner, path):
+        runner.fileset_metadata[str(path)] = FileMetaData(path)
 
     def generate_combo_item(self, runner, version_combo, template_obj=None, is_template=False):
         '''Overrides BibleOutput.generate_combo_item(). The item returned is the path
@@ -63,32 +72,59 @@ class FileSetOutput(BibleOutput):
         '''
         filepath = self.get_item_filepath(runner, version_combo, is_template)
 
-        if (multiscript.app().app_config_group.general.keep_existing_template_files and \
-            is_template and filepath.exists()) or \
-           (multiscript.app().app_config_group.general.keep_existing_output_files and \
-            not is_template and filepath.exists()):
-            self.log_keep_existing_filepath(runner, filepath, is_template)
-            return filepath
+        savepath = filepath
+        if filepath.exists():
+            # We will create the output in a temporary directory first, so we can compare it to the existing file.
+            savepath = runner.temp_dir_path / filepath.name
+
+            if str(filepath) in runner.fileset_metadata:
+                prev_metadata = runner.fileset_metadata[str(filepath)]
+                cur_metadata = FileMetaData(filepath)
+                if prev_metadata != cur_metadata:
+                    # Existing file has been edited. Don't overwrite it.
+                    self.log_keep_edited_file(runner, filepath, is_template)
+                    return filepath
+
+        # if (multiscript.app().app_config_group.general.keep_existing_template_files and \
+        #     is_template and filepath.exists()) or \
+        #    (multiscript.app().app_config_group.general.keep_existing_output_files and \
+        #     not is_template and filepath.exists()):
+        #     self.log_keep_existing_filepath(runner, filepath, is_template)
+        #     return filepath
 
         self.log_combo_item(runner, version_combo, is_template)
-        
         template_path = Path(template_obj)
         document = self.load_document(runner, version_combo, template_path)
         
         if template_obj == runner.base_template_path:
             self.expand_base_template(runner, document)
             if runner.plan.config.general.confirm_after_template_expansion:
-                self.save_document(runner, version_combo, document, filepath)
+                self.save_document(runner, version_combo, document, savepath)
                 runner.monitors.request_confirmation(
                     "<b>Open</b> and check the expanded template, then click <b>Continue</b> " +
                     "once you have saved any changes.",
-                    filepath)
+                    savepath)
         
         self.begin_fill_document(runner, version_combo, document, is_template)
         self.fill_document(runner, version_combo, document, is_template)
         self.end_fill_document(runner, version_combo, document, is_template)
 
-        self.save_document(runner, version_combo, document, filepath)
+        self.save_document(runner, version_combo, document, savepath)
+        if savepath != filepath:
+            #
+            # TODO: Word docx files are zip files and therefore not deterministic. To compare them, we need to
+            # compare their contents.
+            #
+            if filecmp.cmp(str(savepath), str(filepath), shallow=False):
+                # New file is identical to the existing file, so no need to update the existing file.
+                self.log_file_unchanged(runner, filepath, is_template)
+                return filepath
+            else:
+                # Replace existing file with new file.
+                shutil.copy2(savepath, filepath)
+                print(f'Copied "{savepath}" to "{filepath}"')
+                self.cache_file_metadata(runner, filepath)
+
         if is_template:
             runner.monitors.request_confirmation(
                 "<b>Open</b> and check the template, then click <b>Continue</b> once you have saved any changes.",
@@ -96,6 +132,22 @@ class FileSetOutput(BibleOutput):
 
         return filepath
     
+    # def cmp_file_bytes(self, path_1, path_2):
+    #     '''Returns True if the contents of the files at both paths are identical, otherwise False.'''
+    #     if Path(path_1).stat().st_size != Path(path_2).stat().st_size:
+    #         return False
+    #     BUFFER_SIZE = 4096
+    #     with open(path_1, 'rb') as file_1:
+    #         with open(path_2, 'rb') as file_2:
+    #             while True:
+    #                 bytes_1 = file_1.read(BUFFER_SIZE)
+    #                 bytes_2 = file_2.read(BUFFER_SIZE)
+    #                 if bytes_1 != bytes_2:
+    #                     return False
+    #                 if len(bytes_1) == 0:
+    #                     # We've reached the end of file and found no differences.
+    #                     return True
+
     def fill_document(self, runner, version_combo, document, is_template):
         for element in version_combo:
             symbol_index = element.version_column.symbol_index
@@ -120,20 +172,25 @@ class FileSetOutput(BibleOutput):
                     _logger.info(f"\t\t\tFilling passage {str(contents_index+1)}{column_symbol} with " +
                                 f"{str(bible_content.bible_version.abbrev)} {str(bible_content.bible_range)}")
                 else:
-                    # _logger.info(f"\t\t\tLeaving passage {str(contents_index+1)}{column_symbol} blank.")
                     bible_content = None
+                    # _logger.info(f"\t\t\tLeaving passage {str(contents_index+1)}{column_symbol} blank.")
                 self.fill_bible_content(runner, document, contents_index, column_symbol, bible_content)
 
-    def log_keep_existing_filepath(self, runner, filepath, is_template):
-        log_message = f"Keeping existing {'template' if is_template else 'output'} {filepath.name}"
-        runner.monitors.set_substatus_text(log_message)
-        _logger.info("\t\t" + log_message)
+    def log_keep_edited_file(self, runner, filepath, is_template):
+        log_message = f"\t\tKeeping edited {'template' if is_template else 'output'} {filepath.name}"
+        runner.monitors.set_substatus_text(log_message.strip())
+        _logger.info(log_message)
+
+    def log_file_unchanged(self, runner, filepath, is_template):
+        log_message = f"\t\tNo changes to {'template' if is_template else 'output'} {filepath.name}"
+        runner.monitors.set_substatus_text(log_message.strip())
+        _logger.info(log_message)
 
     def log_combo_item(self, runner, version_combo, is_template):
         filename = self.get_item_filename(runner, version_combo, is_template)
-        log_message = f"Creating {'template ' if is_template else ''}{filename}"
-        runner.monitors.set_substatus_text(log_message)
-        _logger.info("\t\t" + log_message)
+        log_message = f"\t\tCreating {'template ' if is_template else ''}{filename}"
+        runner.monitors.set_substatus_text(log_message.strip())
+        _logger.info(log_message)
 
     def get_item_filepath(self, runner, version_combo, is_template):
         return runner.output_dir_path / Path(self.get_item_filename(runner, version_combo, is_template))
@@ -176,7 +233,7 @@ class FileSetOutput(BibleOutput):
         The document object itself is opaque to FileSetOuput.
         After saving the document, subclasses should call super().save_document().
         '''
-        runner.fileset_metadata[str(filepath)] = FileMetaData(filepath)
+        self.cache_file_metadata(runner, filepath)
 
     def expand_base_template(self, runner, document):
         '''Called if the newly loaded document is actually the base template. Subclasses
@@ -214,7 +271,5 @@ class FileMetaData:
     def __init__(self, pathlike=None):
         if pathlike is not None:
             stat_result = Path(pathlike).stat()
-        else:
-            stat_result = os.stat_result()
-        self.size = stat_result.st_size
-        self.mtime = stat_result.st_mtime
+        self.size = stat_result.st_size if pathlike is not None else 0
+        self.mtime = stat_result.st_mtime if pathlike is not None else 0

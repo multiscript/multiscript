@@ -208,7 +208,7 @@ class ItemListFilterSortProxyModel(QtCore.QSortFilterProxyModel):
             if len(alltext_columns) > 0:
                 first_alltext_column = alltext_columns[0]
                 self.setFilterKeyColumn(first_alltext_column.column_index)
-                print(first_alltext_column.column_index)
+                # print(first_alltext_column.column_index)
             else:
                 self.setFilterKeyColumn(-1)
 

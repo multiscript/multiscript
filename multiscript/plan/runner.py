@@ -48,6 +48,9 @@ class PlanRunner:
 
         self.font_finder = fontfinder.FontFinder()
 
+        # A temporary directory made available during the plan run
+        self.temp_dir_path = None
+
         #
         # Convert the data in the plan into the required form for this runner.
         #
@@ -85,12 +88,15 @@ class PlanRunner:
         return combinations.get_all_version_combos(self.version_cols)
 
     def run(self):
-        self.plan.output_dir_abspath.mkdir(parents=True, exist_ok=True)
-        self.calc_total_progress_steps()
-        self.load_bible_content()
-        self.select_auto_fonts()
-        self.download_and_install_fonts()
-        self.create_bible_outputs()
+        with TemporaryDirectory() as temp_dir:
+            self.temp_dir_path = Path(temp_dir)
+            self.plan.output_dir_abspath.mkdir(parents=True, exist_ok=True)
+            self.calc_total_progress_steps()
+            self.load_bible_content()
+            self.select_auto_fonts()
+            self.download_and_install_fonts()
+            self.create_bible_outputs()
+        self.temp_dir_path = None
         _logger.info("Finished")
 
     def calc_total_progress_steps(self):
@@ -210,27 +216,28 @@ class PlanRunner:
                                                 "this plan...")
             
             _logger.info("Dowloading fonts:")
-            with TemporaryDirectory() as tempdir:
-                # Download fonts
-                fonts_for_install = []
-                font_total_count = len(fonts_for_download)
-                for font_index in range(font_total_count):
-                    # We make a copy so as not to affect the original FontInfo object
-                    font_info = fonts_for_download[font_index].copy()
-                    _logger.info(f"\tDownloading {font_info.filename}")
-                    response = requests.get(font_info.url, stream=True)
-                    font_info.downloaded_path = Path(tempdir) / font_info.filename
-                    bytes_written = 0
-                    with open(font_info.downloaded_path, 'wb') as file:
-                        for chunk in response.iter_content(chunk_size=128):
-                            bytes_written += file.write(chunk)
-                            kb_written = int(bytes_written / 1024) 
-                            self.monitors.set_substatus_text(
-                                f"Downloading {font_info.fullname} (font file {font_index+1} of {font_total_count} - " +
-                                f"{kb_written}K)...")
-                            self.monitors.allow_cancel()
-                    fonts_for_install.append(font_info)
-                    self.increment_progress_step_count()
+            # Need a temporary directory from here.
+            # Download fonts
+            fonts_for_install = []
+            font_total_count = len(fonts_for_download)
+            for font_index in range(font_total_count):
+                # We make a copy so as not to affect the original FontInfo object
+                font_info = fonts_for_download[font_index].copy()
+                _logger.info(f"\tDownloading {font_info.filename}")
+                response = requests.get(font_info.url, stream=True)
+                font_info.downloaded_path = self.temp_dir_path / font_info.filename
+                bytes_written = 0
+                with open(font_info.downloaded_path, 'wb') as file:
+                    for chunk in response.iter_content(chunk_size=128):
+                        bytes_written += file.write(chunk)
+                        kb_written = int(bytes_written / 1024) 
+                        self.monitors.set_substatus_text(
+                            f"Downloading {font_info.fullname} (font file {font_index+1} of {font_total_count} - " +
+                            f"{kb_written}K)...")
+                        self.monitors.allow_cancel()
+                fonts_for_install.append(font_info)
+                self.increment_progress_step_count()
+            # End need of temporary directory
 
                 # Install fonts
                 _logger.info("Installing fonts...")
