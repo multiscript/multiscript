@@ -1,6 +1,5 @@
 
 from dataclasses import dataclass
-import filecmp
 import logging
 from pathlib import Path
 import shutil
@@ -8,7 +7,7 @@ import shutil
 from multiscript.outputs.base import BibleOutput
 from multiscript.plan.runner import PlanRunner
 from multiscript.plan.symbols import column_symbols
-from multiscript.util import serialize
+from multiscript.util import serialize, compare
 
 
 _logger = logging.getLogger(__name__)
@@ -109,13 +108,20 @@ class FileSetOutput(BibleOutput):
         self.fill_document(runner, version_combo, document, is_template)
         self.end_fill_document(runner, version_combo, document, is_template)
 
+        #
+        # TODO: Move call to cache_file_metadata out of save_document(). Don't cache files in temporary
+        #       directories.
+        # TODO: Replace old config settings.
+        # TODO: Implement new config settings.
+        #
+
         self.save_document(runner, version_combo, document, savepath)
         if savepath != filepath:
             #
             # TODO: Word docx files are zip files and therefore not deterministic. To compare them, we need to
             # compare their contents.
             #
-            if filecmp.cmp(str(savepath), str(filepath), shallow=False):
+            if compare.cmp_file(savepath, filepath):
                 # New file is identical to the existing file, so no need to update the existing file.
                 self.log_file_unchanged(runner, filepath, is_template)
                 return filepath
@@ -132,22 +138,6 @@ class FileSetOutput(BibleOutput):
 
         return filepath
     
-    # def cmp_file_bytes(self, path_1, path_2):
-    #     '''Returns True if the contents of the files at both paths are identical, otherwise False.'''
-    #     if Path(path_1).stat().st_size != Path(path_2).stat().st_size:
-    #         return False
-    #     BUFFER_SIZE = 4096
-    #     with open(path_1, 'rb') as file_1:
-    #         with open(path_2, 'rb') as file_2:
-    #             while True:
-    #                 bytes_1 = file_1.read(BUFFER_SIZE)
-    #                 bytes_2 = file_2.read(BUFFER_SIZE)
-    #                 if bytes_1 != bytes_2:
-    #                     return False
-    #                 if len(bytes_1) == 0:
-    #                     # We've reached the end of file and found no differences.
-    #                     return True
-
     def fill_document(self, runner, version_combo, document, is_template):
         for element in version_combo:
             symbol_index = element.version_column.symbol_index
