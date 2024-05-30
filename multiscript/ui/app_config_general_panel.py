@@ -15,8 +15,6 @@ class GeneralAppConfigPanel(ConfigWidget, Ui_GeneralAppConfigPanel):
         '''Load the contents of config into this widget.
         '''
         self.savePlansBeforeExecutionCheckBox.setChecked(config.save_plans_before_execution)
-        self.keepExistingTemplateFilesCheckBox.setChecked(config.keep_existing_template_files)
-        self.keepExistingOutputFilesCheckbox.setChecked(config.keep_existing_output_files)
         self.ignoredScriptsLineEdit.setText(config.ignored_scripts)
         self.downloadAndInstallFontsCheckBox.setChecked(config.download_and_install_fonts)
 
@@ -24,7 +22,5 @@ class GeneralAppConfigPanel(ConfigWidget, Ui_GeneralAppConfigPanel):
         '''Save the contents of this widget into config.
         '''
         config.save_plans_before_execution = self.savePlansBeforeExecutionCheckBox.isChecked()
-        config.keep_existing_template_files = self.keepExistingTemplateFilesCheckBox.isChecked()
-        config.keep_existing_output_files = self.keepExistingOutputFilesCheckbox.isChecked()
         config.ignored_scripts = self.ignoredScriptsLineEdit.text().strip()
         config.download_and_install_fonts = self.downloadAndInstallFontsCheckBox.isChecked()

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>370</width>
-    <height>167</height>
+    <height>125</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,20 +22,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="keepExistingTemplateFilesCheckBox">
-     <property name="text">
-      <string>Keep existing template files instead of recreating them</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="keepExistingOutputFilesCheckbox">
-     <property name="text">
-      <string>Keep existing output files instead of recreating them</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QLabel" name="ignoredScriptsLabel">
      <property name="text">
       <string>Don't automatically select fonts for these Unicode scripts:</string>
@@ -43,7 +29,14 @@
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="ignoredScriptsLineEdit"/>
+    <widget class="QLineEdit" name="ignoredScriptsLineEdit">
+     <property name="toolTip">
+      <string>Comma-separated script full-names. For example: Latin, Greek, Cyrillic</string>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="downloadAndInstallFontsCheckBox">

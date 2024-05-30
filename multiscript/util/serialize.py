@@ -380,6 +380,16 @@ def _deserialize(file_app_version, error_list, obj_type, input_dict):
     elif obj_type == "GeneralAppConfig":
         new_obj = GeneralAppConfig()
 
+        if file_app_version < semver.VersionInfo.parse("0.17.0"):
+            try:
+                del input_dict["keep_existing_template_files"]
+                del input_dict["keep_existing_output_files"]
+                _logger.info(f"Plan version<0.17.0: Removing old app config: " +
+                             f"keep_existing_template_files and keep_existing_output_files")
+            except Exception:
+                _logger.info(f"Plan version<0.17.0: Didn't find old app config: " +
+                             f"keep_existing_template_files or keep_existing_output_files")
+ 
     elif obj_type == "SourceAppConfig":
         try:
             plugin = multiscript.app().plugin(input_dict.pop(PLUGIN_ID_KEY))

@@ -90,13 +90,6 @@ class FileSetOutput(BibleOutput):
                     self.log_keep_edited_file(runner, filepath, is_template)
                     return filepath
 
-        # if (multiscript.app().app_config_group.general.keep_existing_template_files and \
-        #     is_template and filepath.exists()) or \
-        #    (multiscript.app().app_config_group.general.keep_existing_output_files and \
-        #     not is_template and filepath.exists()):
-        #     self.log_keep_existing_filepath(runner, filepath, is_template)
-        #     return filepath
-
         self.log_combo_item(runner, version_combo, is_template)
         template_path = Path(template_obj)
         document = self.load_document(runner, version_combo, template_path)
