@@ -7,12 +7,10 @@ import shutil
 from multiscript.outputs.base import BibleOutput
 from multiscript.plan.runner import PlanRunner
 from multiscript.plan.symbols import column_symbols
-from multiscript.util import serialize, compare
+from multiscript.util import compare
 
 
 _logger = logging.getLogger(__name__)
-
-METADATA_FILENAME = "_metadata.json"
 
 
 class FileSetOutput(BibleOutput):
@@ -41,12 +39,15 @@ class FileSetOutput(BibleOutput):
         '''
         super().setup(runner)
         empty_file_metadata: dict[str, 'FileMetaData'] = {}
-        metadata_path = runner.output_dir_path / METADATA_FILENAME
-        if metadata_path.exists():
-            runner.fileset_metadata = serialize.load(metadata_path)
-            _logger.info("\t\tFound existing file metadata.")
-        else:
-            runner.fileset_metadata = empty_file_metadata
+        try:
+            # Check if the existing plan run record has a metadata cache
+            fileset_metadata = runner.run_record.fileset_metadata
+        except AttributeError:
+            # If not, create a blank cache.
+            runner.run_record.fileset_metadata = empty_file_metadata
+
+    def cache_file_metadata(self, runner, path):
+        runner.run_record.fileset_metadata[str(path)] = FileMetaData(path)
 
     def cleanup(self, runner):
         '''Overriden from BibleOutput.cleanup(). Called after looping through the version
@@ -56,15 +57,12 @@ class FileSetOutput(BibleOutput):
         '''
         super().cleanup(runner)
         self.prune_file_metadata(runner)
-        serialize.save(runner.fileset_metadata, runner.output_dir_path / METADATA_FILENAME)
-
-    def cache_file_metadata(self, runner, path):
-        runner.fileset_metadata[str(path)] = FileMetaData(path)
+        runner.save_plan_run_record()
 
     def prune_file_metadata(self, runner):
-        for str_path in list(runner.fileset_metadata.keys()):
+        for str_path in list(runner.run_record.fileset_metadata.keys()):
             if not Path(str_path).exists():
-                del runner.fileset_metadata[str_path]
+                del runner.run_record.fileset_metadata[str_path]
 
     def generate_combo_item(self, runner, version_combo, template_obj=None, is_template=False):
         '''Overrides BibleOutput.generate_combo_item(). The item returned is the path
@@ -81,8 +79,8 @@ class FileSetOutput(BibleOutput):
         savepath = filepath
         if filepath.exists() and not runner.plan.config.general.always_overwrite_output:
             keep_existing_file = False
-            if str(filepath) in runner.fileset_metadata:
-                prev_metadata = runner.fileset_metadata[str(filepath)]
+            if str(filepath) in runner.run_record.fileset_metadata:
+                prev_metadata = runner.run_record.fileset_metadata[str(filepath)]
                 cur_metadata = FileMetaData(filepath)
                 if prev_metadata != cur_metadata:
                     # Existing file has been edited. Don't overwrite it.

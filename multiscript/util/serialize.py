@@ -179,6 +179,7 @@ def _deserialize_handler(file_app_version, error_list, input_dict):
 def _serialize(orig_obj, output_dict):
     # Do theses import here to avoid a circular dependancy between serialize.py and plan.py
     from multiscript.plan import Plan
+    from multiscript.plan.runner import PlanRunRecord
     from multiscript.outputs.fileset import FileMetaData
 
     obj_type = None
@@ -264,6 +265,8 @@ def _serialize(orig_obj, output_dict):
         output_dict[PLUGIN_NAME_KEY] = orig_obj.bible_output.plugin.name
         output_dict[BIBLEOUTPUT_ID_KEY] = orig_obj.bible_output.id
         output_dict[BIBLEOUTPUT_NAME_KEY] = orig_obj.bible_output.name
+    elif isinstance(orig_obj, PlanRunRecord):
+        obj_type = "PlanRunRecord"
     elif isinstance(orig_obj, FileMetaData):
         obj_type = "FileMetaData"
     else:
@@ -449,6 +452,10 @@ def _deserialize(file_app_version, error_list, obj_type, input_dict):
             del input_dict[key]
         new_obj = output.new_output_plan_config()
 
+    elif obj_type == "PlanRunRecord":
+        from multiscript.plan.runner import PlanRunRecord
+        new_obj = PlanRunRecord()
+        
     elif obj_type == "FileMetaData":
         from multiscript.outputs.fileset import FileMetaData
         new_obj = FileMetaData()

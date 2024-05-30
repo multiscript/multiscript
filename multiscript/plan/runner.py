@@ -16,9 +16,13 @@ from multiscript.outputs.base import OutputPlanRun
 from multiscript.plan import combinations, Plan
 from multiscript.plan.combinations import BibleVersionCombo, BibleVersionColumn
 from multiscript.plan.monitor import PlanMonitorCollection
+from multiscript.util import serialize
 from multiscript.util.exception import MultiscriptException
 
 _logger = logging.getLogger(__name__)
+
+# TODO: Make plan run record a hidden file on both macos and windows.
+PLAN_RUN_RECORD_FILENAME = "_multiscript.mrun"
 
 
 class PlanRunner:
@@ -38,19 +42,25 @@ class PlanRunner:
         # Keys: versions Vals: True (we're using the dict as an ordered set)
         self._all_versions: dict[BibleVersion, bool] = {}  
         
+        # List of versions selected in each column
         self.version_cols: list[BibleVersionColumn] = []
         
         # Uses BibleVersions as keys to a list of BibleContents (one for each range in self.bible_ranges)
         self.bible_contents: dict[BibleVersion, list[BibleContent]] = {}    
         
+        # FontFinder API object for font selection and installation.
+        self.font_finder = fontfinder.FontFinder()
+
+        # An empty object other classes may use for persisting data between plan runs with the same
+        # output directory.
+        self.run_record = PlanRunRecord()
+
         # Dict of OutputPlanRun by output long_id
         self.output_runs: dict[str, OutputPlanRun] = {}
 
-        self.font_finder = fontfinder.FontFinder()
-
         # A temporary directory made available during the plan run
         self.temp_dir_path = None
-
+        
         #
         # Convert the data in the plan into the required form for this runner.
         #
@@ -64,8 +74,8 @@ class PlanRunner:
                     column_version_list.append(all_versions[row_index])
             self._add_version_list(column_version_list)
 
-        self.base_template_path = plan.template_abspath
-        self.output_dir_path = plan.output_dir_abspath
+        self.base_template_path = self.plan.template_abspath
+        self.output_dir_path = self.plan.output_dir_abspath
 
         for output in multiscript.app().outputs_for_ext(self.base_template_path.suffix):
             self.output_runs[output.long_id] = output.new_output_plan_run(self.plan)
@@ -88,16 +98,34 @@ class PlanRunner:
         return combinations.get_all_version_combos(self.version_cols)
 
     def run(self):
+        self.output_dir_path.mkdir(parents=True, exist_ok=True)
+        self.load_plan_run_record()
+        
         with TemporaryDirectory() as temp_dir:
             self.temp_dir_path = Path(temp_dir)
-            self.plan.output_dir_abspath.mkdir(parents=True, exist_ok=True)
             self.calc_total_progress_steps()
             self.load_bible_content()
             self.select_auto_fonts()
             self.download_and_install_fonts()
             self.create_bible_outputs()
         self.temp_dir_path = None
+        
+        self.save_plan_run_record()
         _logger.info("Finished")
+
+    def load_plan_run_record(self):
+        '''Load the PlanRunRecord. Called at the beginning of the plan run.'''
+        record_path = self.output_dir_path / PLAN_RUN_RECORD_FILENAME
+        if record_path.exists():
+            self.run_record = serialize.load(record_path)
+            _logger.info("\t\tFound existing plan run record.")
+
+    def save_plan_run_record(self):
+        '''Save the PlanRunRecord. Called at the end of the run. Other classes can also call
+        this method to save the record during the plan run.
+        '''
+        if len(self.run_record.__dict__) > 0:
+            serialize.save(self.run_record, self.output_dir_path / PLAN_RUN_RECORD_FILENAME)
 
     def calc_total_progress_steps(self):
         self.total_progress_steps += len(self.bible_ranges) * len(self.all_versions)
@@ -265,7 +293,14 @@ class PlanRunner:
 
     def update_progress(self):
         self.monitors.set_progress_percent(int(self.progress_step_count / self.total_progress_steps * 100))
-       
+
+
+class PlanRunRecord:
+    '''Class for holding data from a plan run that needs to be persisted in the output directory (e.g. cache
+    data). Objects called by the PlanRunner may persist data by adding attributes to instances of this class.
+    '''
+    pass
+
 
 class CancelError(MultiscriptException):
     def __init__(self):
