@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>395</width>
-    <height>100</height>
+    <height>121</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,6 +39,13 @@
     <widget class="QCheckBox" name="createTemplateCopiesCheckBox">
      <property name="text">
       <string>Create output copies of templates (without tags)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="alwaysOverwriteOutputCheckBox">
+     <property name="text">
+      <string>Always overwrite output files, even if they been edited</string>
      </property>
     </widget>
    </item>

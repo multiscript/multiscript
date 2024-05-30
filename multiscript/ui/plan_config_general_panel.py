@@ -21,6 +21,7 @@ class GeneralPlanConfigPanel(ConfigWidget, Ui_GeneralPlanConfigPanel):
         self.allowConfirmationsCheckBox.setChecked(config.allow_confirmations)
         self.confirmAfterTemplateExpansionCheckBox.setChecked(config.confirm_after_template_expansion)
         self.createTemplateCopiesCheckBox.setChecked(config.create_template_copies)
+        self.alwaysOverwriteOutputCheckBox.setChecked(config.always_overwrite_output)
 
     def save_config(self, config):
         '''Save the contents of this widget into config.
@@ -28,6 +29,7 @@ class GeneralPlanConfigPanel(ConfigWidget, Ui_GeneralPlanConfigPanel):
         config.allow_confirmations = self.allowConfirmationsCheckBox.isChecked()
         config.confirm_after_template_expansion = self.confirmAfterTemplateExpansionCheckBox.isChecked()
         config.create_template_copies = self.createTemplateCopiesCheckBox.isChecked()
+        config.always_overwrite_output = self.alwaysOverwriteOutputCheckBox.isChecked()
     
     def allowConfirmationsCheckbox_stateChanged(self, state):
         self.confirmAfterTemplateExpansionCheckBox.setEnabled(state == Qt.CheckState.Checked.value)

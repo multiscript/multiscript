@@ -22,7 +22,7 @@ class Ui_GeneralPlanConfigPanel(object):
     def setupUi(self, GeneralPlanConfigPanel):
         if not GeneralPlanConfigPanel.objectName():
             GeneralPlanConfigPanel.setObjectName(u"GeneralPlanConfigPanel")
-        GeneralPlanConfigPanel.resize(395, 100)
+        GeneralPlanConfigPanel.resize(395, 121)
         self.verticalLayout = QVBoxLayout(GeneralPlanConfigPanel)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.allowConfirmationsCheckBox = QCheckBox(GeneralPlanConfigPanel)
@@ -46,6 +46,11 @@ class Ui_GeneralPlanConfigPanel(object):
 
         self.verticalLayout.addWidget(self.createTemplateCopiesCheckBox)
 
+        self.alwaysOverwriteOutputCheckBox = QCheckBox(GeneralPlanConfigPanel)
+        self.alwaysOverwriteOutputCheckBox.setObjectName(u"alwaysOverwriteOutputCheckBox")
+
+        self.verticalLayout.addWidget(self.alwaysOverwriteOutputCheckBox)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
@@ -61,5 +66,6 @@ class Ui_GeneralPlanConfigPanel(object):
         self.allowConfirmationsCheckBox.setText(QCoreApplication.translate("GeneralPlanConfigPanel", u"Pause for confirmation while running plan", None))
         self.confirmAfterTemplateExpansionCheckBox.setText(QCoreApplication.translate("GeneralPlanConfigPanel", u"Pause for confirmation after base template expansion", None))
         self.createTemplateCopiesCheckBox.setText(QCoreApplication.translate("GeneralPlanConfigPanel", u"Create output copies of templates (without tags)", None))
+        self.alwaysOverwriteOutputCheckBox.setText(QCoreApplication.translate("GeneralPlanConfigPanel", u"Always overwrite output files, even if they been edited", None))
     # retranslateUi
 

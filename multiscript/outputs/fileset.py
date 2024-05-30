@@ -73,22 +73,31 @@ class FileSetOutput(BibleOutput):
         Subclasses don't need to override this method, but instead override load_document(),
         save_document(), and fill_bible_content(). Subclasses can optionally override
         expand_base_template(), begin_fill_document(), end_fill_document(), and if necessary
-        override the algorithm in fill_bible_content().
+        override the algorithm in fill_document().
         '''
         filepath = self.get_item_filepath(runner, version_combo, is_template)
 
+        # We normally save to the expected filepath, unless the file already exists and isn't being skipped.
         savepath = filepath
-        if filepath.exists():
-            # We will create the output in a temporary directory first, so we can compare it to the existing file.
-            savepath = runner.temp_dir_path / filepath.name
-
+        if filepath.exists() and not runner.plan.config.general.always_overwrite_output:
+            keep_existing_file = False
             if str(filepath) in runner.fileset_metadata:
                 prev_metadata = runner.fileset_metadata[str(filepath)]
                 cur_metadata = FileMetaData(filepath)
                 if prev_metadata != cur_metadata:
                     # Existing file has been edited. Don't overwrite it.
-                    self.log_keep_edited_file(runner, filepath, is_template)
-                    return filepath
+                    keep_existing_file = True
+            else:
+                # We have no metadata for the file. For safety, assume it has been edited.
+                keep_existing_file = True
+            
+            if keep_existing_file:
+                self.log_keep_edited_file(runner, filepath, is_template)
+                return filepath
+            else:
+                # We will create the output in a temporary directory first, so we can compare it to the existing file
+                # and determine whether it even needs replacing.
+                savepath = runner.temp_dir_path / filepath.name
 
         self.log_combo_item(runner, version_combo, is_template)
         template_path = Path(template_obj)
@@ -106,16 +115,9 @@ class FileSetOutput(BibleOutput):
         self.begin_fill_document(runner, version_combo, document, is_template)
         self.fill_document(runner, version_combo, document, is_template)
         self.end_fill_document(runner, version_combo, document, is_template)
-
-        # TODO: Replace old config settings.
-        # TODO: Implement new config settings.
-
         self.save_document(runner, version_combo, document, savepath)
+
         if savepath != filepath:
-            #
-            # TODO: Word docx files are zip files and therefore not deterministic. To compare them, we need to
-            # compare their contents.
-            #
             if compare.cmp_file(savepath, filepath):
                 # New file is identical to the existing file, so no need to update the existing file.
                 self.log_file_unchanged(runner, filepath, is_template)
@@ -123,8 +125,8 @@ class FileSetOutput(BibleOutput):
             else:
                 # Replace existing file with new file.
                 shutil.copy2(savepath, filepath)
-                print(f'Copied "{savepath}" to "{filepath}"')
-                self.cache_file_metadata(runner, filepath)
+                _logger.debug(f'Copied "{savepath}" to "{filepath}"')
+
         self.cache_file_metadata(runner, filepath)
 
         if is_template:
