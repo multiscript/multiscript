@@ -55,10 +55,16 @@ class FileSetOutput(BibleOutput):
         We use this method to save up the cache of file metadata for the run.
         '''
         super().cleanup(runner)
+        self.prune_file_metadata(runner)
         serialize.save(runner.fileset_metadata, runner.output_dir_path / METADATA_FILENAME)
 
     def cache_file_metadata(self, runner, path):
         runner.fileset_metadata[str(path)] = FileMetaData(path)
+
+    def prune_file_metadata(self, runner):
+        for str_path in list(runner.fileset_metadata.keys()):
+            if not Path(str_path).exists():
+                del runner.fileset_metadata[str_path]
 
     def generate_combo_item(self, runner, version_combo, template_obj=None, is_template=False):
         '''Overrides BibleOutput.generate_combo_item(). The item returned is the path
@@ -108,12 +114,8 @@ class FileSetOutput(BibleOutput):
         self.fill_document(runner, version_combo, document, is_template)
         self.end_fill_document(runner, version_combo, document, is_template)
 
-        #
-        # TODO: Move call to cache_file_metadata out of save_document(). Don't cache files in temporary
-        #       directories.
         # TODO: Replace old config settings.
         # TODO: Implement new config settings.
-        #
 
         self.save_document(runner, version_combo, document, savepath)
         if savepath != filepath:
@@ -130,6 +132,7 @@ class FileSetOutput(BibleOutput):
                 shutil.copy2(savepath, filepath)
                 print(f'Copied "{savepath}" to "{filepath}"')
                 self.cache_file_metadata(runner, filepath)
+        self.cache_file_metadata(runner, filepath)
 
         if is_template:
             runner.monitors.request_confirmation(
@@ -214,16 +217,14 @@ class FileSetOutput(BibleOutput):
         '''Subclasses must override this method to returns a document representation of the
         template at template_path, suitable for expansion and filling with content,
         to later be saved as a new file. The document object itself is opaque to FileSetOuput.
-        Before loading the document, subclasses should call super().load_document().
         '''
         return object()
     
     def save_document(self, runner, version_combo, document, filepath):
         '''Subclasses must override this method to save the document as a new file.
         The document object itself is opaque to FileSetOuput.
-        After saving the document, subclasses should call super().save_document().
         '''
-        self.cache_file_metadata(runner, filepath)
+        pass
 
     def expand_base_template(self, runner, document):
         '''Called if the newly loaded document is actually the base template. Subclasses
