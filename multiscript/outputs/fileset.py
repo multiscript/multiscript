@@ -97,7 +97,7 @@ class FileSetOutput(BibleOutput):
                 # and determine whether it even needs replacing.
                 savepath = runner.temp_dir_path / filepath.name
 
-        self.log_combo_item(runner, version_combo, is_template)
+        self.log_preparing_file(runner, filepath, is_template)
         template_path = Path(template_obj)
         document = self.load_document(runner, version_combo, template_path)
         
@@ -124,7 +124,7 @@ class FileSetOutput(BibleOutput):
                 # Replace existing file with new file.
                 shutil.copy2(savepath, filepath)
                 _logger.debug(f'Copied "{savepath}" to "{filepath}"')
-
+        self.log_file_created(runner, filepath, is_template)
         self.cache_file_metadata(runner, filepath)
 
         if is_template:
@@ -167,14 +167,18 @@ class FileSetOutput(BibleOutput):
         runner.monitors.set_substatus_text(log_message.strip())
         _logger.info(log_message)
 
-    def log_file_unchanged(self, runner, filepath, is_template):
-        log_message = f"\t\tNo changes to {'template' if is_template else 'output'} {filepath.name}"
+    def log_preparing_file(self, runner, filepath, is_template):
+        log_message = f"\t\tPreparing {'template ' if is_template else ''}{filepath.name}"
         runner.monitors.set_substatus_text(log_message.strip())
         _logger.info(log_message)
 
-    def log_combo_item(self, runner, version_combo, is_template):
-        filename = self.get_item_filename(runner, version_combo, is_template)
-        log_message = f"\t\tCreating {'template ' if is_template else ''}{filename}"
+    def log_file_unchanged(self, runner, filepath, is_template):
+        log_message = f"\t\t\tNo changes to {'template' if is_template else 'file'}."
+        runner.monitors.set_substatus_text(log_message.strip())
+        _logger.info(log_message)
+
+    def log_file_created(self, runner, filepath, is_template):
+        log_message = f"\t\t\tSaved {'template' if is_template else 'file'}."
         runner.monitors.set_substatus_text(log_message.strip())
         _logger.info(log_message)
 
