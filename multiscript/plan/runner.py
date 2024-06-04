@@ -21,8 +21,7 @@ from multiscript.util.exception import MultiscriptException
 
 _logger = logging.getLogger(__name__)
 
-# TODO: Make plan run record a hidden file on both macos and windows.
-PLAN_RUN_RECORD_FILENAME = "_multiscript.mrun"
+PLAN_RUN_RECORD_FILENAME = ".multiscript.mrun"
 
 
 class PlanRunner:
