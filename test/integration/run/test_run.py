@@ -103,6 +103,8 @@ class TestRun(MultiscriptAppTestCase):
 
                 plan_runner = multiscript.plan.runner.PlanRunner(plan)
                 plan_runner.run()
+                # Remove plan run record to simplify directory comparison
+                Path(test_output_dir, multiscript.plan.runner.PLAN_RUN_RECORD_FILENAME).unlink()
 
                 if mode is TestRun.TestMode.CREATE:
                     return
@@ -179,6 +181,8 @@ class TestRun(MultiscriptAppTestCase):
 
                 plan_runner = multiscript.plan.runner.PlanRunner(plan)
                 plan_runner.run()
+                # Remove plan run record to simplify directory comparison
+                Path(test_output_dir, multiscript.plan.runner.PLAN_RUN_RECORD_FILENAME).unlink()
 
                 if mode is TestRun.TestMode.CREATE:
                     return
