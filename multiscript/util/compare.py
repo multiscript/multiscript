@@ -12,26 +12,28 @@ import zipfile
 
 BUFFER_SIZE = 1024
 
-def cmp_file(path_1: Path, path_2: Path):
-        if zipfile.is_zipfile(str(path_1)) and zipfile.is_zipfile(str(path_2)):
-            # Handle zip files
-            with tempfile.TemporaryDirectory() as expand_dir_1, \
-                 tempfile.TemporaryDirectory() as expand_dir_2:
-                with zipfile.ZipFile(path_1) as zipfile_1, zipfile.ZipFile(path_2) as zipfile_2:
-                    zipfile_1.extractall(expand_dir_1)
-                    zipfile_2.extractall(expand_dir_2)
-                    return cmp_dir(expand_dir_1, expand_dir_2)
-        else:
-            if path_1.stat().st_size != path_2.stat().st_size:
-                return False
-            with open(path_1, 'rb') as file_1, open(path_2, 'rb') as file_2:
-                while True:
-                    bytes_1 = file_1.read(BUFFER_SIZE)
-                    bytes_2 = file_2.read(BUFFER_SIZE)
-                    if bytes_1 != bytes_2:
-                        return False
-                    if not bytes_1:
-                        return True
+def cmp_file(path_1, path_2):
+    path_1 = Path(path_1)
+    path_2 = Path(path_2)
+    if zipfile.is_zipfile(str(path_1)) and zipfile.is_zipfile(str(path_2)):
+        # Handle zip files
+        with tempfile.TemporaryDirectory() as expand_dir_1, \
+                tempfile.TemporaryDirectory() as expand_dir_2:
+            with zipfile.ZipFile(path_1) as zipfile_1, zipfile.ZipFile(path_2) as zipfile_2:
+                zipfile_1.extractall(expand_dir_1)
+                zipfile_2.extractall(expand_dir_2)
+                return cmp_dir(expand_dir_1, expand_dir_2)
+    else:
+        if path_1.stat().st_size != path_2.stat().st_size:
+            return False
+        with open(path_1, 'rb') as file_1, open(path_2, 'rb') as file_2:
+            while True:
+                bytes_1 = file_1.read(BUFFER_SIZE)
+                bytes_2 = file_2.read(BUFFER_SIZE)
+                if bytes_1 != bytes_2:
+                    return False
+                if not bytes_1:
+                    return True
 
 def cmp_dir(path_1, path_2):
     path_1 = Path(path_1)
