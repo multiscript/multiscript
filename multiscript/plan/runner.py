@@ -16,7 +16,7 @@ from multiscript.outputs.base import OutputPlanRun
 from multiscript.plan import combinations, Plan
 from multiscript.plan.combinations import BibleVersionCombo, BibleVersionColumn
 from multiscript.plan.monitor import PlanMonitorCollection
-from multiscript.util import serialize
+from multiscript.util import serialize, util
 from multiscript.util.exception import MultiscriptException
 
 _logger = logging.getLogger(__name__)
@@ -123,8 +123,17 @@ class PlanRunner:
         '''Save the PlanRunRecord. Called at the end of the run. Other classes can also call
         this method to save the record during the plan run.
         '''
+        record_path = self.output_dir_path / PLAN_RUN_RECORD_FILENAME
         if len(self.run_record.__dict__) > 0:
-            serialize.save(self.run_record, self.output_dir_path / PLAN_RUN_RECORD_FILENAME)
+            if multiscript.on_windows():
+                # On Windows, Python by default can't write to a hidden file
+                # (This is due to Windows permissions requested by the open() built-in function
+                # not matching the file's hidden attribute.)
+                # So for now we unhide the file, then write to it, then rehide it again.
+                util.set_file_unhidden_windows(record_path)
+            serialize.save(self.run_record, record_path)
+            if multiscript.on_windows():
+                util.set_file_hidden_windows(record_path)
 
     def calc_total_progress_steps(self):
         self.total_progress_steps += len(self.bible_ranges) * len(self.all_versions)
