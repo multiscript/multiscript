@@ -282,6 +282,11 @@ def _deserialize(file_app_version, error_list, obj_type, input_dict):
     include_all_attributes = True
 
     if obj_type == "Path":
+        #
+        # TODO: Detect if the path was created on the opposite platform flavour (Windows vs Posix) to
+        # the current platform. If so, and it's an absolute path, invalidate the path?
+        # But must preserve relative paths across platforms.
+        #
         new_obj = pathlib.Path(input_dict["__path__"])
         include_all_attributes = False
 
