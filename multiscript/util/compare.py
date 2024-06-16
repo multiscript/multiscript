@@ -1,5 +1,6 @@
 
 from pathlib import Path
+import stat
 import tempfile
 import zipfile
 
@@ -24,9 +25,16 @@ def cmp_file(path_1, path_2):
                 zipfile_2.extractall(expand_dir_2)
                 return cmp_dir(expand_dir_1, expand_dir_2)
     else:
-        if path_1.stat().st_size != path_2.stat().st_size:
+        path_1_stat = path_1.stat()
+        path_2_stat = path_2.stat()
+        if not stat.S_ISREG(path_1_stat.st_mode) or not stat.S_ISREG(path_2_stat.st_mode):
+            # One or both paths are not regular files
+            return False
+        if path_1_stat.st_size != path_2_stat.st_size:
+            # Sizes don't match
             return False
         with open(path_1, 'rb') as file_1, open(path_2, 'rb') as file_2:
+            # Compare contents byte-by-byte
             while True:
                 bytes_1 = file_1.read(BUFFER_SIZE)
                 bytes_2 = file_2.read(BUFFER_SIZE)
@@ -51,6 +59,14 @@ def cmp_dir(path_1, path_2):
     for relpath in subpaths_1.keys():
         subpath_1 = subpaths_1[relpath]
         subpath_2 = subpaths_2[relpath]
-        if not subpath_1.is_dir() and not cmp_file(subpath_1, subpath_2):
+        subpath_1_stat = subpath_1.stat()
+        subpath_2_stat = subpath_2.stat()
+        if stat.S_ISDIR(subpath_1_stat.st_mode) and stat.S_ISDIR(subpath_2_stat.st_mode):
+            # Both are directories with same paths
+            continue
+        if not stat.S_ISREG(subpath_1_stat.st_mode) or not stat.S_ISREG(subpath_2_stat.st_mode):
+            # One or both paths are not regular files
+            return False    
+        if not cmp_file(subpath_1, subpath_2):
             return False
     return True
