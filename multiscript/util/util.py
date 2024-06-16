@@ -2,9 +2,21 @@
 import ctypes
 import ctypes.util
 import os
+import pathlib
 import sys
 import subprocess
 
+def is_absolute_any_platform(path):
+    if isinstance(path, str):
+        # If a string path is from an unknown platform, it's most reliable to convert it to a Windows path,
+        # as backslashes are less common on POSIX paths (and are never path separators), but are regularly
+        # path separators on Windows.
+        path = pathlib.PureWindowsPath(path)
+    
+    # Converting between path flavours is only reliable when going via POSIX path strings. Otherwise, the
+    # absolute nature of absolute paths is lost.
+    return pathlib.PurePosixPath(path.as_posix()).is_absolute() or \
+           pathlib.PureWindowsPath(path.as_posix()).is_absolute()
 
 def launch_file(path):
     if sys.platform == "win32":
