@@ -6,7 +6,7 @@ import traceback
 
 import multiscript
 from multiscript.config.plan import PlanConfigGroup
-from multiscript.util import serialize
+from multiscript.util import serialize, util
 
 
 _logger = logging.getLogger(__name__)
@@ -183,10 +183,10 @@ def load(path, error_list=None):
 
     # Handle any paths parameters that don't exist.
     blank_plan = Plan() # Provides our default values
-    if plan.template_path.is_absolute() and not plan.template_path.exists():
+    if util.is_absolute_any_platform(plan.template_path) and not plan.template_path.exists():
         _logger.info(f"Template absolute path {path.template_path} not found, so replacing.")
         plan.template_path = blank_plan.template_path
-    if plan.output_dir_path.is_absolute() and not plan.output_dir_path.exists():
+    if util.is_absolute_any_platform(plan.output_dir_path) and not plan.output_dir_path.exists():
         _logger.info(f"Output dir absolute path {path.output_dir_path} not found, so replacing.")
         plan.output_dir_path = blank_plan.output_dir_path
 

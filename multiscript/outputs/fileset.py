@@ -116,7 +116,7 @@ class FileSetOutput(BibleOutput):
         self.save_document(runner, version_combo, document, savepath)
 
         if savepath != filepath:
-            if compare.cmp_file(savepath, filepath):
+            if compare.cmp_file(savepath, filepath, expand_zip=True):
                 # New file is identical to the existing file, so no need to update the existing file.
                 self.log_file_unchanged(runner, filepath, is_template)
                 return filepath

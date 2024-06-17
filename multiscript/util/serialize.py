@@ -186,7 +186,8 @@ def _serialize(orig_obj, output_dict):
 
     if isinstance(orig_obj, pathlib.Path):
         obj_type = "Path"
-        output_dict["__path__"] = str(orig_obj)
+        # The POSIX string form of a Path is the most compatible across platforms
+        output_dict["posix"] = orig_obj.as_posix()
     elif isinstance(orig_obj, Plan):
         obj_type = "Plan"
         del output_dict["_path"]
@@ -287,7 +288,14 @@ def _deserialize(file_app_version, error_list, obj_type, input_dict):
         # the current platform. If so, and it's an absolute path, invalidate the path?
         # But must preserve relative paths across platforms.
         #
-        new_obj = pathlib.Path(input_dict["__path__"])
+        if file_app_version < semver.VersionInfo.parse("0.17.0"):
+            # When we don't know whether the path string was created on Windows or POSIX, and whether it
+            # was converted to a string in POSIX form or not, this is most reliable conversion method is
+            # to create a Windows path, then convert to POSIX string form, then convert to the current
+            # platform.
+            new_obj = pathlib.Path(pathlib.PureWindowsPath(input_dict["__path__"]).as_posix())
+        else:
+            new_obj = pathlib.Path(input_dict["posix"])
         include_all_attributes = False
 
     elif obj_type == "Plan":

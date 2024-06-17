@@ -13,10 +13,10 @@ import zipfile
 
 BUFFER_SIZE = 1024
 
-def cmp_file(path_1, path_2):
+def cmp_file(path_1, path_2, *, expand_zip=False):
     path_1 = Path(path_1)
     path_2 = Path(path_2)
-    if zipfile.is_zipfile(str(path_1)) and zipfile.is_zipfile(str(path_2)):
+    if expand_zip and zipfile.is_zipfile(str(path_1)) and zipfile.is_zipfile(str(path_2)):
         # Handle zip files
         with tempfile.TemporaryDirectory() as expand_dir_1, \
                 tempfile.TemporaryDirectory() as expand_dir_2:
