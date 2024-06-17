@@ -184,10 +184,10 @@ def load(path, error_list=None):
     # Handle any paths parameters that don't exist.
     blank_plan = Plan() # Provides our default values
     if util.is_absolute_any_platform(plan.template_path) and not plan.template_path.exists():
-        _logger.info(f"Template absolute path {path.template_path} not found, so replacing.")
+        _logger.info(f"Template absolute path {plan.template_path} not found, so replacing.")
         plan.template_path = blank_plan.template_path
     if util.is_absolute_any_platform(plan.output_dir_path) and not plan.output_dir_path.exists():
-        _logger.info(f"Output dir absolute path {path.output_dir_path} not found, so replacing.")
+        _logger.info(f"Output dir absolute path {plan.output_dir_path} not found, so replacing.")
         plan.output_dir_path = blank_plan.output_dir_path
 
     return plan

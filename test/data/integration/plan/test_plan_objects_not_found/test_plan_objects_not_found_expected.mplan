@@ -229,11 +229,11 @@
         ],
         "_template_path": {
             "__type__": "Path",
-            "__path__": "."
+            "posix": "."
         },
         "_output_dir_path": {
             "__type__": "Path",
-            "__path__": "."
+            "posix": "."
         },
         "config": {
             "__type__": "PlanConfigGroup",

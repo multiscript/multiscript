@@ -29,6 +29,8 @@ class TestPlan(MultiscriptAppTestCase):
             plan = Plan()
 
             plan.path = plan_path
+            plan.template_path = Path(".")
+            plan.output_dir_path = Path(".")
             plan.bible_versions = versions
             plan.new = False
             before = pformat(plan)
