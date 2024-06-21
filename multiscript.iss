@@ -12,6 +12,11 @@
 #define MyPlanAssocKey StringChange(MyPlanAssocName, " ", "") + MyPlanAssocExt
 #define MyPlanIconSubpath "multiscript\icons\multiscript_mplan.ico"
 
+#define MyPlanRunAssocName MyAppName + " Plan Run"
+#define MyPlanRunAssocExt ".mrun"
+#define MyPlanRunAssocKey StringChange(MyPlanAssocName, " ", "") + MyPluginAssocExt
+#define MyPlanRunIconSubpath "multiscript\icons\multiscript_mrun.ico"
+
 #define MyPluginAssocName MyAppName + " Plugin"
 #define MyPluginAssocExt ".mplugin"
 #define MyPluginAssocKey StringChange(MyPlanAssocName, " ", "") + MyPluginAssocExt
@@ -57,6 +62,12 @@ Root: HKA; Subkey: "Software\Classes\{#MyPlanAssocKey}"; ValueType: string; Valu
 Root: HKA; Subkey: "Software\Classes\{#MyPlanAssocKey}\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\{#MyPlanIconSubpath}"
 Root: HKA; Subkey: "Software\Classes\{#MyPlanAssocKey}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""
 Root: HKA; Subkey: "Software\Classes\Applications\{#MyAppExeName}\SupportedTypes"; ValueType: string; ValueName: "{#MyPlanAssocExt}"; ValueData: ""
+
+Root: HKA; Subkey: "Software\Classes\{#MyPlanRunAssocExt}\OpenWithProgids"; ValueType: string; ValueName: "{#MyPlanRunAssocKey}"; ValueData: ""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\{#MyPlanRunAssocKey}"; ValueType: string; ValueName: ""; ValueData: "{#MyPlanRunAssocName}"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\{#MyPlanRunAssocKey}\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\{#MyPlanRunIconSubpath}"
+Root: HKA; Subkey: "Software\Classes\{#MyPlanRunAssocKey}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""
+Root: HKA; Subkey: "Software\Classes\Applications\{#MyAppExeName}\SupportedTypes"; ValueType: string; ValueName: "{#MyPlanRunAssocExt}"; ValueData: ""
 
 Root: HKA; Subkey: "Software\Classes\{#MyPluginAssocExt}\OpenWithProgids"; ValueType: string; ValueName: "{#MyPluginAssocKey}"; ValueData: ""; Flags: uninsdeletevalue
 Root: HKA; Subkey: "Software\Classes\{#MyPluginAssocKey}"; ValueType: string; ValueName: ""; ValueData: "{#MyPluginAssocName}"; Flags: uninsdeletekey

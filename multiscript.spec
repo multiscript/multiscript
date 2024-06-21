@@ -111,7 +111,7 @@ app = BUNDLE(bundle_obj,
                 [{
                     'UTTypeIdentifier': 'app.multiscript.mplan',
                     # Plans are actually json files, but including the UTTypeConformsTo directive sometimes
-                    # results in our plan icon not displaying. So we omit UTTypeConformsTo for now.
+                    # results in the icon not displaying. So we omit UTTypeConformsTo for now.
                     # 'UTTypeConformsTo': ['public.json'],
                     'UTTypeTagSpecification':
                         {
@@ -119,6 +119,18 @@ app = BUNDLE(bundle_obj,
                         },
                     'UTTypeDescription': 'Multiscript Plan',
                     'UTTypeIconFile': 'multiscript_mplan.icns'
+                },
+                {
+                    'UTTypeIdentifier': 'app.multiscript.mrun',
+                    # Plan run files are actually json files, but including the UTTypeConformsTo directive sometimes
+                    # results in the icon not displaying. So we omit UTTypeConformsTo for now.
+                    # 'UTTypeConformsTo': ['public.json'],
+                    'UTTypeTagSpecification':
+                        {
+                            'public.filename-extension': ['mrun']
+                        },
+                    'UTTypeDescription': 'Multiscript Plan Run',
+                    'UTTypeIconFile': 'multiscript_mrun.icns'
                 },
                 {
                     'UTTypeIdentifier': 'app.multiscript.mplugin',
@@ -132,11 +144,18 @@ app = BUNDLE(bundle_obj,
                 }],
             'CFBundleDocumentTypes':
                 [{
-                    'CFBundleTypeName': 'Multiscript Plan File',
+                    'CFBundleTypeName': 'Multiscript Plan',
                     'CFBundleTypeRole': 'Editor',
                     'CFBundleTypeIconFile': 'multiscript_mplan.icns',
                     'LSHandlerRank': 'Owner',
                     'LSItemContentTypes': ['app.multiscript.mplan']
+                },
+                {
+                    'CFBundleTypeName': 'Multiscript Plan Run',
+                    'CFBundleTypeRole': 'None',
+                    'CFBundleTypeIconFile': 'multiscript_mrun.icns',
+                    'LSHandlerRank': 'Owner',
+                    'LSItemContentTypes': ['app.multiscript.mrun']
                 },
                 {
                     'CFBundleTypeName': 'Multiscript Plugin',

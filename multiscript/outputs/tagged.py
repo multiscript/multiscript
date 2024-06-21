@@ -49,7 +49,7 @@ class TaggedOutput(FileSetOutput):
         super().__init__(plugin)
 
     def setup(self, runner):
-        '''Overriden from BibleOutput.setup(). Called prior to looping through the version
+        '''Overriden from FileSetOutput.setup(). Called prior to looping through the version
         combos.
 
         We use this method to set some defaults for the plan run.

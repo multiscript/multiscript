@@ -1,9 +1,16 @@
 
+import logging
+import traceback
+
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import Qt
 
 import multiscript
-import traceback
+
+
+logging.basicConfig(style="{", format="{levelname}:{name}: {message}")
+_logger = logging.getLogger("multiscript")
+_logger.setLevel(logging.DEBUG)
 
 
 def main():

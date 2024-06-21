@@ -177,14 +177,17 @@ def _deserialize_handler(file_app_version, error_list, input_dict):
 
 
 def _serialize(orig_obj, output_dict):
-    # Do this import here to avoid a circular dependancy between serialize.py and plan.py
+    # Do theses import here to avoid a circular dependancy between serialize.py and plan.py
     from multiscript.plan import Plan
+    from multiscript.plan.runner import PlanRunRecord
+    from multiscript.outputs.fileset import FileMetaData
 
     obj_type = None
 
     if isinstance(orig_obj, pathlib.Path):
         obj_type = "Path"
-        output_dict["__path__"] = str(orig_obj)
+        # The POSIX string form of a Path is the most compatible across platforms
+        output_dict["posix"] = orig_obj.as_posix()
     elif isinstance(orig_obj, Plan):
         obj_type = "Plan"
         del output_dict["_path"]
@@ -263,6 +266,10 @@ def _serialize(orig_obj, output_dict):
         output_dict[PLUGIN_NAME_KEY] = orig_obj.bible_output.plugin.name
         output_dict[BIBLEOUTPUT_ID_KEY] = orig_obj.bible_output.id
         output_dict[BIBLEOUTPUT_NAME_KEY] = orig_obj.bible_output.name
+    elif isinstance(orig_obj, PlanRunRecord):
+        obj_type = "PlanRunRecord"
+    elif isinstance(orig_obj, FileMetaData):
+        obj_type = "FileMetaData"
     else:
         raise UnimplementedSerializeError(type(orig_obj))
 
@@ -276,7 +283,15 @@ def _deserialize(file_app_version, error_list, obj_type, input_dict):
     include_all_attributes = True
 
     if obj_type == "Path":
-        new_obj = pathlib.Path(input_dict["__path__"])
+        if file_app_version < semver.VersionInfo.parse("0.17.0") and "__path__" in input_dict:
+            # When we don't know whether the path string was created on Windows or POSIX, and whether it
+            # was converted to a string in POSIX form or not, this is most reliable conversion method is
+            # to create a Windows path, then convert to POSIX string form, then convert to the current
+            # platform.
+            new_obj = pathlib.Path(pathlib.PureWindowsPath(input_dict["__path__"]).as_posix())
+            del input_dict["__path__"]
+        else:
+            new_obj = pathlib.Path(input_dict["posix"])
         include_all_attributes = False
 
     elif obj_type == "Plan":
@@ -377,6 +392,16 @@ def _deserialize(file_app_version, error_list, obj_type, input_dict):
     elif obj_type == "GeneralAppConfig":
         new_obj = GeneralAppConfig()
 
+        if file_app_version < semver.VersionInfo.parse("0.17.0"):
+            try:
+                del input_dict["keep_existing_template_files"]
+                del input_dict["keep_existing_output_files"]
+                _logger.info(f"Plan version<0.17.0: Removing old app config: " +
+                             f"keep_existing_template_files and keep_existing_output_files")
+            except Exception:
+                _logger.info(f"Plan version<0.17.0: Didn't find old app config: " +
+                             f"keep_existing_template_files or keep_existing_output_files")
+ 
     elif obj_type == "SourceAppConfig":
         try:
             plugin = multiscript.app().plugin(input_dict.pop(PLUGIN_ID_KEY))
@@ -436,6 +461,14 @@ def _deserialize(file_app_version, error_list, obj_type, input_dict):
             del input_dict[key]
         new_obj = output.new_output_plan_config()
 
+    elif obj_type == "PlanRunRecord":
+        from multiscript.plan.runner import PlanRunRecord
+        new_obj = PlanRunRecord()
+        
+    elif obj_type == "FileMetaData":
+        from multiscript.outputs.fileset import FileMetaData
+        new_obj = FileMetaData()
+        
     else:
         raise UnimplementedDeserializeError(file_app_version, obj_type, input_dict)
 

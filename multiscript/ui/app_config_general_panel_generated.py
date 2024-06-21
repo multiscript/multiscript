@@ -22,23 +22,13 @@ class Ui_GeneralAppConfigPanel(object):
     def setupUi(self, GeneralAppConfigPanel):
         if not GeneralAppConfigPanel.objectName():
             GeneralAppConfigPanel.setObjectName(u"GeneralAppConfigPanel")
-        GeneralAppConfigPanel.resize(370, 167)
+        GeneralAppConfigPanel.resize(370, 125)
         self.verticalLayout = QVBoxLayout(GeneralAppConfigPanel)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.savePlansBeforeExecutionCheckBox = QCheckBox(GeneralAppConfigPanel)
         self.savePlansBeforeExecutionCheckBox.setObjectName(u"savePlansBeforeExecutionCheckBox")
 
         self.verticalLayout.addWidget(self.savePlansBeforeExecutionCheckBox)
-
-        self.keepExistingTemplateFilesCheckBox = QCheckBox(GeneralAppConfigPanel)
-        self.keepExistingTemplateFilesCheckBox.setObjectName(u"keepExistingTemplateFilesCheckBox")
-
-        self.verticalLayout.addWidget(self.keepExistingTemplateFilesCheckBox)
-
-        self.keepExistingOutputFilesCheckbox = QCheckBox(GeneralAppConfigPanel)
-        self.keepExistingOutputFilesCheckbox.setObjectName(u"keepExistingOutputFilesCheckbox")
-
-        self.verticalLayout.addWidget(self.keepExistingOutputFilesCheckbox)
 
         self.ignoredScriptsLabel = QLabel(GeneralAppConfigPanel)
         self.ignoredScriptsLabel.setObjectName(u"ignoredScriptsLabel")
@@ -68,9 +58,11 @@ class Ui_GeneralAppConfigPanel(object):
     def retranslateUi(self, GeneralAppConfigPanel):
         GeneralAppConfigPanel.setWindowTitle(QCoreApplication.translate("GeneralAppConfigPanel", u"Form", None))
         self.savePlansBeforeExecutionCheckBox.setText(QCoreApplication.translate("GeneralAppConfigPanel", u"Save plans before executing them", None))
-        self.keepExistingTemplateFilesCheckBox.setText(QCoreApplication.translate("GeneralAppConfigPanel", u"Keep existing template files instead of recreating them", None))
-        self.keepExistingOutputFilesCheckbox.setText(QCoreApplication.translate("GeneralAppConfigPanel", u"Keep existing output files instead of recreating them", None))
         self.ignoredScriptsLabel.setText(QCoreApplication.translate("GeneralAppConfigPanel", u"Don't automatically select fonts for these Unicode scripts:", None))
+#if QT_CONFIG(tooltip)
+        self.ignoredScriptsLineEdit.setToolTip(QCoreApplication.translate("GeneralAppConfigPanel", u"Comma-separated script full-names. For example: Latin, Greek, Cyrillic", None))
+#endif // QT_CONFIG(tooltip)
+        self.ignoredScriptsLineEdit.setPlaceholderText("")
         self.downloadAndInstallFontsCheckBox.setText(QCoreApplication.translate("GeneralAppConfigPanel", u"Download and install fonts when available", None))
     # retranslateUi
 

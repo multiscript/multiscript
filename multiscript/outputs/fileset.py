@@ -1,11 +1,13 @@
 
+from dataclasses import dataclass
 import logging
 from pathlib import Path
+import shutil
 
-import multiscript
 from multiscript.outputs.base import BibleOutput
 from multiscript.plan.runner import PlanRunner
 from multiscript.plan.symbols import column_symbols
+from multiscript.util import compare
 
 
 _logger = logging.getLogger(__name__)
@@ -29,6 +31,39 @@ class FileSetOutput(BibleOutput):
         super().__init__(plugin)
         self.output_file_ext: str = "" # e.g. ".output"
 
+    def setup(self, runner):
+        '''Overriden from BibleOutput.setup(). Called prior to looping through the version
+        combos.
+
+        We use this method to set up the cache of file metadata for the run.
+        '''
+        super().setup(runner)
+        empty_file_metadata: dict[str, 'FileMetaData'] = {}
+        try:
+            # Check if the existing plan run record has a metadata cache
+            fileset_metadata = runner.run_record.fileset_metadata
+        except AttributeError:
+            # If not, create a blank cache.
+            runner.run_record.fileset_metadata = empty_file_metadata
+
+    def cache_file_metadata(self, runner, path):
+        runner.run_record.fileset_metadata[str(path)] = FileMetaData(path)
+
+    def cleanup(self, runner):
+        '''Overriden from BibleOutput.cleanup(). Called after looping through the version
+        combos.
+
+        We use this method to save up the cache of file metadata for the run.
+        '''
+        super().cleanup(runner)
+        self.prune_file_metadata(runner)
+        runner.save_plan_run_record()
+
+    def prune_file_metadata(self, runner):
+        for str_path in list(runner.run_record.fileset_metadata.keys()):
+            if not Path(str_path).exists():
+                del runner.run_record.fileset_metadata[str_path]
+
     def generate_combo_item(self, runner, version_combo, template_obj=None, is_template=False):
         '''Overrides BibleOutput.generate_combo_item(). The item returned is the path
         to the file generated.
@@ -36,36 +71,62 @@ class FileSetOutput(BibleOutput):
         Subclasses don't need to override this method, but instead override load_document(),
         save_document(), and fill_bible_content(). Subclasses can optionally override
         expand_base_template(), begin_fill_document(), end_fill_document(), and if necessary
-        override the algorithm in fill_bible_content().
+        override the algorithm in fill_document().
         '''
         filepath = self.get_item_filepath(runner, version_combo, is_template)
 
-        if (multiscript.app().app_config_group.general.keep_existing_template_files and \
-            is_template and filepath.exists()) or \
-           (multiscript.app().app_config_group.general.keep_existing_output_files and \
-            not is_template and filepath.exists()):
-            self.log_keep_existing_filepath(runner, filepath, is_template)
-            return filepath
+        # We normally save to the expected filepath, unless the file already exists and isn't being skipped.
+        savepath = filepath
+        if filepath.exists() and not runner.plan.config.general.always_overwrite_output:
+            keep_existing_file = False
+            if str(filepath) in runner.run_record.fileset_metadata:
+                prev_metadata = runner.run_record.fileset_metadata[str(filepath)]
+                cur_metadata = FileMetaData(filepath)
+                if prev_metadata != cur_metadata:
+                    # Existing file has been edited. Don't overwrite it.
+                    keep_existing_file = True
+            else:
+                # We have no metadata for the file. For safety, assume it has been edited.
+                keep_existing_file = True
+            
+            if keep_existing_file:
+                self.log_keep_edited_file(runner, filepath, is_template)
+                return filepath
+            else:
+                # We will create the output in a temporary directory first, so we can compare it to the existing file
+                # and determine whether it even needs replacing.
+                savepath = runner.temp_dir_path / filepath.name
 
-        self.log_combo_item(runner, version_combo, is_template)
-        
+        self.log_preparing_file(runner, filepath, is_template)
         template_path = Path(template_obj)
         document = self.load_document(runner, version_combo, template_path)
         
         if template_obj == runner.base_template_path:
             self.expand_base_template(runner, document)
             if runner.plan.config.general.confirm_after_template_expansion:
-                self.save_document(runner, version_combo, document, filepath)
+                self.save_document(runner, version_combo, document, savepath)
                 runner.monitors.request_confirmation(
                     "<b>Open</b> and check the expanded template, then click <b>Continue</b> " +
                     "once you have saved any changes.",
-                    filepath)
+                    savepath)
         
         self.begin_fill_document(runner, version_combo, document, is_template)
         self.fill_document(runner, version_combo, document, is_template)
         self.end_fill_document(runner, version_combo, document, is_template)
+        self.save_document(runner, version_combo, document, savepath)
 
-        self.save_document(runner, version_combo, document, filepath)
+        if savepath != filepath:
+            if compare.cmp_file(savepath, filepath, expand_zip=True):
+                # New file is identical to the existing file, so no need to update the existing file.
+                self.log_file_unchanged(runner, filepath, is_template)
+                return filepath
+            else:
+                # Replace existing file with new file.
+                shutil.copy2(savepath, filepath)
+                _logger.debug(f'Copied "{savepath}" to "{filepath}"')
+        self.log_file_created(runner, filepath, is_template)
+        self.cache_file_metadata(runner, filepath)
+
         if is_template:
             runner.monitors.request_confirmation(
                 "<b>Open</b> and check the template, then click <b>Continue</b> once you have saved any changes.",
@@ -97,20 +158,29 @@ class FileSetOutput(BibleOutput):
                     _logger.info(f"\t\t\tFilling passage {str(contents_index+1)}{column_symbol} with " +
                                 f"{str(bible_content.bible_version.abbrev)} {str(bible_content.bible_range)}")
                 else:
-                    # _logger.info(f"\t\t\tLeaving passage {str(contents_index+1)}{column_symbol} blank.")
                     bible_content = None
+                    # _logger.info(f"\t\t\tLeaving passage {str(contents_index+1)}{column_symbol} blank.")
                 self.fill_bible_content(runner, document, contents_index, column_symbol, bible_content)
 
-    def log_keep_existing_filepath(self, runner, filepath, is_template):
-        log_message = f"Keeping existing {'template' if is_template else 'output'} {filepath.name}"
-        runner.monitors.set_substatus_text(log_message)
-        _logger.info("\t\t" + log_message)
+    def log_keep_edited_file(self, runner, filepath, is_template):
+        log_message = f"\t\tKeeping edited {'template' if is_template else 'output'} {filepath.name}"
+        runner.monitors.set_substatus_text(log_message.strip())
+        _logger.info(log_message)
 
-    def log_combo_item(self, runner, version_combo, is_template):
-        filename = self.get_item_filename(runner, version_combo, is_template)
-        log_message = f"Creating {'template ' if is_template else ''}{filename}"
-        runner.monitors.set_substatus_text(log_message)
-        _logger.info("\t\t" + log_message)
+    def log_preparing_file(self, runner, filepath, is_template):
+        log_message = f"\t\tPreparing {'template ' if is_template else ''}{filepath.name}"
+        runner.monitors.set_substatus_text(log_message.strip())
+        _logger.info(log_message)
+
+    def log_file_unchanged(self, runner, filepath, is_template):
+        log_message = f"\t\t\tNo changes to {'template' if is_template else 'file'}."
+        runner.monitors.set_substatus_text(log_message.strip())
+        _logger.info(log_message)
+
+    def log_file_created(self, runner, filepath, is_template):
+        log_message = f"\t\t\tSaved {'template' if is_template else 'file'}."
+        runner.monitors.set_substatus_text(log_message.strip())
+        _logger.info(log_message)
 
     def get_item_filepath(self, runner, version_combo, is_template):
         return runner.output_dir_path / Path(self.get_item_filename(runner, version_combo, is_template))
@@ -179,3 +249,15 @@ class FileSetOutput(BibleOutput):
         into the document.
         '''
         pass
+
+
+@dataclass
+class FileMetaData:
+    size:   int     # Size in bytes
+    mtime:  float   # Modification time in seconds
+
+    def __init__(self, pathlike=None):
+        if pathlike is not None:
+            stat_result = Path(pathlike).stat()
+        self.size = stat_result.st_size if pathlike is not None else 0
+        self.mtime = stat_result.st_mtime if pathlike is not None else 0

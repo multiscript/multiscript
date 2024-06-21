@@ -24,8 +24,6 @@ from multiscript.plugins.builtin import BuiltinPlugin
 
 
 _logger = logging.getLogger(__name__)
-_logger.setLevel(logging.DEBUG)
-_logger.addHandler(logging.StreamHandler())
 
 PLUGIN_FILE_EXTENSION = ".mplugin"
 PLUGIN_FILE_FILTER = "*" + PLUGIN_FILE_EXTENSION

@@ -1,5 +1,5 @@
 import unittest
-from pathlib import Path
+from pathlib import Path, PureWindowsPath, PurePosixPath
 import platform
 
 import multiscript.plan
@@ -13,7 +13,7 @@ class TestPlan(unittest.TestCase):
         else:
             return Path(str_or_path)
 
-    def test_paths(self):
+    def test_plan_paths(self):
         plan = multiscript.plan.Plan()
 
         # Test absolute paths correctly become relative
@@ -57,6 +57,3 @@ class TestPlan(unittest.TestCase):
         plan.path = self.abs_path("/Path/To/Somewhere/Else/plan.mplan")
         self.assertEqual(plan.template_path, Path("Templates/template.txt"))
         self.assertEqual(plan.output_dir_path, Path("Output"))
-
-
-

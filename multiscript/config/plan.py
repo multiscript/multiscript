@@ -37,7 +37,7 @@ class GeneralPlanConfig(PlanConfig):
         self.allow_confirmations = True
         self.confirm_after_template_expansion = False
         self.create_template_copies = True
-
+        self.always_overwrite_output = False
 
     def new_config_widget(self):
         return GeneralPlanConfigPanel(None)

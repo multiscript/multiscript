@@ -162,7 +162,6 @@ class GetBibleDotNetVersion(BibleVersion):
 
         bible_ranges = bible_range.split(by_chap=True, num_verses=None)
         for indiv_range in bible_ranges:
-            print(indiv_range)
             indiv_range: BibleRange = indiv_range
             url = f'https://api.getbible.net/v2/{self.id}/{book_code}/{indiv_range.start.chap_num}.json'
             response = requests.get(url, timeout=15)

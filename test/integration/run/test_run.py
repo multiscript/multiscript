@@ -4,10 +4,11 @@ import filecmp
 import os
 from pathlib import Path
 import shutil
-import unittest
 import tempfile
 import zipfile
 
+import multiscript.outputs
+import multiscript.outputs.fileset
 from test.application import TEST_APP, MultiscriptAppTestCase
 import multiscript.plan
 import multiscript.plan.runner
@@ -102,6 +103,8 @@ class TestRun(MultiscriptAppTestCase):
 
                 plan_runner = multiscript.plan.runner.PlanRunner(plan)
                 plan_runner.run()
+                # Remove plan run record to simplify directory comparison
+                Path(test_output_dir, multiscript.plan.runner.PLAN_RUN_RECORD_FILENAME).unlink()
 
                 if mode is TestRun.TestMode.CREATE:
                     return
@@ -178,6 +181,8 @@ class TestRun(MultiscriptAppTestCase):
 
                 plan_runner = multiscript.plan.runner.PlanRunner(plan)
                 plan_runner.run()
+                # Remove plan run record to simplify directory comparison
+                Path(test_output_dir, multiscript.plan.runner.PLAN_RUN_RECORD_FILENAME).unlink()
 
                 if mode is TestRun.TestMode.CREATE:
                     return
@@ -194,3 +199,83 @@ class TestRun(MultiscriptAppTestCase):
                     return
                     
                 self.assertTrue(is_same(test_output_path, Path(expected_dir)))
+
+    def test_fileset_metadata(self):
+        '''Tests whether the fileset metadata correct affects which output files are updated.
+        '''
+        plan_path = Path(__file__,
+                         "../../../data/integration/run/test_fileset_metadata/test_fileset_metadata.mplan").resolve()
+        template_path = Path(__file__, "../../../../multiscript/templates/Default Template.txt").resolve()
+
+        error_list = []
+        plan = multiscript.plan.load(plan_path, error_list)
+        for err in error_list:
+            print(str(err))
+
+        plan.template_path = template_path
+
+        with tempfile.TemporaryDirectory() as test_output_dir:
+            plan.output_dir_path = Path(test_output_dir)
+
+            #
+            # Initial run to establish initial metadata
+            #
+            print("Initial run:")
+            plan_runner = multiscript.plan.runner.PlanRunner(plan)
+            plan_runner.run()
+            base_metadata = plan_runner.run_record.fileset_metadata
+
+            #
+            # Re-run (with a fresh PlanRunner) and confirm no file changes
+            #
+            print("Rerun to confirm no changes:")
+            plan_runner = multiscript.plan.runner.PlanRunner(plan)
+            plan_runner.run()
+            self.assertEqual(base_metadata, plan_runner.run_record.fileset_metadata)
+
+            #
+            # Modify one output file and re-run
+            #
+            print("Modify one output and confirm it's not updated:")
+            output_path = Path(test_output_dir, "Gen1.1-4 +3 English-KJV,Chinese (Traditional)-CUT,Spanish-VALERA.txt")
+            output_path.touch()
+            self._assert_file_changed_and_update_metadata(base_metadata, output_path)
+            plan_runner = multiscript.plan.runner.PlanRunner(plan)
+            plan_runner.run()
+            self.assertEqual(base_metadata, self._metadata_on_disk(test_output_dir))
+
+            #
+            # Modify a template file and confirm dependent output files change
+            #
+            print("Modify a template and confirm dependent files change:")
+            output_path = Path(test_output_dir, "Gen1.1-4 +3 English-KJV,Chinese (Traditional)-CUT,-_template.txt")
+            # Need to actually change the data in the tempplate in order for dependent files to change
+            with open(output_path, "a") as output_file:
+                output_file.writelines(["Here's an extra line of text.\n"])
+            self._assert_file_changed_and_update_metadata(base_metadata, output_path)
+            plan_runner = multiscript.plan.runner.PlanRunner(plan)
+            plan_runner.run()
+
+            output_path = Path(test_output_dir, "Gen1.1-4 +3 English-KJV,Chinese (Traditional)-CUT,-.txt")
+            self._assert_file_changed_and_update_metadata(base_metadata, output_path)
+
+            output_path = Path(test_output_dir, "Gen1.1-4 +3 English-KJV,Chinese (Traditional)-CUT,Korean-KOREAN.txt")
+            self._assert_file_changed_and_update_metadata(base_metadata, output_path)
+
+            output_path = Path(test_output_dir, "Gen1.1-4 +3 English-KJV,Chinese (Traditional)-CUT,French-LS1910.txt")
+            self._assert_file_changed_and_update_metadata(base_metadata, output_path)
+            # Previous modification to "Gen1.1-4 +3 English-KJV,Chinese (Traditional)-CUT,Spanish-VALERA.txt"
+            # prevents it being modified here.
+            self.assertEqual(base_metadata, self._metadata_on_disk(test_output_dir))
+
+    def _assert_file_changed_and_update_metadata(self, base_metadata, output_path):
+        output_path_metadata = multiscript.outputs.fileset.FileMetaData(output_path)
+        self.assertNotEqual(base_metadata[str(output_path)], output_path_metadata)
+        base_metadata[str(output_path)] = output_path_metadata
+
+    def _metadata_on_disk(self, test_output_dir):
+        on_disk_metadata = {}
+        for path in Path(test_output_dir).glob("*.txt"):
+            on_disk_metadata[str(path)] = multiscript.outputs.fileset.FileMetaData(path)
+        return on_disk_metadata
+
