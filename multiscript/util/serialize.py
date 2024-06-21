@@ -47,7 +47,7 @@ def save(obj, path):
     # Ensure any parent directories exist, and create them if they don't.
     pathlib.Path(path).parent.mkdir(parents=True, exist_ok=True)
 
-    with open(path, 'w') as file:
+    with open(path, 'w', encoding='utf-8') as file:
         json.dump(serialize_obj, file, indent=4, ensure_ascii=False, default=_serializer_handler)
 
 def load(path, error_list=None, remove_sentinels=True):
@@ -57,7 +57,7 @@ def load(path, error_list=None, remove_sentinels=True):
     If remove_sentinels is true, remove_sentinels is called to remove any sentinels of missing objects
     prior to returning the deserialized object.
     '''
-    with open(path, 'r') as file:
+    with open(path, 'r', encoding='utf-8') as file:
         file_content = file.read()
 
     # Do a basic load, just to capture the app_version that created the file
