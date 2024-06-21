@@ -48,7 +48,7 @@ def save(obj, path):
     pathlib.Path(path).parent.mkdir(parents=True, exist_ok=True)
 
     with open(path, 'w') as file:
-        json.dump(serialize_obj, file, indent=4, default=_serializer_handler)
+        json.dump(serialize_obj, file, indent=4, ensure_ascii=False, default=_serializer_handler)
 
 def load(path, error_list=None, remove_sentinels=True):
     '''Load an object from a serialized file at the given path. Any errors that are non-failure (i.e.
