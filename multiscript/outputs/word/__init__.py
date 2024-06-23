@@ -76,10 +76,14 @@ class WordOutput(TaggedOutput):
 
         # Create any missing styles
         for column_index in range(len(runner.version_cols)):
-            para_style_name = Styles.PARAGRAPH_COL.value.format(column_symbols[column_index])
-            print(para_style_name)
-            if get_style(document, para_style_name) is None:
-                document.styles.add_style(para_style_name, WD_STYLE_TYPE.PARAGRAPH)
+            col_para_style_name = Styles.PARAGRAPH_COL.value.format(column_symbols[column_index])
+            print(col_para_style_name)
+            if get_style(document, col_para_style_name) is None:
+                style = document.styles.add_style(col_para_style_name, WD_STYLE_TYPE.PARAGRAPH)
+                base_style = get_style(document, Styles.PARAGRAPH.value)
+                if base_style is None:
+                    base_style = get_style(document, "Normal")
+                style.base_style = base_style
 
         return document
     
@@ -234,6 +238,7 @@ class WordOutput(TaggedOutput):
         for column_index in range(len(table_text_array[0])):
             cell = table.cell(0, column_index)
             paragraph = cell.paragraphs[0]
+            paragraph.style = get_style(document, Styles.COPYRIGHT.value)
             paragraph.add_run(table_text_array[0][column_index])
 
     def format_passage_tag(self, document, cursor):
@@ -244,7 +249,7 @@ class WordOutput(TaggedOutput):
     def format_bible_text_tag(self, document, contents_index, column_symbol, bible_content, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to Bible content being inserted.
         '''
-        cursor.current_para.style = get_style(document, Styles.PARAGRAPH.value)
+        cursor.current_para.style = get_style(document, Styles.PARAGRAPH_COL.value.format(column_symbol))
         font_family = bible_content.bible_version.font_family
         if font_family is not None and len(font_family) > 0:
             cursor.run_font_name = font_family
