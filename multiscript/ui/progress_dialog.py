@@ -118,7 +118,11 @@ class ProgressDialog(QtWidgets.QDialog, Ui_ProgressDialog, PlanMonitor):
     def runner_finished(self, future_result):
         self.future_result = None
         if future_result.is_cancelled:
-            self.reject()
+            self.set_status_text(self.tr("<b>Plan cancelled.</b>"))
+            self.set_substatus_text("")
+
+            self.actionButton.setText(self.tr("Done"))
+            self.action = self.on_cancelled_done
         else:
             if future_result.error is None:
                 self.set_status_text(self.tr("<b>Finished</b>"))
@@ -135,6 +139,9 @@ class ProgressDialog(QtWidgets.QDialog, Ui_ProgressDialog, PlanMonitor):
 
     def on_done(self):
         self.accept()
+
+    def on_cancelled_done(self):
+        self.reject()
 
     def on_open_clicked(self, checked):
         if self.path_to_open is not None:

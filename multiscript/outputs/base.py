@@ -8,7 +8,6 @@ from multiscript.config.plan import PlanConfig
 from multiscript.config.version import VersionConfig
 from multiscript.plugins.base import Plugin
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -53,11 +52,16 @@ class BibleOutput:
 
         Subclasses can override this method for more complex algorithms.
         '''
+        from multiscript.plan.runner import CancelError
+
         self.setup(runner)
         for version_combo in runner.all_version_combos:
             try:
                 template_obj = self.get_template_obj(runner, version_combo)
                 self.generate_combo_item(runner, version_combo, template_obj)
+            except CancelError:
+                _logger.info(f"Cancelled while creating output for these versions: {version_combo}.")
+                raise
             except Exception as exception:
                 _logger.exception(exception)
                 runner.monitors.request_confirmation(f"<b>There was an error creating an output " +

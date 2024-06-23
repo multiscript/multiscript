@@ -3,6 +3,7 @@ from enum import Enum, auto
 import logging
 
 import docx
+from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
@@ -19,7 +20,8 @@ _logger = logging.getLogger(__name__)
 
 
 class Styles(Enum):
-    PARAGRAPH               =   "MSC_Paragraph"             # Style for Bible text.
+    PARAGRAPH               =   "MSC_Paragraph"             # Base style for Bible text.
+    PARAGRAPH_COL           =   "MSC_Paragraph_{0}"         # Style for Bible text for a particular column.
     PASSAGE                 =   "MSC_Passage"               # Style for a single passage reference.
     PASSAGE_GROUP           =   "MSC_Passage_Group"         # Style for a group of passage references.
     TEXT_TABLE_HORIZ        =   "MSC_Text_Table_Horiz"      # Style for horizontal table of Bible texts.
@@ -71,6 +73,14 @@ class WordOutput(TaggedOutput):
 
     def load_document(self, runner, version_combo, template_path):
         document = docx.Document(template_path)
+
+        # Create any missing styles
+        for column_index in range(len(runner.version_cols)):
+            para_style_name = Styles.PARAGRAPH_COL.value.format(column_symbols[column_index])
+            print(para_style_name)
+            if get_style(document, para_style_name) is None:
+                document.styles.add_style(para_style_name, WD_STYLE_TYPE.PARAGRAPH)
+
         return document
     
     def save_document(self, runner, version_combo, document, filepath):
@@ -199,6 +209,7 @@ class WordOutput(TaggedOutput):
             paragraph = cell.paragraphs[0]
             text_lines = table_text_array[-1][column_index].split('\n') 
             for line_index in range(len(text_lines)):
+                paragraph.style = get_style(document, Styles.PARAGRAPH_COL.value.format(column_symbols[column_index]))
                 paragraph.text = text_lines[line_index]
                 if line_index < (len(text_lines) - 1):
                     paragraph = cell.add_paragraph()

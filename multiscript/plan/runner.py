@@ -100,16 +100,18 @@ class PlanRunner:
         self.output_dir_path.mkdir(parents=True, exist_ok=True)
         self.load_plan_run_record()
         
-        with TemporaryDirectory() as temp_dir:
-            self.temp_dir_path = Path(temp_dir)
-            self.calc_total_progress_steps()
-            self.load_bible_content()
-            self.select_auto_fonts()
-            self.download_and_install_fonts()
-            self.create_bible_outputs()
-        self.temp_dir_path = None
-        
-        self.save_plan_run_record()
+        try:
+            with TemporaryDirectory() as temp_dir:
+                self.temp_dir_path = Path(temp_dir)
+                self.calc_total_progress_steps()
+                self.load_bible_content()
+                self.select_auto_fonts()
+                self.download_and_install_fonts()
+                self.create_bible_outputs()
+            self.temp_dir_path = None
+        finally:
+            self.save_plan_run_record()
+
         _logger.info("Finished")
 
     def load_plan_run_record(self):
@@ -290,6 +292,9 @@ class PlanRunner:
             _logger.info("\tCreating " + output.name + " output:")
             try:
                 output.generate_all(self)
+            except CancelError:
+                _logger.info(f"Cancelled while creating {output.name} output.")
+                raise
             except Exception as exception:
                 _logger.exception(exception)
                 self.monitors.request_confirmation(f"<b>There was an error creating the {output.name} output.</b>")
