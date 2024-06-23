@@ -47,7 +47,12 @@ class FileSetOutput(BibleOutput):
             runner.run_record.fileset_metadata = empty_file_metadata
 
     def cache_file_metadata(self, runner, path):
+        '''Get the on-disk metatdata for the given path, and store it in the cache'''
         runner.run_record.fileset_metadata[str(path)] = FileMetaData(path)
+
+    def get_cached_file_metadata(self, runner, path):
+        '''Returns the cached FileMetaData for the given path, or None if no metadata in the cache.'''
+        return runner.run_record.fileset_metadata.get(str(path), None)
 
     def cleanup(self, runner):
         '''Overriden from BibleOutput.cleanup(). Called after looping through the version
@@ -75,14 +80,14 @@ class FileSetOutput(BibleOutput):
         '''
         filepath = self.get_item_filepath(runner, version_combo, is_template)
 
-        # We normally save to the expected filepath, unless the file already exists and isn't being skipped.
+        # We normally save to the expected filepath, unless we need to check if the output has really changed,
+        # in which case we will save to a temporary directory.
         savepath = filepath
         if filepath.exists() and not runner.plan.config.general.always_overwrite_output:
             keep_existing_file = False
-            if str(filepath) in runner.run_record.fileset_metadata:
-                prev_metadata = runner.run_record.fileset_metadata[str(filepath)]
-                cur_metadata = FileMetaData(filepath)
-                if prev_metadata != cur_metadata:
+            cached_metadata = self.get_cached_file_metadata(runner, filepath)
+            if cached_metadata is not None:
+                if cached_metadata != FileMetaData(filepath):
                     # Existing file has been edited. Don't overwrite it.
                     keep_existing_file = True
             else:
@@ -101,15 +106,21 @@ class FileSetOutput(BibleOutput):
         template_path = Path(template_obj)
         document = self.load_document(runner, version_combo, template_path)
         
+        is_base_template_and_edited = False
         if template_obj == runner.base_template_path:
             self.expand_base_template(runner, document)
             if runner.plan.config.general.confirm_after_template_expansion:
                 self.save_document(runner, version_combo, document, savepath)
+                self.cache_file_metadata(runner, savepath)
                 runner.monitors.request_confirmation(
                     "<b>Open</b> and check the expanded template, then click <b>Continue</b> " +
                     "once you have saved any changes.",
                     savepath)
-        
+                if self.get_cached_file_metadata(runner, savepath) != FileMetaData(savepath):
+                    # Template was edited, so reload from disk.
+                    is_base_template_and_edited = True
+                    document = self.load_document(runner, version_combo, savepath)
+
         self.begin_fill_document(runner, version_combo, document, is_template)
         self.fill_document(runner, version_combo, document, is_template)
         self.end_fill_document(runner, version_combo, document, is_template)
@@ -125,7 +136,12 @@ class FileSetOutput(BibleOutput):
                 shutil.copy2(savepath, filepath)
                 _logger.debug(f'Copied "{savepath}" to "{filepath}"')
         self.log_file_created(runner, filepath, is_template)
-        self.cache_file_metadata(runner, filepath)
+        if is_base_template_and_edited:
+            # We don't want to update the cached metadata, so that the saved template will show as edited
+            # on the next run through.
+            pass
+        else:
+            self.cache_file_metadata(runner, filepath)
 
         if is_template:
             runner.monitors.request_confirmation(
