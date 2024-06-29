@@ -151,7 +151,7 @@ class TaggedOutput(FileSetOutput):
             tag = Tags.PASSAGE.value.format(passage_index + 1)
             cursor = self.replace_tag_with_cursor(document, tag)
             if cursor is not None:
-                self.format_passage_tag(document, cursor)
+                self.format_passage_tag(runner, document, cursor)
                 cursor.add_text(runner.bible_ranges[passage_index].str())
 
         # Loop through versions and handle per-version tags relating to whole document
@@ -182,7 +182,7 @@ class TaggedOutput(FileSetOutput):
                 cursor = self.replace_tag_with_cursor(document, tag)
                 while cursor is not None:
                     if version is not None:
-                        self.format_text_join_tag(document, cursor)
+                        self.format_text_join_tag(runner, document, cursor)
                         cursor.add_text(runner.output_runs[self.long_id].text_join)
                     else:
                         # version == None and is_template == False, so we leave the tag blank by adding no text
@@ -196,7 +196,7 @@ class TaggedOutput(FileSetOutput):
                 cursor = self.replace_tag_with_cursor(document, tag)
                 if cursor is not None:
                     if version is not None:
-                        self.format_copyright_text_tag(document, bible_content, cursor)
+                        self.format_copyright_text_tag(runner, document, bible_content, cursor)
                         cursor.add_text(bible_content.bible_version.copyright)
                     else:
                         # version == None and is_template == False, so we leave the tag blank by adding no text
@@ -209,7 +209,7 @@ class TaggedOutput(FileSetOutput):
         tag = Tags.TEXT.value.format(contents_index + 1, column_symbol)
         cursor = self.replace_tag_with_cursor(document, tag)
         if cursor is not None and bible_content is not None:
-            self.format_bible_text_tag(document, contents_index, column_symbol, bible_content, cursor)
+            self.format_bible_text_tag(runner, document, contents_index, column_symbol, bible_content, cursor)
             bible_stream_handler = self.new_bible_stream_handler(runner, cursor)
             bible_content.body.copyStreamTo(bible_stream_handler)
 
@@ -258,25 +258,25 @@ class TaggedOutput(FileSetOutput):
         '''
         pass
  
-    def format_passage_tag(self, document, cursor):
+    def format_passage_tag(self, runner, document, cursor):
         '''Abstract method. Subclasses can override to perform formatting needed prior to the PASSAGE
         tag being inserted. The supplied cursor will be at the insertion point.
         '''
         pass
 
-    def format_bible_text_tag(self, document, contents_index, column_symbol, bible_content, cursor):
+    def format_bible_text_tag(self, runner, document, contents_index, column_symbol, bible_content, cursor):
         '''Abstract method. Subclasses can override to perform formatting needed prior to the Bible content
         TEXT tag being inserted. The supplied cursor will be at the insertion point.
         '''
         pass
 
-    def format_text_join_tag(self, document, cursor):
+    def format_text_join_tag(self, runner, document, cursor):
         '''Abstract method. Subclasses can override to perform formatting needed prior to the TEXT_JOIN
         tag being inserted. The supplied cursor will be at the insertion point.
         '''
         pass
 
-    def format_copyright_text_tag(self, document, bible_content, cursor):
+    def format_copyright_text_tag(self, runner, document, bible_content, cursor):
         '''Perform any formatting needed prior to COPYRIGHT tag being inserted. The supplied
         cursor will be at the insertion point.
         '''

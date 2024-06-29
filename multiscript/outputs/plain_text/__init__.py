@@ -126,12 +126,12 @@ class PlainTextOutput(TaggedOutput):
             for row_index in range(len(table_text_array)):
                 cursor.add_text(table_text_array[row_index][column_index] + "\n\n")
 
-    def format_bible_text_tag(self, document, contents_index, column_symbol, bible_content, cursor):
+    def format_bible_text_tag(self, runner, document, contents_index, column_symbol, bible_content, cursor):
         '''Performs any formatting needed prior to Bible content being inserted.
         '''
         pass
 
-    def format_copyright_text_tag(self, document, bible_content, cursor):
+    def format_copyright_text_tag(self, runner, document, bible_content, cursor):
         '''Performs any formatting needed prior to copyright text being inserted.
         '''
         pass

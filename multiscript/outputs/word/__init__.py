@@ -241,12 +241,12 @@ class WordOutput(TaggedOutput):
             paragraph.style = get_style(document, Styles.COPYRIGHT.value)
             paragraph.add_run(table_text_array[0][column_index])
 
-    def format_passage_tag(self, document, cursor):
+    def format_passage_tag(self, runner, document, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to PASSAGE tag being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.PASSAGE.value)
 
-    def format_bible_text_tag(self, document, contents_index, column_symbol, bible_content, cursor):
+    def format_bible_text_tag(self, runner, document, contents_index, column_symbol, bible_content, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to Bible content being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.PARAGRAPH_COL.value.format(column_symbol))
@@ -257,12 +257,12 @@ class WordOutput(TaggedOutput):
         if font_size is not None and float(font_size) > 0:
             cursor.run_font_size = font_size
 
-    def format_text_join_tag(self, document, cursor):
+    def format_text_join_tag(self, runner, document, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to join text being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.JOIN.value)
 
-    def format_copyright_text_tag(self, document, bible_content, cursor):
+    def format_copyright_text_tag(self, runner, document, bible_content, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to copyright text being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.COPYRIGHT.value)
@@ -410,6 +410,7 @@ class WordPlanConfig(OutputPlanConfig):
         super().__init__(bible_output)
         self.join_passage_text = "\n...\n"
         self.all_tables_insert_blank_paras = True
+        self.apply_formatting_to_runs = False
 
     def new_config_widget(self):
         return WordPlanConfigPanel(None)
