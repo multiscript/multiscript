@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>347</width>
-    <height>80</height>
+    <width>374</width>
+    <height>101</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,6 +45,13 @@
     <widget class="QCheckBox" name="allTablesInsertBlankParasCheckBox">
      <property name="text">
       <string>Insert blank paragraphs before and after new tables</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="applyForrmattingToRunsCheckBox">
+     <property name="text">
+      <string>Apply font formatting directly to text, instead of to styles</string>
      </property>
     </widget>
    </item>

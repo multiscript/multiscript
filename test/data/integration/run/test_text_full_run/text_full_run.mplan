@@ -356,7 +356,6 @@
                     },
                     "join_passage_text": "\n[...]\n",
                     "all_tables_insert_blank_paras": true,
-                    "generate_pdf": false,
                     "__plugin_id__": "multiscript-builtin",
                     "__plugin_name__": "Builtin Plugin",
                     "__bibleoutput_id__": "word",

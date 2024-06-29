@@ -3,6 +3,7 @@ from enum import Enum, auto
 import logging
 
 import docx
+from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
@@ -19,7 +20,8 @@ _logger = logging.getLogger(__name__)
 
 
 class Styles(Enum):
-    PARAGRAPH               =   "MSC_Paragraph"             # Style for Bible text.
+    PARAGRAPH               =   "MSC_Paragraph"             # Base style for Bible text.
+    PARAGRAPH_COL           =   "MSC_Paragraph_{0}"         # Style for Bible text for a particular column.
     PASSAGE                 =   "MSC_Passage"               # Style for a single passage reference.
     PASSAGE_GROUP           =   "MSC_Passage_Group"         # Style for a group of passage references.
     TEXT_TABLE_HORIZ        =   "MSC_Text_Table_Horiz"      # Style for horizontal table of Bible texts.
@@ -71,6 +73,25 @@ class WordOutput(TaggedOutput):
 
     def load_document(self, runner, version_combo, template_path):
         document = docx.Document(template_path)
+
+        # Apply formatting to styles
+        for combo_element in version_combo:
+            column_index = combo_element.version_column.symbol_index
+            bible_version = combo_element.version
+
+            col_para_style_name = Styles.PARAGRAPH_COL.value.format(column_symbols[column_index])
+            col_para_style = get_style(document, col_para_style_name)
+            if col_para_style is None:
+                # Style is missing, so create it.
+                col_para_style = document.styles.add_style(col_para_style_name, WD_STYLE_TYPE.PARAGRAPH)
+                base_style = get_style(document, Styles.PARAGRAPH.value)
+                if base_style is None:
+                    base_style = get_style(document, "Normal")
+                col_para_style.base_style = base_style
+            if bible_version is not None and not runner.plan.config.outputs[self.long_id].apply_formatting_to_runs:
+                set_font_formatting(col_para_style, bible_version.font_family,
+                                    bible_version.output_config[self.long_id].font_size)
+
         return document
     
     def save_document(self, runner, version_combo, document, filepath):
@@ -199,6 +220,7 @@ class WordOutput(TaggedOutput):
             paragraph = cell.paragraphs[0]
             text_lines = table_text_array[-1][column_index].split('\n') 
             for line_index in range(len(text_lines)):
+                paragraph.style = get_style(document, Styles.PARAGRAPH_COL.value.format(column_symbols[column_index]))
                 paragraph.text = text_lines[line_index]
                 if line_index < (len(text_lines) - 1):
                     paragraph = cell.add_paragraph()
@@ -223,30 +245,28 @@ class WordOutput(TaggedOutput):
         for column_index in range(len(table_text_array[0])):
             cell = table.cell(0, column_index)
             paragraph = cell.paragraphs[0]
+            paragraph.style = get_style(document, Styles.COPYRIGHT.value)
             paragraph.add_run(table_text_array[0][column_index])
 
-    def format_passage_tag(self, document, cursor):
+    def format_passage_tag(self, runner, document, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to PASSAGE tag being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.PASSAGE.value)
 
-    def format_bible_text_tag(self, document, contents_index, column_symbol, bible_content, cursor):
+    def format_bible_text_tag(self, runner, document, contents_index, column_symbol, bible_content, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to Bible content being inserted.
         '''
-        cursor.current_para.style = get_style(document, Styles.PARAGRAPH.value)
-        font_family = bible_content.bible_version.font_family
-        if font_family is not None and len(font_family) > 0:
-            cursor.run_font_name = font_family
-        font_size = bible_content.bible_version.output_config[self.long_id].font_size
-        if font_size is not None and float(font_size) > 0:
-            cursor.run_font_size = font_size
+        cursor.current_para.style = get_style(document, Styles.PARAGRAPH_COL.value.format(column_symbol))
+        if runner.plan.config.outputs[self.long_id].apply_formatting_to_runs:
+            cursor.run_font_family = bible_content.bible_version.font_family
+            cursor.run_font_size = bible_content.bible_version.output_config[self.long_id].font_size
 
-    def format_text_join_tag(self, document, cursor):
+    def format_text_join_tag(self, runner, document, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to join text being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.JOIN.value)
 
-    def format_copyright_text_tag(self, document, bible_content, cursor):
+    def format_copyright_text_tag(self, runner, document, bible_content, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to copyright text being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.COPYRIGHT.value)
@@ -258,7 +278,7 @@ class WordDocCursor(TaggedDocCursor):
         self.current_para = current_para
         self.current_run = None
 
-        self.run_font_name = None
+        self.run_font_family = None
         self.run_font_size = None
 
         if self.current_run is None:
@@ -284,19 +304,7 @@ class WordDocCursor(TaggedDocCursor):
         #       to the new run.
         #
         self.current_run = self.current_para.add_run()
-
-        if self.run_font_name is not None:
-            self.current_run.font.name = self.run_font_name
-            # Hack to ensure font name is also applied to East Asian fonts
-            # See https://github.com/python-openxml/python-docx/issues/154#issuecomment-77707775
-            self.current_run._element.rPr.rFonts.set(qn('w:eastAsia'), self.run_font_name)
-            # And we use the same hack to apply the font to other scripts as well:
-            self.current_run._element.rPr.rFonts.set(qn('w:cs'), self.run_font_name) # Complex-scripts
-            self.current_run._element.rPr.rFonts.set(qn('w:hAnsi'), self.run_font_name) # Any other scripts
-        
-        if self.run_font_size is not None:
-            self.current_run.font.size = docx.shared.Pt(self.run_font_size)
-        
+        set_font_formatting(self.current_run, self.run_font_family, self.run_font_size)
         if text is not None:
             self.add_text(text)
 
@@ -394,7 +402,7 @@ class WordPlanConfig(OutputPlanConfig):
         super().__init__(bible_output)
         self.join_passage_text = "\n...\n"
         self.all_tables_insert_blank_paras = True
-        self.generate_pdf = False
+        self.apply_formatting_to_runs = False
 
     def new_config_widget(self):
         return WordPlanConfigPanel(None)
@@ -418,7 +426,6 @@ class WordPlanRun(OutputPlanRun):
 # Module-level functions
 #
 
-
 def get_style(document, style_name):
     '''Look up a style by name in the document, and return style object if found, or None if not found.
     '''
@@ -426,3 +433,16 @@ def get_style(document, style_name):
         return document.styles[style_name]
     else:
         return None
+
+def set_font_formatting(style_or_run: docx.styles.style.CharacterStyle | docx.text.run.Run,
+                        font_family: str, font_size: str | float) -> None:
+    if font_family is not None and len(font_family) > 0:
+        style_or_run.font.name = font_family
+        # Hack to ensure font name is also applied to East Asian fonts
+        # See https://github.com/python-openxml/python-docx/issues/154#issuecomment-77707775
+        style_or_run._element.rPr.rFonts.set(qn('w:eastAsia'), font_family)
+        # And we use the same hack to apply the font to other scripts as well:
+        style_or_run._element.rPr.rFonts.set(qn('w:cs'), font_family) # Complex-scripts
+        style_or_run._element.rPr.rFonts.set(qn('w:hAnsi'), font_family) # Any other scripts
+    if font_size is not None and float(font_size) > 0:
+        style_or_run.font.size = docx.shared.Pt(font_size)
