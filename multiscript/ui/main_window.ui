@@ -308,14 +308,14 @@ Bible Versions</string>
                <item>
                 <widget class="QPushButton" name="addColumnButton">
                  <property name="text">
-                  <string>Add Version Per Passage</string>
+                  <string>Increase Versions Per Passage</string>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="removeColumnButton">
                  <property name="text">
-                  <string>Remove</string>
+                  <string>Decrease</string>
                  </property>
                 </widget>
                </item>
