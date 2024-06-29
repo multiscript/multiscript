@@ -90,7 +90,7 @@ class WordOutput(TaggedOutput):
                 col_para_style.base_style = base_style
             if bible_version is not None and not runner.plan.config.outputs[self.long_id].apply_formatting_to_runs:
                 set_font_formatting(col_para_style, bible_version.font_family,
-                                    bible_version.output_config[self.long_id].font_size)
+                                    bible_version.output_config[self.long_id].font_size, bible_version.is_rtl)
 
         return document
     
@@ -260,6 +260,7 @@ class WordOutput(TaggedOutput):
         if runner.plan.config.outputs[self.long_id].apply_formatting_to_runs:
             cursor.run_font_family = bible_content.bible_version.font_family
             cursor.run_font_size = bible_content.bible_version.output_config[self.long_id].font_size
+            cursor.run_is_rtl = bible_content.bible_version.is_rtl
 
     def format_text_join_tag(self, runner, document, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to join text being inserted.
@@ -280,6 +281,7 @@ class WordDocCursor(TaggedDocCursor):
 
         self.run_font_family = None
         self.run_font_size = None
+        self.run_is_rtl = False
 
         if self.current_run is None:
             self.add_new_run()
@@ -304,7 +306,7 @@ class WordDocCursor(TaggedDocCursor):
         #       to the new run.
         #
         self.current_run = self.current_para.add_run()
-        set_font_formatting(self.current_run, self.run_font_family, self.run_font_size)
+        set_font_formatting(self.current_run, self.run_font_family, self.run_font_size, self.run_is_rtl)
         if text is not None:
             self.add_text(text)
 
@@ -435,7 +437,7 @@ def get_style(document, style_name):
         return None
 
 def set_font_formatting(style_or_run: docx.styles.style.CharacterStyle | docx.text.run.Run,
-                        font_family: str, font_size: str | float) -> None:
+                        font_family: str, font_size: str | float, is_rtl: bool) -> None:
     if font_family is not None and len(font_family) > 0:
         style_or_run.font.name = font_family
         # Hack to ensure font name is also applied to East Asian fonts
@@ -446,3 +448,7 @@ def set_font_formatting(style_or_run: docx.styles.style.CharacterStyle | docx.te
         style_or_run._element.rPr.rFonts.set(qn('w:hAnsi'), font_family) # Any other scripts
     if font_size is not None and float(font_size) > 0:
         style_or_run.font.size = docx.shared.Pt(font_size)
+    if is_rtl:
+        print("Setting rtl direction")
+        style_or_run.font.complex_script = True
+        style_or_run.font.rtl = True

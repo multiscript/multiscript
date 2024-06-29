@@ -96,6 +96,10 @@ class VersionForm(Form, Ui_VersionForm):
                 AttributeColumn("Font Family", "font_family", hide=True),
                 self.fontFamilyFontComboBox
         )
+        self.add_model_column_and_widget(
+                AttributeColumn("Text Direction", "is_rtl", hide=True),
+                self.isRTLCheckBox
+        )
   
         for output_long_id, output_version_config_subform in self.output_version_config_subforms.items():
             bible_output = multiscript.app().output(output_long_id)
@@ -118,3 +122,5 @@ class VersionForm(Form, Ui_VersionForm):
     def autoFontCheckBox_stateChanged(self, state):
         self.fontFamilyLabel.setEnabled(state == Qt.CheckState.Unchecked.value)
         self.fontFamilyFontComboBox.setEnabled(state == Qt.CheckState.Unchecked.value)
+        self.isRTLLabel.setEnabled(state == Qt.CheckState.Unchecked.value)
+        self.isRTLCheckBox.setEnabled(state == Qt.CheckState.Unchecked.value)
