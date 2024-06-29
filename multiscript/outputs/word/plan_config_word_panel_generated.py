@@ -23,7 +23,7 @@ class Ui_WordPlanConfigPanel(object):
     def setupUi(self, WordPlanConfigPanel):
         if not WordPlanConfigPanel.objectName():
             WordPlanConfigPanel.setObjectName(u"WordPlanConfigPanel")
-        WordPlanConfigPanel.resize(347, 80)
+        WordPlanConfigPanel.resize(374, 101)
         self.verticalLayout = QVBoxLayout(WordPlanConfigPanel)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.horizontalLayout = QHBoxLayout()
@@ -50,6 +50,11 @@ class Ui_WordPlanConfigPanel(object):
 
         self.verticalLayout.addWidget(self.allTablesInsertBlankParasCheckBox)
 
+        self.applyForrmattingToRunsCheckBox = QCheckBox(WordPlanConfigPanel)
+        self.applyForrmattingToRunsCheckBox.setObjectName(u"applyForrmattingToRunsCheckBox")
+
+        self.verticalLayout.addWidget(self.applyForrmattingToRunsCheckBox)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
@@ -64,5 +69,6 @@ class Ui_WordPlanConfigPanel(object):
         WordPlanConfigPanel.setWindowTitle(QCoreApplication.translate("WordPlanConfigPanel", u"Form", None))
         self.joinPassageTextLabel.setText(QCoreApplication.translate("WordPlanConfigPanel", u"Join passages with text:", None))
         self.allTablesInsertBlankParasCheckBox.setText(QCoreApplication.translate("WordPlanConfigPanel", u"Insert blank paragraphs before and after new tables", None))
+        self.applyForrmattingToRunsCheckBox.setText(QCoreApplication.translate("WordPlanConfigPanel", u"Apply font formatting directly to text, instead of to styles", None))
     # retranslateUi
 
