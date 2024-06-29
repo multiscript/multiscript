@@ -410,7 +410,6 @@ class WordPlanConfig(OutputPlanConfig):
         super().__init__(bible_output)
         self.join_passage_text = "\n...\n"
         self.all_tables_insert_blank_paras = True
-        self.generate_pdf = False
 
     def new_config_widget(self):
         return WordPlanConfigPanel(None)
