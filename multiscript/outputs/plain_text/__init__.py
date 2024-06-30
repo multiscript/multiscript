@@ -129,7 +129,7 @@ class PlainTextOutput(TaggedOutput):
     def format_bible_text_tag(self, runner, document, contents_index, column_symbol, bible_content, cursor):
         '''Performs any formatting needed prior to Bible content being inserted.
         '''
-        pass
+        cursor.para_is_rtl = bible_content.bible_version.is_rtl
 
     def format_copyright_text_tag(self, runner, document, bible_content, cursor):
         '''Performs any formatting needed prior to copyright text being inserted.
@@ -171,7 +171,8 @@ class PlainTextDocCursor(TaggedDocCursor):
     def __init__(self, document, current_index):
         super().__init__(document)
         self.current_index = current_index
-        
+        self.para_is_rtl = False
+
     def add_new_para(self, text=None):
         self.add_text("\n")
         self.add_text(text)
@@ -214,6 +215,9 @@ class PlainTextBibleStreamHandler(OutputBibleStreamHandler):
         # paragraph at the start.
         if self._text_started:
             self.cursor.add_new_para()
+        if self.cursor.para_is_rtl:
+            self.cursor.add_text(chr(0x2067)) # RIGHT-TO-LEFT ISOLATE. Needed to ensure initial verse reference
+                                              # in right-to-left text display at the right, not the left.
         if is_poetry:                
             self._in_poetry = True
             if self.use_poetry_tabs:
@@ -231,10 +235,17 @@ class PlainTextBibleStreamHandler(OutputBibleStreamHandler):
             self._in_poetry = False
 
     def add_end_paragraph(self):
+        if self.cursor.para_is_rtl:
+            self.cursor.add_text(chr(0x2069)) # POP DIRECTIONAL ISOLATE. End of RIGHT-TO-LEFT ISOLATE
         self.cursor.add_text(self.after_para_text)
 
     def add_line_break(self):
+        if self.cursor.para_is_rtl:
+            self.cursor.add_text(chr(0x2069)) # POP DIRECTIONAL ISOLATE. End of RIGHT-TO-LEFT ISOLATE
         self.cursor.add_new_para()
+        if self.cursor.para_is_rtl:
+            self.cursor.add_text(chr(0x2067)) # RIGHT-TO-LEFT ISOLATE. Needed to ensure initial verse reference
+                                              # in right-to-left text display at the right, not the left.
         if self._in_poetry and self.use_poetry_tabs:
             self.cursor.add_text(self.tab_text)
 
