@@ -27,6 +27,7 @@ class Styles(Enum):
     TEXT_TABLE_HORIZ        =   "MSC_Text_Table_Horiz"      # Style for horizontal table of Bible texts.
     VERSION_NAME            =   "MSC_Version_Name"          # Style for the Bible version's name.
     JOIN                    =   "MSC_Join"                  # Style for the join indicator between group passages.
+    JOIN_COL                =   "MSC_Join_{0}"              # Style for the join indicator for a particular column.
     COPYRIGHT_TABLE_HORIZ   =   "MSC_Copyright_Table_Horiz" # Style for horizontal table of copyright texts.
     COPYRIGHT               =   "MSC_Copyright"             # Style for the copyright text.
 
@@ -79,6 +80,7 @@ class WordOutput(TaggedOutput):
             column_index = combo_element.version_column.symbol_index
             bible_version = combo_element.version
 
+            # Column paragraph styles
             col_para_style_name = Styles.PARAGRAPH_COL.value.format(column_symbols[column_index])
             col_para_style = get_style(document, col_para_style_name)
             if col_para_style is None:
@@ -88,9 +90,25 @@ class WordOutput(TaggedOutput):
                 if base_style is None:
                     base_style = get_style(document, "Normal")
                 col_para_style.base_style = base_style
-            if bible_version is not None and not runner.plan.config.outputs[self.long_id].apply_formatting_to_runs:
-                set_font_formatting(col_para_style, bible_version.font_family,
-                                    bible_version.output_config[self.long_id].font_size, bible_version.is_rtl)
+            if bible_version is not None and not runner.plan.config.outputs[self.long_id].apply_direct_formatting:
+                set_run_formatting(col_para_style, bible_version.font_family,
+                                    bible_version.output_config[self.long_id].font_size)
+                set_para_formatting(col_para_style, bible_version.is_rtl)
+
+            # Column text-join styles
+            col_text_join_style_name = Styles.JOIN_COL.value.format(column_symbols[column_index])
+            col_text_join_style = get_style(document, col_text_join_style_name)
+            if col_text_join_style is None:
+                # Style is missing, so create it.
+                col_text_join_style = document.styles.add_style(col_text_join_style_name, WD_STYLE_TYPE.PARAGRAPH)
+                base_style = get_style(document, Styles.JOIN.value)
+                if base_style is None:
+                    base_style = get_style(document, "Normal")
+                col_text_join_style.base_style = base_style
+            if bible_version is not None and not runner.plan.config.outputs[self.long_id].apply_direct_formatting:
+                set_run_formatting(col_text_join_style, bible_version.font_family,
+                                    bible_version.output_config[self.long_id].font_size)
+                set_para_formatting(col_text_join_style, bible_version.is_rtl)
 
         return document
     
@@ -257,15 +275,19 @@ class WordOutput(TaggedOutput):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to Bible content being inserted.
         '''
         cursor.current_para.style = get_style(document, Styles.PARAGRAPH_COL.value.format(column_symbol))
-        if runner.plan.config.outputs[self.long_id].apply_formatting_to_runs:
+        if runner.plan.config.outputs[self.long_id].apply_direct_formatting:
             cursor.run_font_family = bible_content.bible_version.font_family
             cursor.run_font_size = bible_content.bible_version.output_config[self.long_id].font_size
-            cursor.run_is_rtl = bible_content.bible_version.is_rtl
+            cursor.para_is_bidi = bible_content.bible_version.is_rtl
 
-    def format_text_join_tag(self, runner, document, cursor):
+    def format_text_join_tag(self, runner, document, column_symbol, bible_version, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to join text being inserted.
         '''
-        cursor.current_para.style = get_style(document, Styles.JOIN.value)
+        cursor.current_para.style = get_style(document, Styles.JOIN_COL.value.format(column_symbol))
+        if runner.plan.config.outputs[self.long_id].apply_direct_formatting:
+            cursor.run_font_family = bible_version.font_family
+            cursor.run_font_size = bible_version.output_config[self.long_id].font_size
+            cursor.para_is_bidi = bible_version.is_rtl
 
     def format_copyright_text_tag(self, runner, document, bible_content, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to copyright text being inserted.
@@ -281,11 +303,20 @@ class WordDocCursor(TaggedDocCursor):
 
         self.run_font_family = None
         self.run_font_size = None
-        self.run_is_rtl = False
+        self._para_is_bidi = False
 
         if self.current_run is None:
             self.add_new_run()
-        
+
+    @property
+    def para_is_bidi(self) -> bool:
+        return self._para_is_bidi
+    
+    @para_is_bidi.setter
+    def para_is_bidi(self, value: bool):
+        self._para_is_bidi = value
+        set_para_formatting(self.current_para, value)
+
     def add_new_para(self, text=None, *, copy_style=True):
         prev_para = self.current_para
         new_p = OxmlElement('w:p')
@@ -294,6 +325,8 @@ class WordDocCursor(TaggedDocCursor):
 
         if copy_style:
             self.current_para.style = prev_para.style
+
+        set_para_formatting(self.current_para, self.para_is_bidi)
 
         #
         # TODO: We may need to copy some properties from the old paragraph to the new.
@@ -306,7 +339,7 @@ class WordDocCursor(TaggedDocCursor):
         #       to the new run.
         #
         self.current_run = self.current_para.add_run()
-        set_font_formatting(self.current_run, self.run_font_family, self.run_font_size, self.run_is_rtl)
+        set_run_formatting(self.current_run, self.run_font_family, self.run_font_size)
         if text is not None:
             self.add_text(text)
 
@@ -404,7 +437,7 @@ class WordPlanConfig(OutputPlanConfig):
         super().__init__(bible_output)
         self.join_passage_text = "\n...\n"
         self.all_tables_insert_blank_paras = True
-        self.apply_formatting_to_runs = False
+        self.apply_direct_formatting = False
 
     def new_config_widget(self):
         return WordPlanConfigPanel(None)
@@ -436,19 +469,48 @@ def get_style(document, style_name):
     else:
         return None
 
-def set_font_formatting(style_or_run: docx.styles.style.CharacterStyle | docx.text.run.Run,
-                        font_family: str, font_size: str | float, is_rtl: bool) -> None:
+def set_run_formatting(style_or_run: docx.styles.style.CharacterStyle | docx.text.run.Run,
+                        font_family: str, font_size: str | float) -> None:
+    '''Manually set run formatting not yet available in the python-docx API.'''
     if font_family is not None and len(font_family) > 0:
         style_or_run.font.name = font_family
-        # Hack to ensure font name is also applied to East Asian fonts
+        # Ensures font name is also applied to East Asian fonts
         # See https://github.com/python-openxml/python-docx/issues/154#issuecomment-77707775
-        style_or_run._element.rPr.rFonts.set(qn('w:eastAsia'), font_family)
-        # And we use the same hack to apply the font to other scripts as well:
-        style_or_run._element.rPr.rFonts.set(qn('w:cs'), font_family) # Complex-scripts
-        style_or_run._element.rPr.rFonts.set(qn('w:hAnsi'), font_family) # Any other scripts
+        rPr = style_or_run._element.rPr
+        rPr.rFonts.set(qn('w:eastAsia'), font_family)
+        # And we use the same technique to apply the font to other scripts as well:
+        rPr.rFonts.set(qn('w:cs'), font_family) # Complex-scripts
+        rPr.rFonts.set(qn('w:hAnsi'), font_family) # Any other scripts
+    
     if font_size is not None and float(font_size) > 0:
         style_or_run.font.size = docx.shared.Pt(font_size)
-    if is_rtl:
-        print("Setting rtl direction")
-        style_or_run.font.complex_script = True
-        style_or_run.font.rtl = True
+    
+def set_para_formatting(style_or_para: docx.styles.style.ParagraphStyle | docx.text.paragraph.Paragraph,
+                        is_bidi: bool) -> None:
+    '''Manually set paragraph formatting not yet available in the python-docx API.'''
+    if is_bidi:
+        # Technique is from https://github.com/python-openxml/python-docx/issues/1411#issuecomment-2198293545
+        pPr = style_or_para._element.get_or_add_pPr()
+        bidi = OxmlElement("w:bidi")
+        pPr.insert_element_before(bidi,
+            *(
+                "w:adjustRightInd",
+                "w:snapToGrid",
+                "w:spacing",
+                "w:ind",
+                "w:contextualSpacing",
+                "w:mirrorIndents",
+                "w:suppressOverlap",
+                "w:jc",
+                "w:textDirection",
+                "w:textAlignment",
+                "w:textboxTightWrap",
+                "w:outlineLvl",
+                "w:divId",
+                "w:cnfStyle",
+                "w:rPr",
+                "w:sectPr",
+                "w:pPrChange",
+            )
+        )
+

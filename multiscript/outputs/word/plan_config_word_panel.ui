@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>374</width>
+    <width>347</width>
     <height>101</height>
    </rect>
   </property>
@@ -49,9 +49,9 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="applyForrmattingToRunsCheckBox">
+    <widget class="QCheckBox" name="applyDirectFormattingCheckBox">
      <property name="text">
-      <string>Apply font formatting directly to text, instead of to styles</string>
+      <string>Apply formatting directly to text, instead of to styles</string>
      </property>
     </widget>
    </item>

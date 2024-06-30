@@ -182,7 +182,7 @@ class TaggedOutput(FileSetOutput):
                 cursor = self.replace_tag_with_cursor(document, tag)
                 while cursor is not None:
                     if version is not None:
-                        self.format_text_join_tag(runner, document, cursor)
+                        self.format_text_join_tag(runner, document, column_symbol, version, cursor)
                         cursor.add_text(runner.output_runs[self.long_id].text_join)
                     else:
                         # version == None and is_template == False, so we leave the tag blank by adding no text
@@ -270,7 +270,7 @@ class TaggedOutput(FileSetOutput):
         '''
         pass
 
-    def format_text_join_tag(self, runner, document, cursor):
+    def format_text_join_tag(self, runner, document, column_symbol, bible_version, cursor):
         '''Abstract method. Subclasses can override to perform formatting needed prior to the TEXT_JOIN
         tag being inserted. The supplied cursor will be at the insertion point.
         '''
