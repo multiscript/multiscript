@@ -216,8 +216,8 @@ class PlainTextBibleStreamHandler(OutputBibleStreamHandler):
         if self._text_started:
             self.cursor.add_new_para()
         if self.cursor.para_is_rtl:
-            self.cursor.add_text(chr(0x2067)) # RIGHT-TO-LEFT ISOLATE. Needed to ensure initial verse reference
-                                              # in right-to-left text display at the right, not the left.
+            self.cursor.add_text(chr(0x2067)) # RIGHT-TO-LEFT ISOLATE. Needed to ensure punctuation displays
+                                              # well in right-to-left text.
         if is_poetry:                
             self._in_poetry = True
             if self.use_poetry_tabs:
@@ -244,8 +244,8 @@ class PlainTextBibleStreamHandler(OutputBibleStreamHandler):
             self.cursor.add_text(chr(0x2069)) # POP DIRECTIONAL ISOLATE. End of RIGHT-TO-LEFT ISOLATE
         self.cursor.add_new_para()
         if self.cursor.para_is_rtl:
-            self.cursor.add_text(chr(0x2067)) # RIGHT-TO-LEFT ISOLATE. Needed to ensure initial verse reference
-                                              # in right-to-left text display at the right, not the left.
+            self.cursor.add_text(chr(0x2067)) # RIGHT-TO-LEFT ISOLATE. Needed to ensure punctuation displays
+                                              # well in right-to-left text.
         if self._in_poetry and self.use_poetry_tabs:
             self.cursor.add_text(self.tab_text)
 
