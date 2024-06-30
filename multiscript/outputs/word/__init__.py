@@ -92,7 +92,7 @@ class WordOutput(TaggedOutput):
                 col_para_style.base_style = base_style
             if bible_version is not None and not runner.plan.config.outputs[self.long_id].apply_direct_formatting:
                 set_run_formatting(col_para_style, bible_version.font_family,
-                                    bible_version.output_config[self.long_id].font_size)
+                                    bible_version.output_config[self.long_id].font_size, bible_version.is_rtl)
                 set_para_formatting(col_para_style, bible_version.is_rtl)
 
             # Column text-join styles
@@ -107,7 +107,7 @@ class WordOutput(TaggedOutput):
                 col_text_join_style.base_style = base_style
             if bible_version is not None and not runner.plan.config.outputs[self.long_id].apply_direct_formatting:
                 set_run_formatting(col_text_join_style, bible_version.font_family,
-                                    bible_version.output_config[self.long_id].font_size)
+                                    bible_version.output_config[self.long_id].font_size, bible_version.is_rtl)
                 set_para_formatting(col_text_join_style, bible_version.is_rtl)
 
         return document
@@ -342,7 +342,7 @@ class WordDocCursor(TaggedDocCursor):
         #       to the new run.
         #
         self.current_run = self.current_para.add_run()
-        set_run_formatting(self.current_run, self.run_font_family, self.run_font_size)
+        set_run_formatting(self.current_run, self.run_font_family, self.run_font_size, self.para_is_bidi)
         if text is not None:
             self.add_text(text)
 
@@ -473,7 +473,7 @@ def get_style(document, style_name):
         return None
 
 def set_run_formatting(style_or_run: docx.styles.style.CharacterStyle | docx.text.run.Run,
-                        font_family: str, font_size: str | float) -> None:
+                        font_family: str, font_size: str | float, is_rtl: bool) -> None:
     '''Manually set run formatting not yet available in the python-docx API.'''
     if font_family is not None and len(font_family) > 0:
         style_or_run.font.name = font_family
@@ -487,7 +487,10 @@ def set_run_formatting(style_or_run: docx.styles.style.CharacterStyle | docx.tex
     
     if font_size is not None and float(font_size) > 0:
         style_or_run.font.size = docx.shared.Pt(font_size)
-    
+
+    if is_rtl:
+        style_or_run.font.rtl = True    # Needed to ensure right-to-left punctuation displays correctly
+
 def set_para_formatting(style_or_para: docx.styles.style.ParagraphStyle | docx.text.paragraph.Paragraph,
                         is_bidi: bool) -> None:
     '''Manually set paragraph formatting not yet available in the python-docx API.'''
