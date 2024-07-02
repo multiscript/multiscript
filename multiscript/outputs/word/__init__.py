@@ -279,9 +279,6 @@ class WordOutput(TaggedOutput):
             cursor.run_font_family = bible_content.bible_version.font_family
             cursor.run_font_size = bible_content.bible_version.output_config[self.long_id].font_size
             cursor.para_is_bidi = bible_content.bible_version.is_rtl
-        if bible_content.bible_version.is_rtl:
-            cursor.add_text(chr(0x200F)) # RIGHT-TO-LEFT MARK. Needed to ensure initial verse reference
-                                         # in right-to-left text display at the right, not the left.
 
     def format_text_join_tag(self, runner, document, column_symbol, bible_version, cursor):
         '''Overridden from TaggedOuput. Performs any formatting needed prior to join text being inserted.

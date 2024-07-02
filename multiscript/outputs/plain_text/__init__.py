@@ -10,6 +10,10 @@ from multiscript.plan.symbols import column_symbols
 
 _logger = logging.getLogger(__name__)
 
+RLM = chr(0x200F) # Unicode RIGHT-TO-LEFT MARK: Single character indicating right-to-left text
+RLI = chr(0x2067) # Unicode RIGHT-TO-LEFT ISOLATE: Start of isolated text where base direction is right-to-left
+PDI = chr(0x2069) # Unicode POP DIRECTIONAL ISOLATE: Ends isolated text
+
 
 class PlainTextOutput(TaggedOutput):
     
@@ -216,8 +220,7 @@ class PlainTextBibleStreamHandler(OutputBibleStreamHandler):
         if self._text_started:
             self.cursor.add_new_para()
         if self.cursor.para_is_rtl:
-            self.cursor.add_text(chr(0x2067)) # RIGHT-TO-LEFT ISOLATE. Needed to ensure punctuation displays
-                                              # well in right-to-left text.
+            self.cursor.add_text(RLI) # Needed to ensure punctuation displays well in right-to-left text.
         if is_poetry:                
             self._in_poetry = True
             if self.use_poetry_tabs:
@@ -236,16 +239,15 @@ class PlainTextBibleStreamHandler(OutputBibleStreamHandler):
 
     def add_end_paragraph(self):
         if self.cursor.para_is_rtl:
-            self.cursor.add_text(chr(0x2069)) # POP DIRECTIONAL ISOLATE. End of RIGHT-TO-LEFT ISOLATE
+            self.cursor.add_text(PDI) # End right-to-left text paragraph
         self.cursor.add_text(self.after_para_text)
 
     def add_line_break(self):
         if self.cursor.para_is_rtl:
-            self.cursor.add_text(chr(0x2069)) # POP DIRECTIONAL ISOLATE. End of RIGHT-TO-LEFT ISOLATE
+            self.cursor.add_text(PDI) # End right-to-left text paragraph
         self.cursor.add_new_para()
         if self.cursor.para_is_rtl:
-            self.cursor.add_text(chr(0x2067)) # RIGHT-TO-LEFT ISOLATE. Needed to ensure punctuation displays
-                                              # well in right-to-left text.
+            self.cursor.add_text(RLI) # Needed to ensure punctuation displays well in right-to-left text.
         if self._in_poetry and self.use_poetry_tabs:
             self.cursor.add_text(self.tab_text)
 
