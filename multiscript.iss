@@ -14,7 +14,7 @@
 
 #define MyPlanRunAssocName MyAppName + " Plan Run"
 #define MyPlanRunAssocExt ".mrun"
-#define MyPlanRunAssocKey StringChange(MyPlanAssocName, " ", "") + MyPluginAssocExt
+#define MyPlanRunAssocKey StringChange(MyPlanAssocName, " ", "") + MyPlanRunAssocExt
 #define MyPlanRunIconSubpath "multiscript\icons\multiscript_mrun.ico"
 
 #define MyPluginAssocName MyAppName + " Plugin"
