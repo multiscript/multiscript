@@ -1,3 +1,16 @@
+- 0.17.0
+  - New features:
+    - MS Word outputs set the table-style header-row toggle for passage-group tables containg version names. You may need to update your Word templates. (The table-styles in the built-in template have been updated.)
+    - Much better support for right-to-left scripts (like Hebrew, Arabic). Right-to-left text can be set with a checkbox on each Bible version. Automatic font detection will also automatically detect right-to-left scripts.
+    - Copyright text is now saved with Bible versions and can be edited.
+    - The locations of templates and output folders are now saved relative to the plan file if they're in the same folder or a subfolder. This makes it easier to move a folder containing a plan, its template and its output folder, without needing to update any locations.
+    - Output files are now only generated if they need to change. As part of the implementation, a hidden file named ".multiscript.mrun" is generated in each output folder when the plan is run. (It contains metadata about the output files, like file modification times.) There is a new toggle in the plan options to always overwrite the output files. The application settings controlling when to generate outputs have been removed.
+    - By default, copies of template outputs are included as normal output files (with unfilled tags removed). This can be turned off in the plan options.
+    - Paragraph formatting in MS Word is now applied by default to the styles, rather than the text directly. This can be changed in the plan options.
+  - Other changes:
+    - Update to fontfinder 0.13.0
+    - The internal JSON of plan files no longer escapes non-ASCII unicode characters.
+    - Changed add/remove column buttons to "Increase Versions per Passage" and "Decrease", to hopefully better distinguish them from the "Add Versions to Plan..." and "Remove" buttons.
 - 0.16.0
   - New font-related features:
     - Automatically select fonts for Bible versions (which can be overridden).

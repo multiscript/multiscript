@@ -308,7 +308,7 @@ Bible Versions</string>
                <item>
                 <widget class="QPushButton" name="addColumnButton">
                  <property name="text">
-                  <string>Increase Versions Per Passage</string>
+                  <string>Increase Versions per Passage</string>
                  </property>
                 </widget>
                </item>

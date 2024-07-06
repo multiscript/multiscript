@@ -584,7 +584,7 @@ class Ui_MainWindow(object):
         self.removeRowsButton.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
         self.editButton.setText(QCoreApplication.translate("MainWindow", u"Edit...", None))
         self.rowSummaryLabel.setText(QCoreApplication.translate("MainWindow", u"Versions in plan", None))
-        self.addColumnButton.setText(QCoreApplication.translate("MainWindow", u"Increase Versions Per Passage", None))
+        self.addColumnButton.setText(QCoreApplication.translate("MainWindow", u"Increase Versions per Passage", None))
         self.removeColumnButton.setText(QCoreApplication.translate("MainWindow", u"Decrease", None))
         self.columnSummaryLabel.setText(QCoreApplication.translate("MainWindow", u"Versions per passage", None))
         self.outputLabel.setText(QCoreApplication.translate("MainWindow", u"\n"

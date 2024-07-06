@@ -1,5 +1,5 @@
 {
-    "app_version": "0.16.0",
+    "app_version": "0.17.0",
     "__object__": {
         "__type__": "Plan",
         "bible_passages": "Gen 1:1-4 + Gen 1:27-31; Mark 1:1-3 + Mark 1:14-19",
@@ -309,11 +309,11 @@
         ],
         "template_path": {
             "__type__": "Path",
-            "__path__": "."
+            "posix": "Default Template.txt"
         },
         "output_dir_path": {
             "__type__": "Path",
-            "__path__": "."
+            "posix": "Output"
         },
         "config": {
             "__type__": "PlanConfigGroup",
