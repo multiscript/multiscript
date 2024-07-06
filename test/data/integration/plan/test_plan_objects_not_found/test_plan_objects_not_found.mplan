@@ -307,11 +307,11 @@
                 true
             ]
         ],
-        "template_path": {
+        "_template_path": {
             "__type__": "Path",
             "posix": "Default Template.txt"
         },
-        "output_dir_path": {
+        "_output_dir_path": {
             "__type__": "Path",
             "posix": "Output"
         },

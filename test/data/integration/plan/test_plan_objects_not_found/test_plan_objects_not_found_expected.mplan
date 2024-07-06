@@ -237,11 +237,11 @@
         ],
         "_template_path": {
             "__type__": "Path",
-            "posix": "/Users/james/Documents/Multiscript/Templates/Default Template.docx"
+            "posix": "Default Template.txt"
         },
         "_output_dir_path": {
             "__type__": "Path",
-            "posix": "/Users/james/Documents/Multiscript/Output"
+            "posix": "Output"
         },
         "config": {
             "__type__": "PlanConfigGroup",
@@ -292,14 +292,6 @@
                     "__bibleoutput_name__": "Plain Text"
                 }
             }
-        },
-        "template_path": {
-            "__type__": "Path",
-            "posix": "."
-        },
-        "output_dir_path": {
-            "__type__": "Path",
-            "posix": "."
         }
     }
 }
