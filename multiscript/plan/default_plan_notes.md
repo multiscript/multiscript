@@ -1,6 +1,6 @@
 # Welcome to Multiscript!
 
-Multiscript documents are called *plans*. You're currently looking at the *default* plan, and reading its plan *notes*. Both the plan and its notes can be edited, or you can create a brand new plan or open an existing plan.
+Multiscript documents are called *plans*. You're currently looking at the *default* plan, and reading its plan *notes* (which can be edited).
 
 To help you get started, some basic documentation is below. You can find more documentation at [multiscript.app/docs/](https://multiscript.app/docs/)
 
