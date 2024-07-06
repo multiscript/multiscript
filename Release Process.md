@@ -7,10 +7,14 @@
      1. Commit.
      1. Remove old `dist/` directory
      1. `python build.py`
+     1. Execute a basic plan for final test.
   1. On Windows:
      1. Ensure repository sync is up to date.
      1. Remove old `dist/` directory
      1. `python build.py`
+     1. Uninstall old version.
+     1. Install new version.
+     1. Execute a basic plan for final test.
      1. For convenience, move `multiscript_installer.exe` into Mac `dist/` directory
   1. Create a new release tag on `main`, named `vX.Y.Z`. Include as assets:
      - `Multiscript.dmg`
