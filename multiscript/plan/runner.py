@@ -119,7 +119,7 @@ class PlanRunner:
         record_path = self.output_dir_path / PLAN_RUN_RECORD_FILENAME
         if record_path.exists():
             self.run_record = serialize.load(record_path)
-            _logger.info("\t\tFound existing plan run record.")
+            _logger.info("Found existing plan run record.")
 
     def save_plan_run_record(self):
         '''Save the PlanRunRecord. Called at the end of the run. Other classes can also call
@@ -224,6 +224,11 @@ class PlanRunner:
                     self.plan.changed = True
                     _logger.info(f"\tSelected {font_family} for {script_display} script in {bible_version.abbrev}.")
                 
+                    if self.font_finder.is_rtl(text_info):
+                        bible_version.is_rtl = True
+                        _logger.info(f"\tSet right-to-left text direction for {script_display} script in " +
+                                     f"{bible_version.abbrev}.")
+
                 self.increment_progress_step_count()
 
     def download_and_install_fonts(self):

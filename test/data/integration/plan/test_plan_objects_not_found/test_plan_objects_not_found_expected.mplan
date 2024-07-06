@@ -34,6 +34,7 @@
                 "copyright_type": "text/plain",
                 "auto_font": true,
                 "font_family": "",
+                "is_rtl": false,
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -84,6 +85,7 @@
                 "copyright_type": "text/plain",
                 "auto_font": true,
                 "font_family": "",
+                "is_rtl": false,
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -134,6 +136,7 @@
                 "copyright_type": "text/plain",
                 "auto_font": true,
                 "font_family": "",
+                "is_rtl": false,
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -184,6 +187,7 @@
                 "copyright_type": "text/plain",
                 "auto_font": true,
                 "font_family": "",
+                "is_rtl": false,
                 "output_config": {
                     "multiscript-builtin/word": {
                         "__type__": "OutputVersionConfig",
@@ -257,7 +261,7 @@
                     },
                     "join_passage_text": "\n[...]\n",
                     "all_tables_insert_blank_paras": true,
-                    "apply_formatting_to_runs": false,
+                    "apply_direct_formatting": false,
                     "__plugin_id__": "multiscript-builtin",
                     "__plugin_name__": "Builtin Plugin",
                     "__bibleoutput_id__": "word",

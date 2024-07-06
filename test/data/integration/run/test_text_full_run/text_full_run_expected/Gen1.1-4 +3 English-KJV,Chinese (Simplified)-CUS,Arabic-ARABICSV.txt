@@ -1,4 +1,4 @@
-Chinese (Simplified), French
+Chinese (Simplified), Arabic
 
 Genesis 1:1-4, 27-31
 
@@ -18,13 +18,13 @@ Union Simplified
 
 27 神就照着自己的形像造人，乃是照着他的形像造男造女。 28 神就赐福给他们，又对他们说：「要生养众多，遍满地面，治理这地，也要管理海里的鱼、空中的鸟，和地上各样行动的活物。」 29 神说：「看哪，我将遍地上一切结种子的菜蔬和一切树上所结有核的果子全赐给你们作食物。 30 至于地上的走兽和空中的飞鸟，并各样爬在地上有生命的物，我将青草赐给它们作食物。」事就这样成了。 31 神看着一切所造的都甚好。有晚上，有早晨，是第六日。
 
-Louis Segond (1910)
+Smith and Van Dyke
 
-1:1 Au commencement, Dieu créa les cieux et la terre. 2 La terre était informe et vide: il y avait des ténèbres à la surface de l'abîme, et l'esprit de Dieu se mouvait au-dessus des eaux. 3 Dieu dit: Que la lumière soit! Et la lumière fut. 4 Dieu vit que la lumière était bonne; et Dieu sépara la lumière d'avec les ténèbres.
+1:1 فِي ٱلْبَدْءِ خَلَقَ ٱللهُ ٱلسَّمَاوَاتِ وَٱلْأَرْضَ. 2 وَكَانَتِ ٱلْأَرْضُ خَرِبَةً وَخَالِيَةً، وَعَلَى وَجْهِ ٱلْغَمْرِ ظُلْمَةٌ، وَرُوحُ ٱللهِ يَرِفُّ عَلَى وَجْهِ ٱلْمِيَاهِ. 3 وَقَالَ ٱللهُ: «لِيَكُنْ نُورٌ»، فَكَانَ نُورٌ. 4 وَرَأَى ٱللهُ ٱلنُّورَ أَنَّهُ حَسَنٌ. وَفَصَلَ ٱللهُ بَيْنَ ٱلنُّورِ وَٱلظُّلْمَةِ.
 
 [...]
 
-27 Dieu créa l'homme à son image, il le créa à l'image de Dieu, il créa l'homme et la femme. 28 Dieu les bénit, et Dieu leur dit: Soyez féconds, multipliez, remplissez la terre, et l'assujettissez; et dominez sur les poissons de la mer, sur les oiseaux du ciel, et sur tout animal qui se meut sur la terre. 29 Et Dieu dit: Voici, je vous donne toute herbe portant de la semence et qui est à la surface de toute la terre, et tout arbre ayant en lui du fruit d'arbre et portant de la semence: ce sera votre nourriture. 30 Et à tout animal de la terre, à tout oiseau du ciel, et à tout ce qui se meut sur la terre, ayant en soi un souffle de vie, je donne toute herbe verte pour nourriture. Et cela fut ainsi. 31 Dieu vit tout ce qu'il avait fait et voici, cela était très bon. Ainsi, il y eut un soir, et il y eut un matin: ce fut le sixième jour.
+27 فَخَلَقَ ٱللهُ ٱلْإِنْسَانَ عَلَى صُورَتِهِ. عَلَى صُورَةِ ٱللهِ خَلَقَهُ. ذَكَرًا وَأُنْثَى خَلَقَهُمْ. 28 وَبَارَكَهُمُ ٱللهُ وَقَالَ لَهُمْ: «أَثْمِرُوا وَٱكْثُرُوا وَٱمْلَأُوا ٱلْأَرْضَ، وَأَخْضِعُوهَا، وَتَسَلَّطُوا عَلَى سَمَكِ ٱلْبَحْرِ وَعَلَى طَيْرِ ٱلسَّمَاءِ وَعَلَى كُلِّ حَيَوَانٍ يَدِبُّ عَلَى ٱلْأَرْضِ». 29 وَقَالَ ٱللهُ: «إِنِّي قَدْ أَعْطَيْتُكُمْ كُلَّ بَقْلٍ يُبْزِرُ بِزْرًا عَلَى وَجْهِ كُلِّ ٱلْأَرْضِ، وَكُلَّ شَجَرٍ فِيهِ ثَمَرُ شَجَرٍ يُبْزِرُ بِزْرًا لَكُمْ يَكُونُ طَعَامًا. 30 وَلِكُلِّ حَيَوَانِ ٱلْأَرْضِ وَكُلِّ طَيْرِ ٱلسَّمَاءِ وَكُلِّ دَبَّابَةٍ عَلَى ٱلْأَرْضِ فِيهَا نَفْسٌ حَيَّةٌ، أَعْطَيْتُ كُلَّ عُشْبٍ أَخْضَرَ طَعَامًا». وَكَانَ كَذَلِكَ. 31 وَرَأَى ٱللهُ كُلَّ مَا عَمِلَهُ فَإِذَا هُوَ حَسَنٌ جِدًّا. وَكَانَ مَسَاءٌ وَكَانَ صَبَاحٌ يَوْمًا سَادِسًا.
 
 Mark 1:1-3, 14-19
 
@@ -40,16 +40,16 @@ Mark 1:1-3, 14-19
 
 14 约翰下监以后，耶稣来到加利利，宣传　神的福音， 15 说：「日期满了，　神的国近了。你们当悔改，信福音！」 16 耶稣顺着加利利的海边走，看见西门和西门的兄弟安得烈在海里撒网；他们本是打鱼的。 17 耶稣对他们说：「来跟从我，我要叫你们得人如得鱼一样。」 18 他们就立刻舍了网，跟从了他。 19 耶稣稍往前走，又见西庇太的儿子雅各和雅各的兄弟约翰在船上补网。
 
-1:1 Commencement de l'Évangile de Jésus-Christ, Fils de Dieu. 2 Selon ce qui est écrit dans Ésaïe, le prophète: Voici, j'envoie devant toi mon messager, Qui préparera ton chemin; 3 C'est la voix de celui qui crie dans le désert: Préparez le chemin du Seigneur, Aplanissez ses sentiers.
+1:1 بَدْءُ إِنْجِيلِ يَسُوعَ ٱلْمَسِيحِ ٱبْنِ ٱللهِ، 2 كَمَا هُوَ مَكْتُوبٌ فِي ٱلْأَنْبِيَاءِ: «هَا أَنَا أُرْسِلُ أَمَامَ وَجْهِكَ مَلَاكِي، ٱلَّذِي يُهَيِّئُ طَرِيقَكَ قُدَّامَكَ. 3 صَوْتُ صَارِخٍ فِي ٱلْبَرِّيَّةِ: أَعِدُّوا طَرِيقَ ٱلرَّبِّ، ٱصْنَعُوا سُبُلَهُ مُسْتَقِيمَةً».
 
 [...]
 
-14 Après que Jean eut été livré, Jésus alla dans la Galilée, prêchant l'Évangile de Dieu. 15 Il disait: Le temps est accompli, et le royaume de Dieu est proche. Repentez-vous, et croyez à la bonne nouvelle. 16 Comme il passait le long de la mer de Galilée, il vit Simon et André, frère de Simon, qui jetaient un filet dans la mer; car ils étaient pêcheurs. 17 Jésus leur dit: Suivez-moi, et je vous ferai pêcheurs d'hommes. 18 Aussitôt, ils laissèrent leurs filets, et le suivirent. 19 Étant allé un peu plus loin, il vit Jacques, fils de Zébédée, et Jean, son frère, qui, eux aussi, étaient dans une barque et réparaient les filets.
+14 وَبَعْدَمَا أُسْلِمَ يُوحَنَّا جَاءَ يَسُوعُ إِلَى ٱلْجَلِيلِ يَكْرِزُ بِبِشَارَةِ مَلَكُوتِ ٱللهِ 15 وَيَقُولُ: «قَدْ كَمَلَ ٱلزَّمَانُ وَٱقْتَرَبَ مَلَكُوتُ ٱللهِ، فَتُوبُوا وَآمِنُوا بِٱلْإِنْجِيلِ». 16 وَفِيمَا هُوَ يَمْشِي عِنْدَ بَحْرِ ٱلْجَلِيلِ أَبْصَرَ سِمْعَانَ وَأَنْدَرَاوُسَ أَخَاهُ يُلْقِيَانِ شَبَكَةً فِي ٱلْبَحْرِ، فَإِنَّهُمَا كَانَا صَيَّادَيْنِ. 17 فَقَالَ لَهُمَا يَسُوعُ: «هَلُمَّ وَرَائِي فَأَجْعَلُكُمَا تَصِيرَانِ صَيَّادَيِ ٱلنَّاسِ». 18 فَلِلْوَقْتِ تَرَكَا شِبَاكَهُمَا وَتَبِعَاهُ. 19 ثُمَّ ٱجْتَازَ مِنْ هُنَاكَ قَلِيلًا فَرَأَى يَعْقُوبَ بْنَ زَبْدِي وَيُوحَنَّا أَخَاهُ، وَهُمَا فِي ٱلسَّفِينَةِ يُصْلِحَانِ ٱلشِّبَاكَ.
 
 General public license for distribution for any purpose
 
 Public Domain
 
-Permission to distribute granted to CrossWire
+Copyrighted; Permission granted to distribute non-commercially in SWORD format
 
 

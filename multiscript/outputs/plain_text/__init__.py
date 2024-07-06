@@ -10,6 +10,10 @@ from multiscript.plan.symbols import column_symbols
 
 _logger = logging.getLogger(__name__)
 
+RLM = chr(0x200F) # Unicode RIGHT-TO-LEFT MARK: Single character indicating right-to-left text
+RLI = chr(0x2067) # Unicode RIGHT-TO-LEFT ISOLATE: Start of isolated text where base direction is right-to-left
+PDI = chr(0x2069) # Unicode POP DIRECTIONAL ISOLATE: Ends isolated text
+
 
 class PlainTextOutput(TaggedOutput):
     
@@ -129,7 +133,7 @@ class PlainTextOutput(TaggedOutput):
     def format_bible_text_tag(self, runner, document, contents_index, column_symbol, bible_content, cursor):
         '''Performs any formatting needed prior to Bible content being inserted.
         '''
-        pass
+        cursor.para_is_rtl = bible_content.bible_version.is_rtl
 
     def format_copyright_text_tag(self, runner, document, bible_content, cursor):
         '''Performs any formatting needed prior to copyright text being inserted.
@@ -171,7 +175,8 @@ class PlainTextDocCursor(TaggedDocCursor):
     def __init__(self, document, current_index):
         super().__init__(document)
         self.current_index = current_index
-        
+        self.para_is_rtl = False
+
     def add_new_para(self, text=None):
         self.add_text("\n")
         self.add_text(text)
@@ -214,6 +219,8 @@ class PlainTextBibleStreamHandler(OutputBibleStreamHandler):
         # paragraph at the start.
         if self._text_started:
             self.cursor.add_new_para()
+        if self.cursor.para_is_rtl:
+            self.cursor.add_text(RLI) # Needed to ensure punctuation displays well in right-to-left text.
         if is_poetry:                
             self._in_poetry = True
             if self.use_poetry_tabs:
@@ -231,10 +238,16 @@ class PlainTextBibleStreamHandler(OutputBibleStreamHandler):
             self._in_poetry = False
 
     def add_end_paragraph(self):
+        if self.cursor.para_is_rtl:
+            self.cursor.add_text(PDI) # End right-to-left text paragraph
         self.cursor.add_text(self.after_para_text)
 
     def add_line_break(self):
+        if self.cursor.para_is_rtl:
+            self.cursor.add_text(PDI) # End right-to-left text paragraph
         self.cursor.add_new_para()
+        if self.cursor.para_is_rtl:
+            self.cursor.add_text(RLI) # Needed to ensure punctuation displays well in right-to-left text.
         if self._in_poetry and self.use_poetry_tabs:
             self.cursor.add_text(self.tab_text)
 

@@ -32,118 +32,40 @@ class Ui_VersionForm(object):
         VersionForm.setSizePolicy(sizePolicy)
         self.gridLayout = QGridLayout(VersionForm)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.userNameLineEdit = QLineEdit(VersionForm)
-        self.userNameLineEdit.setObjectName(u"userNameLineEdit")
-
-        self.gridLayout.addWidget(self.userNameLineEdit, 9, 1, 1, 1)
-
-        self.idLabel = QLabel(VersionForm)
-        self.idLabel.setObjectName(u"idLabel")
-
-        self.gridLayout.addWidget(self.idLabel, 1, 0, 1, 1)
-
-        self.userLangLineEdit = QLineEdit(VersionForm)
-        self.userLangLineEdit.setObjectName(u"userLangLineEdit")
-
-        self.gridLayout.addWidget(self.userLangLineEdit, 11, 1, 1, 1)
-
-        self.sourceLineEdit = QLineEdit(VersionForm)
-        self.sourceLineEdit.setObjectName(u"sourceLineEdit")
-        self.sourceLineEdit.setEnabled(False)
-
-        self.gridLayout.addWidget(self.sourceLineEdit, 0, 1, 1, 1)
-
-        self.userNameLabel = QLabel(VersionForm)
-        self.userNameLabel.setObjectName(u"userNameLabel")
-
-        self.gridLayout.addWidget(self.userNameLabel, 9, 0, 1, 1)
-
-        self.nativeNameLineEdit = QLineEdit(VersionForm)
-        self.nativeNameLineEdit.setObjectName(u"nativeNameLineEdit")
-
-        self.gridLayout.addWidget(self.nativeNameLineEdit, 4, 1, 1, 1)
-
-        self.notesLabel = QLabel(VersionForm)
-        self.notesLabel.setObjectName(u"notesLabel")
-        self.notesLabel.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
-
-        self.gridLayout.addWidget(self.notesLabel, 14, 0, 1, 1)
-
-        self.userSectionLabel = QLabel(VersionForm)
-        self.userSectionLabel.setObjectName(u"userSectionLabel")
-
-        self.gridLayout.addWidget(self.userSectionLabel, 8, 1, 1, 1)
-
-        self.otherDetailsSectionLabel = QLabel(VersionForm)
-        self.otherDetailsSectionLabel.setObjectName(u"otherDetailsSectionLabel")
-
-        self.gridLayout.addWidget(self.otherDetailsSectionLabel, 12, 1, 1, 1)
-
-        self.autoFontCheckBox = QCheckBox(VersionForm)
-        self.autoFontCheckBox.setObjectName(u"autoFontCheckBox")
-
-        self.gridLayout.addWidget(self.autoFontCheckBox, 19, 1, 1, 1)
-
         self.nativeSectionLabel = QLabel(VersionForm)
         self.nativeSectionLabel.setObjectName(u"nativeSectionLabel")
 
         self.gridLayout.addWidget(self.nativeSectionLabel, 2, 1, 1, 1)
 
-        self.userLangLabel = QLabel(VersionForm)
-        self.userLangLabel.setObjectName(u"userLangLabel")
+        self.userNameLineEdit = QLineEdit(VersionForm)
+        self.userNameLineEdit.setObjectName(u"userNameLineEdit")
 
-        self.gridLayout.addWidget(self.userLangLabel, 11, 0, 1, 1)
+        self.gridLayout.addWidget(self.userNameLineEdit, 9, 1, 1, 1)
 
-        self.userAbbrevLineEdit = QLineEdit(VersionForm)
-        self.userAbbrevLineEdit.setObjectName(u"userAbbrevLineEdit")
+        self.fontFamilyFontComboBox = QFontComboBox(VersionForm)
+        self.fontFamilyFontComboBox.setObjectName(u"fontFamilyFontComboBox")
 
-        self.gridLayout.addWidget(self.userAbbrevLineEdit, 10, 1, 1, 1)
-
-        self.nativeLangLineEdit = QLineEdit(VersionForm)
-        self.nativeLangLineEdit.setObjectName(u"nativeLangLineEdit")
-
-        self.gridLayout.addWidget(self.nativeLangLineEdit, 6, 1, 1, 1)
-
-        self.sourceLabel = QLabel(VersionForm)
-        self.sourceLabel.setObjectName(u"sourceLabel")
-
-        self.gridLayout.addWidget(self.sourceLabel, 0, 0, 1, 1)
-
-        self.verticalSpacer = QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout.addItem(self.verticalSpacer, 23, 0, 1, 1)
+        self.gridLayout.addWidget(self.fontFamilyFontComboBox, 20, 1, 1, 1)
 
         self.nativeNameLabel = QLabel(VersionForm)
         self.nativeNameLabel.setObjectName(u"nativeNameLabel")
 
         self.gridLayout.addWidget(self.nativeNameLabel, 4, 0, 1, 1)
 
-        self.userAbbrevLabel = QLabel(VersionForm)
-        self.userAbbrevLabel.setObjectName(u"userAbbrevLabel")
+        self.userAbbrevLineEdit = QLineEdit(VersionForm)
+        self.userAbbrevLineEdit.setObjectName(u"userAbbrevLineEdit")
 
-        self.gridLayout.addWidget(self.userAbbrevLabel, 10, 0, 1, 1)
+        self.gridLayout.addWidget(self.userAbbrevLineEdit, 10, 1, 1, 1)
 
-        self.idLineEdit = QLineEdit(VersionForm)
-        self.idLineEdit.setObjectName(u"idLineEdit")
+        self.userLangLineEdit = QLineEdit(VersionForm)
+        self.userLangLineEdit.setObjectName(u"userLangLineEdit")
 
-        self.gridLayout.addWidget(self.idLineEdit, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.userLangLineEdit, 11, 1, 1, 1)
 
-        self.nativeAbbrevLineEdit = QLineEdit(VersionForm)
-        self.nativeAbbrevLineEdit.setObjectName(u"nativeAbbrevLineEdit")
+        self.idLabel = QLabel(VersionForm)
+        self.idLabel.setObjectName(u"idLabel")
 
-        self.gridLayout.addWidget(self.nativeAbbrevLineEdit, 5, 1, 1, 1)
-
-        self.fontFamilyLabel = QLabel(VersionForm)
-        self.fontFamilyLabel.setObjectName(u"fontFamilyLabel")
-
-        self.gridLayout.addWidget(self.fontFamilyLabel, 20, 0, 1, 1)
-
-        self.outputsTabWidget = QTabWidget(VersionForm)
-        self.outputsTabWidget.setObjectName(u"outputsTabWidget")
-        sizePolicy.setHeightForWidth(self.outputsTabWidget.sizePolicy().hasHeightForWidth())
-        self.outputsTabWidget.setSizePolicy(sizePolicy)
-
-        self.gridLayout.addWidget(self.outputsTabWidget, 21, 0, 1, 2)
+        self.gridLayout.addWidget(self.idLabel, 1, 0, 1, 1)
 
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(0)
@@ -184,20 +106,108 @@ class Ui_VersionForm(object):
 
         self.gridLayout.addLayout(self.verticalLayout, 14, 1, 2, 1)
 
-        self.fontFamilyFontComboBox = QFontComboBox(VersionForm)
-        self.fontFamilyFontComboBox.setObjectName(u"fontFamilyFontComboBox")
+        self.sourceLabel = QLabel(VersionForm)
+        self.sourceLabel.setObjectName(u"sourceLabel")
 
-        self.gridLayout.addWidget(self.fontFamilyFontComboBox, 20, 1, 1, 1)
+        self.gridLayout.addWidget(self.sourceLabel, 0, 0, 1, 1)
+
+        self.idLineEdit = QLineEdit(VersionForm)
+        self.idLineEdit.setObjectName(u"idLineEdit")
+
+        self.gridLayout.addWidget(self.idLineEdit, 1, 1, 1, 1)
+
+        self.sourceLineEdit = QLineEdit(VersionForm)
+        self.sourceLineEdit.setObjectName(u"sourceLineEdit")
+        self.sourceLineEdit.setEnabled(False)
+
+        self.gridLayout.addWidget(self.sourceLineEdit, 0, 1, 1, 1)
+
+        self.userSectionLabel = QLabel(VersionForm)
+        self.userSectionLabel.setObjectName(u"userSectionLabel")
+
+        self.gridLayout.addWidget(self.userSectionLabel, 8, 1, 1, 1)
+
+        self.autoFontCheckBox = QCheckBox(VersionForm)
+        self.autoFontCheckBox.setObjectName(u"autoFontCheckBox")
+
+        self.gridLayout.addWidget(self.autoFontCheckBox, 19, 1, 1, 1)
+
+        self.otherDetailsSectionLabel = QLabel(VersionForm)
+        self.otherDetailsSectionLabel.setObjectName(u"otherDetailsSectionLabel")
+
+        self.gridLayout.addWidget(self.otherDetailsSectionLabel, 12, 1, 1, 1)
+
+        self.nativeNameLineEdit = QLineEdit(VersionForm)
+        self.nativeNameLineEdit.setObjectName(u"nativeNameLineEdit")
+
+        self.gridLayout.addWidget(self.nativeNameLineEdit, 4, 1, 1, 1)
 
         self.nativeLangLabel = QLabel(VersionForm)
         self.nativeLangLabel.setObjectName(u"nativeLangLabel")
 
         self.gridLayout.addWidget(self.nativeLangLabel, 6, 0, 1, 1)
 
+        self.userNameLabel = QLabel(VersionForm)
+        self.userNameLabel.setObjectName(u"userNameLabel")
+
+        self.gridLayout.addWidget(self.userNameLabel, 9, 0, 1, 1)
+
+        self.userLangLabel = QLabel(VersionForm)
+        self.userLangLabel.setObjectName(u"userLangLabel")
+
+        self.gridLayout.addWidget(self.userLangLabel, 11, 0, 1, 1)
+
+        self.outputsTabWidget = QTabWidget(VersionForm)
+        self.outputsTabWidget.setObjectName(u"outputsTabWidget")
+        sizePolicy.setHeightForWidth(self.outputsTabWidget.sizePolicy().hasHeightForWidth())
+        self.outputsTabWidget.setSizePolicy(sizePolicy)
+
+        self.gridLayout.addWidget(self.outputsTabWidget, 22, 0, 1, 2)
+
+        self.userAbbrevLabel = QLabel(VersionForm)
+        self.userAbbrevLabel.setObjectName(u"userAbbrevLabel")
+
+        self.gridLayout.addWidget(self.userAbbrevLabel, 10, 0, 1, 1)
+
+        self.fontFamilyLabel = QLabel(VersionForm)
+        self.fontFamilyLabel.setObjectName(u"fontFamilyLabel")
+
+        self.gridLayout.addWidget(self.fontFamilyLabel, 20, 0, 1, 1)
+
+        self.nativeLangLineEdit = QLineEdit(VersionForm)
+        self.nativeLangLineEdit.setObjectName(u"nativeLangLineEdit")
+
+        self.gridLayout.addWidget(self.nativeLangLineEdit, 6, 1, 1, 1)
+
+        self.verticalSpacer = QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout.addItem(self.verticalSpacer, 24, 0, 1, 1)
+
         self.nativeAbbrevLabel = QLabel(VersionForm)
         self.nativeAbbrevLabel.setObjectName(u"nativeAbbrevLabel")
 
         self.gridLayout.addWidget(self.nativeAbbrevLabel, 5, 0, 1, 1)
+
+        self.notesLabel = QLabel(VersionForm)
+        self.notesLabel.setObjectName(u"notesLabel")
+        self.notesLabel.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+
+        self.gridLayout.addWidget(self.notesLabel, 14, 0, 1, 1)
+
+        self.nativeAbbrevLineEdit = QLineEdit(VersionForm)
+        self.nativeAbbrevLineEdit.setObjectName(u"nativeAbbrevLineEdit")
+
+        self.gridLayout.addWidget(self.nativeAbbrevLineEdit, 5, 1, 1, 1)
+
+        self.isRTLCheckBox = QCheckBox(VersionForm)
+        self.isRTLCheckBox.setObjectName(u"isRTLCheckBox")
+
+        self.gridLayout.addWidget(self.isRTLCheckBox, 21, 1, 1, 1)
+
+        self.isRTLLabel = QLabel(VersionForm)
+        self.isRTLLabel.setObjectName(u"isRTLLabel")
+
+        self.gridLayout.addWidget(self.isRTLLabel, 21, 0, 1, 1)
 
         QWidget.setTabOrder(self.sourceLineEdit, self.idLineEdit)
         QWidget.setTabOrder(self.idLineEdit, self.nativeNameLineEdit)
@@ -214,22 +224,24 @@ class Ui_VersionForm(object):
 
     def retranslateUi(self, VersionForm):
         VersionForm.setWindowTitle(QCoreApplication.translate("VersionForm", u"Form", None))
-        self.idLabel.setText(QCoreApplication.translate("VersionForm", u"Version ID", None))
-        self.userNameLabel.setText(QCoreApplication.translate("VersionForm", u"Version Name", None))
-        self.notesLabel.setText(QCoreApplication.translate("VersionForm", u"Notes", None))
-        self.userSectionLabel.setText(QCoreApplication.translate("VersionForm", u"Labels \u2013 User Language", None))
-        self.otherDetailsSectionLabel.setText(QCoreApplication.translate("VersionForm", u"Other Details", None))
-        self.autoFontCheckBox.setText(QCoreApplication.translate("VersionForm", u"Automatically select font family", None))
         self.nativeSectionLabel.setText(QCoreApplication.translate("VersionForm", u"Labels \u2013 Native Language", None))
-        self.userLangLabel.setText(QCoreApplication.translate("VersionForm", u"Language", None))
-        self.sourceLabel.setText(QCoreApplication.translate("VersionForm", u"Source", None))
+        self.fontFamilyFontComboBox.setCurrentText("")
         self.nativeNameLabel.setText(QCoreApplication.translate("VersionForm", u"Version Name", None))
-        self.userAbbrevLabel.setText(QCoreApplication.translate("VersionForm", u"Abbreviation", None))
-        self.fontFamilyLabel.setText(QCoreApplication.translate("VersionForm", u"Font Family", None))
+        self.idLabel.setText(QCoreApplication.translate("VersionForm", u"Version ID", None))
         self.moreButton.setText(QCoreApplication.translate("VersionForm", u"More...", None))
         self.copyrightButton.setText(QCoreApplication.translate("VersionForm", u"Copyright...", None))
-        self.fontFamilyFontComboBox.setCurrentText("")
+        self.sourceLabel.setText(QCoreApplication.translate("VersionForm", u"Source", None))
+        self.userSectionLabel.setText(QCoreApplication.translate("VersionForm", u"Labels \u2013 User Language", None))
+        self.autoFontCheckBox.setText(QCoreApplication.translate("VersionForm", u"Automatically select font family", None))
+        self.otherDetailsSectionLabel.setText(QCoreApplication.translate("VersionForm", u"Other Details", None))
         self.nativeLangLabel.setText(QCoreApplication.translate("VersionForm", u"Language", None))
+        self.userNameLabel.setText(QCoreApplication.translate("VersionForm", u"Version Name", None))
+        self.userLangLabel.setText(QCoreApplication.translate("VersionForm", u"Language", None))
+        self.userAbbrevLabel.setText(QCoreApplication.translate("VersionForm", u"Abbreviation", None))
+        self.fontFamilyLabel.setText(QCoreApplication.translate("VersionForm", u"Font Family", None))
         self.nativeAbbrevLabel.setText(QCoreApplication.translate("VersionForm", u"Abbreviation", None))
+        self.notesLabel.setText(QCoreApplication.translate("VersionForm", u"Notes", None))
+        self.isRTLCheckBox.setText(QCoreApplication.translate("VersionForm", u"Right-to-left", None))
+        self.isRTLLabel.setText(QCoreApplication.translate("VersionForm", u"Text Direction", None))
     # retranslateUi
 
