@@ -1,3 +1,5 @@
+- 0.18.0
+    - Fix bug where output folder name didn't appear if it was the same as the folder containing the plan.
 - 0.17.0
   - New features:
     - MS Word outputs set the table-style header-row toggle for passage-group tables containg version names. You may need to update your Word templates. (The table-styles in the built-in template have been updated.)
