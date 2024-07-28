@@ -543,7 +543,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         output_dir_path = self.plan.output_dir_path
         output_dir_abspath = self.plan.output_dir_abspath
-        self.outputDirPathLabel.setText(output_dir_path.name)
+        self.outputDirPathLabel.setText(output_dir_abspath.name)
         self.outputDirPathLabel.setToolTip(str(output_dir_path))
         self.outputDirIconLabel.setFileIconFromPath(output_dir_abspath)
         self.outputDirIconLabel.setToolTip(str(output_dir_path))
