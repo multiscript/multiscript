@@ -3,6 +3,7 @@ from multiscript.plugins import BUILTIN_PLUGIN_ID
 from multiscript.plugins.base import Plugin
 
 from multiscript.sources.getbible_dot_net import GetBibleDotNetSource
+from multiscript.sources.accordance import AccordanceSource
 
 from multiscript.outputs.word import WordOutput
 from multiscript.outputs.plain_text import PlainTextOutput
@@ -19,7 +20,7 @@ class BuiltinPlugin(Plugin):
     def get_sources(self):
         '''Returns a list of BibleSources that the plugin provides.
         '''
-        return [GetBibleDotNetSource(self)]               
+        return [GetBibleDotNetSource(self), AccordanceSource(self)]               
     
     def get_outputs(self):
         '''Returns a list of BibleOutputs that the plugin provides.
