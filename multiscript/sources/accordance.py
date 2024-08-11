@@ -73,13 +73,103 @@ class AccordanceSource(BibleSource):
                     id = text_path.stem
                     version = self.new_bible_version(id)
                     
-                    version.user_labels.abbrev = info_dict.get('com.oaktree.module.textabbr', id).strip()
-                    version.user_labels.name = info_dict.get('com.oaktree.module.humanreadablename',
-                                                             info_dict.get('com.oaktree.module.fullmodulename',
-                                                                           version.user_labels.abbrev)).strip()
+                    version.user_labels.abbrev = info_dict.get('com.oaktree.module.textabbr', '').strip()
+                    if version.user_labels.abbrev == "":
+                        version.user_labels.abbrev = id
+                    
+                    version.user_labels.name = info_dict.get('com.oaktree.module.fullmodulename', '').strip()
+                    if version.user_labels.name == "":
+                        version.user_labels.name = info_dict.get('com.oaktree.module.humanreadablename', '').strip()
+                        if version.user_labels.name == "":
+                            version.user_labels.name = version.user_labels.abbrev
+                    
                     version.copyright = info_dict.get('com.oaktree.module.copyriteinfo', '').strip()
-                    versions.append(version)
+                    vers_lang_code = info_dict.get('com.oaktree.module.textlanguage', None)
+                    
+                    if vers_lang_code is None:
+                        # Handle missing language codes.
+                        version_user_labels_name_casefold = version.user_labels.name.casefold()
+                        # First, try 'com.oaktree.module.language' key, which is an older Accordance
+                        # numeric language code:
+                        #   1 = Usually English, but not always
+                        #   2 = Greek
+                        #   3 = Hebrew
+                        numeric_lang_code = info_dict.get('com.oaktree.module.language', 0)
+                        if numeric_lang_code == 2:
+                            vers_lang_code = 'el'
+                        elif numeric_lang_code == 3:
+                            vers_lang_code = 'he'
+                        # If still no language code, look for languages in the module name.
+                        # The languages searched for here are derived from the list of Accordance modules
+                        # at https://www.accordancebible.com/wp-content/uploads/2021/06/CompModList21_05.pdf
+                        elif 'Afrikaans'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'af'
+                        elif 'Arabic'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'ar'
+                        elif 'Chinese'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'zh'
+                        elif 'Dutch'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'nl'
+                        elif 'Finnish'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'fi'
+                        elif 'French'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'fr'
+                        elif 'German'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'de'
+                        elif 'Italian'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'it'
+                        elif 'Japanese'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'ja'
+                        elif 'Korean'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'ko'
+                        elif 'Latvian'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'lv'
+                        elif 'Greek'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'el'
+                        elif 'Bokmål'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'nb'
+                        elif 'Nynorsk'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'nn'
+                        elif 'Norwegian'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'no'
+                        elif 'Polish'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'pl'
+                        elif 'Portuguese'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'pt'
+                        elif 'Romanian'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'ro'
+                        elif 'Russian'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'ru'
+                        elif 'Spanish'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'es'
+                        elif 'Swedish'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'sv'
+                        elif 'Tagalog'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'tl'
+                        elif 'Thai'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'th'
+                        elif 'Ethiopic (Ge'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'gez'
+                        elif 'Coptic'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'cop'
+                        elif 'Latin'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'la'
+                        elif 'Aramaic'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'arc'
+                        elif 'Samaritan Targum'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'sam'
+                        elif 'Vetus Latina'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'la'
+                        elif 'Peshitta'.casefold() in version_user_labels_name_casefold:
+                            vers_lang_code = 'syc'
+                        elif numeric_lang_code == 1:
+                            # At this point it's likely to be English
+                            vers_lang_code = 'en'
 
+                    if vers_lang_code is not None:
+                        version.set_lang_from_code(vers_lang_code)
+
+                    versions.append(version)
         return versions
 
     def bible_content_loading(self, runner):
