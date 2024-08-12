@@ -93,8 +93,8 @@ class BibleVersion:
             user_lang_code = user_locale[0]
         else:
             user_lang_code = 'en' # Use English if we can't determine local language
-        self.user_labels.lang = vers_lang_obj.display_name(user_lang_code).capitalize()
-        autonym = vers_lang_obj.autonym().capitalize()
+        self.user_labels.lang = vers_lang_obj.display_name(user_lang_code).title()
+        autonym = vers_lang_obj.autonym().title()
         if autonym != self.user_labels.lang:
             self.native_labels.lang = autonym
 

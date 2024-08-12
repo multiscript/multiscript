@@ -53,10 +53,17 @@ class GetBibleDotNetSource(BibleSource):
         for key, vers_dict in resp_dict.items():
             id = key
             version = self.new_bible_version(id)
-            version.user_labels.name = vers_dict['translation']
-            version.user_labels.abbrev = vers_dict['abbreviation'].upper()
-            version.user_labels.lang = vers_dict['language']
-            version.copyright = vers_dict['distribution_license']
+            version.user_labels.name = vers_dict.get('translation', '')
+            version.user_labels.abbrev = vers_dict.get('abbreviation', id).upper()
+            lang_code = vers_dict.get('lang')
+            if lang_code is not None:
+                version.set_lang_from_code(lang_code)
+            else:
+                version.user_labels.lang = vers_dict.get('language', '')
+            version.copyright = vers_dict.get('distribution_license', '')
+            if vers_dict.get('direction', '') == 'RTL':
+                version.is_rtl = True
+                
             versions.append(version)
         return versions
 
