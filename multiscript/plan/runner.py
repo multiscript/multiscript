@@ -219,10 +219,13 @@ class PlanRunner:
                     _logger.info(f"\tFont family not selected for {script_display} script in {bible_version.abbrev}.")
                 else:
                     font_family = self.font_finder.find_family(text_info)
-                    bible_version.font_family = font_family
-                    bible_version.auto_font = False
-                    self.plan.changed = True
-                    _logger.info(f"\tSelected {font_family} for {script_display} script in {bible_version.abbrev}.")
+                    if font_family is None:
+                        _logger.info(f"\tFont family not found for {bible_version.abbrev}.")
+                    else:
+                        bible_version.font_family = font_family
+                        bible_version.auto_font = False
+                        self.plan.changed = True
+                        _logger.info(f"\tSelected {font_family} for {script_display} script in {bible_version.abbrev}.")
                 
                     if self.font_finder.is_rtl(text_info):
                         bible_version.is_rtl = True

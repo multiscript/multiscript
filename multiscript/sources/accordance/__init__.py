@@ -24,6 +24,12 @@ class AccordanceSource(BibleSource):
         self.id = "accordancebible.com"
         self.name = "Accordance"
 
+        if platform.system() == "Darwin":
+            import applescript
+            script_lib_path = Path(__file__, "../accordance.applescript").resolve()
+            self.script_lib = applescript.AppleScript(path=str(script_lib_path))
+            print(self.script_lib)
+
     def new_bible_version(self, version_id=None, name=None, lang=None, abbrev=None):
         '''Overridden from BibleVersion.
         
@@ -266,15 +272,25 @@ class AccordanceVersion(BibleVersion):
         super().__init__(source, id, name, lang, abbrev)
 
     def load_content(self, bible_range: BibleRange, bible_content, plan_runner: PlanRunner):
+        data_path = Path(DEFAULT_ACCORDANCE_DATA_PATH).expanduser().resolve()
+        text_path = data_path /"Modules" / "Texts" / f"{self.id}.atext"
+        if not text_path.exists() or not text_path.is_dir():
+            _logger.info(f"Accordance module {self.id} not found.")
+            return
+
         book_code = AccordanceVersion.book_codes[bible_range.start.book]
         content_body = bible_content.body
         content_body.strip_text = True
         content_body.insert_missing_whitespace = True
-        # content_body.insert_missing_chap_num = True
+        content_body.insert_missing_chap_num = True
 
-        # bible_ranges = bible_range.split(by_chap=True, num_verses=None)
-        # for indiv_range in bible_ranges:
-        #     indiv_range: BibleRange = indiv_range
+        bible_ranges = bible_range.split(by_chap=True, num_verses=None)
+        for indiv_range in bible_ranges:
+            if platform.system() == "Darwin":
+                script_lib = self.bible_source.script_lib
+                accordance_text = script_lib.call("get_bible_text", self.id, str(indiv_range), False)
+                # print(str(accordance_text).splitlines())
+
         #     url = f'https://api.getbible.net/v2/{self.id}/{book_code}/{indiv_range.start.chap_num}.json'
         #     response = requests.get(url, timeout=15)
         #     resp_dict = response.json()
