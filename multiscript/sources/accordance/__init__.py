@@ -5,6 +5,7 @@ import platform
 import plistlib
 
 from bibleref import BibleBook, BibleRange, BibleVerse
+from bibleref.ref import BibleRefParsingError
 
 from multiscript.sources.base import BibleSource, VersionProgressReporter
 from multiscript.bible.version import BibleVersion
@@ -273,7 +274,7 @@ class AccordanceVersion(BibleVersion):
 
     def load_content(self, bible_range: BibleRange, bible_content, plan_runner: PlanRunner):
         data_path = Path(DEFAULT_ACCORDANCE_DATA_PATH).expanduser().resolve()
-        text_path = data_path /"Modules" / "Texts" / f"{self.id}.atext"
+        text_path = data_path / "Modules" / "Texts" / f"{self.id}.atext"
         if not text_path.exists() or not text_path.is_dir():
             _logger.info(f"Accordance module {self.id} not found.")
             return
@@ -289,6 +290,21 @@ class AccordanceVersion(BibleVersion):
             if platform.system() == "Darwin":
                 script_lib = self.bible_source.script_lib
                 accordance_text = script_lib.call("get_bible_text", self.id, str(indiv_range), False)
+                verse_ref = None
+                for line in str(accordance_text).split('\r'):
+                    print(line)
+                    first_space = line.find(' ')
+                    second_space = line.find(' ', first_space+1)
+                    if second_space != -1:
+                        try:
+                            verse_ref_str = line[0:second_space].replace('.','')
+                            verse_ref = BibleVerse(verse_ref_str)
+                            line = line[second_space+1:]
+                        except BibleRefParsingError:
+                            # No valid verse ref means we insert a linebreak before this line
+                            pass
+                    print(f"{verse_ref}|{line}")
+                    # At this point we need to scan for paragraph marks and insert new paragraphs as necessary.
                 # print(str(accordance_text).splitlines())
 
         #     url = f'https://api.getbible.net/v2/{self.id}/{book_code}/{indiv_range.start.chap_num}.json'
