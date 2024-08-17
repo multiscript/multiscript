@@ -291,21 +291,36 @@ class AccordanceVersion(BibleVersion):
                 script_lib = self.bible_source.script_lib
                 accordance_text = script_lib.call("get_bible_text", self.id, str(indiv_range), False)
                 verse_ref = None
-                for line in str(accordance_text).split('\r'):
-                    print(line)
+                for line in str(accordance_text).splitlines():
                     first_space = line.find(' ')
                     second_space = line.find(' ', first_space+1)
+                    new_verse = False
                     if second_space != -1:
                         try:
                             verse_ref_str = line[0:second_space].replace('.','')
-                            verse_ref = BibleVerse(verse_ref_str)
+                            content_body.current_verse = BibleVerse(verse_ref_str)
+                            # If we got to here, the line begins with a verse reference, so it's a new verse
+                            new_verse = True
                             line = line[second_space+1:]
+
                         except BibleRefParsingError:
                             # No valid verse ref means we insert a linebreak before this line
-                            pass
-                    print(f"{verse_ref}|{line}")
-                    # At this point we need to scan for paragraph marks and insert new paragraphs as necessary.
-                # print(str(accordance_text).splitlines())
+                            content_body.add_line_break()
+                            # TODO: We probably need to assume we remain in linebreak mode until we get a
+                            # new paragraph. Need to check if this produces correct results.
+
+                    paragraphs = line.split('¶ ')
+                    for i in range(len(paragraphs)):
+                        if len(paragraphs[i]) > 0:
+                            if new_verse:
+                                content_body.add_start_verse_num()
+                                content_body.add_text(str(content_body.current_verse.verse_num))
+                                content_body.add_end_verse_num()
+                                new_verse = False
+                            content_body.add_text(paragraphs[i])
+                        if i < (len(paragraphs)-1):
+                            content_body.add_end_paragraph()
+                            content_body.add_start_paragraph()
 
         #     url = f'https://api.getbible.net/v2/{self.id}/{book_code}/{indiv_range.start.chap_num}.json'
         #     response = requests.get(url, timeout=15)
