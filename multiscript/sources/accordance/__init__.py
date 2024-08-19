@@ -290,28 +290,29 @@ class AccordanceVersion(BibleVersion):
             if platform.system() == "Darwin":
                 script_lib = self.bible_source.script_lib
                 accordance_text = script_lib.call("get_bible_text", self.id, str(indiv_range), False)
-                verse_ref = None
-                for line in str(accordance_text).splitlines():
-                    first_space = line.find(' ')
-                    second_space = line.find(' ', first_space+1)
+                linebreak_before_accord_lines = False
+                for accordance_line in str(accordance_text).splitlines():
+                    first_space = accordance_line.find(' ')
+                    second_space = accordance_line.find(' ', first_space + 1)
                     new_verse = False
                     if second_space != -1:
                         try:
-                            verse_ref_str = line[0:second_space].replace('.','')
+                            verse_ref_str = accordance_line[0:second_space].replace('.','')
                             content_body.current_verse = BibleVerse(verse_ref_str)
                             # If we got to here, the line begins with a verse reference, so it's a new verse
                             new_verse = True
-                            line = line[second_space+1:]
-
+                            accordance_line = accordance_line[second_space+1:]
                         except BibleRefParsingError:
-                            # No valid verse ref means we insert a linebreak before this line
-                            content_body.add_line_break()
-                            # TODO: We probably need to assume we remain in linebreak mode until we get a
-                            # new paragraph. Need to check if this produces correct results.
+                            # No valid verse ref means we insert start inserting linebreaks before each
+                            # line of text from Accordance
+                            linebreak_before_accord_lines = True
+                            # TODO: We may also need to find the previous start-paragraph token and mark it as poetry.
 
-                    paragraphs = line.split('¶ ')
+                    paragraphs = accordance_line.split('¶ ')
                     for i in range(len(paragraphs)):
                         if len(paragraphs[i]) > 0:
+                            if linebreak_before_accord_lines:
+                                content_body.add_line_break()
                             if new_verse:
                                 content_body.add_start_verse_num()
                                 content_body.add_text(str(content_body.current_verse.verse_num))
@@ -321,6 +322,9 @@ class AccordanceVersion(BibleVersion):
                         if i < (len(paragraphs)-1):
                             content_body.add_end_paragraph()
                             content_body.add_start_paragraph()
+                            # New paragraphs end any run of inserting linebreaks
+                            linebreak_before_accord_lines = False
+
 
         #     url = f'https://api.getbible.net/v2/{self.id}/{book_code}/{indiv_range.start.chap_num}.json'
         #     response = requests.get(url, timeout=15)
