@@ -289,7 +289,7 @@ class AccordanceVersion(BibleVersion):
         for indiv_range in bible_ranges:
             if platform.system() == "Darwin":
                 script_lib = self.bible_source.script_lib
-                accordance_text = script_lib.call("get_bible_text", self.id, str(indiv_range), False)
+                accordance_text = script_lib.call("get_text_via_api", self.id, str(indiv_range), False)
                 linebreak_before_accord_lines = False
                 for accordance_line in str(accordance_text).splitlines():
                     first_space = accordance_line.find(' ')
