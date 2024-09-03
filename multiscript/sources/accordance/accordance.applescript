@@ -44,7 +44,7 @@ on get_ui_text_names()
 				end tell
 				key code 53
 			end tell
-			key code 53
+			tell (first button whose subrole is "AXCloseButton") to click
 		end tell
 	end tell
 	activate me

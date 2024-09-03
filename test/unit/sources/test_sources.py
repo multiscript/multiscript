@@ -19,8 +19,16 @@ class TestBibleSource(MultiscriptAppTestCase):
     def test_getbible_dot_net_source(self):
         source = TEST_APP.source('multiscript-builtin/getbible.net')
         source.get_all_versions(None)
-    
-    def test_accordance_source(self):
+
+
+class TestAccordanceSource(MultiscriptAppTestCase):
+    def test_versions(self):
         source = TEST_APP.source('multiscript-builtin/accordancebible.com')
         source.get_all_versions(None)
+    
+    def test_ui_text_names(self):
+        source = TEST_APP.source('multiscript-builtin/accordancebible.com')
+        names = source.get_ui_text_names()
+        print(names)
+
 

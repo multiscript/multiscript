@@ -29,7 +29,6 @@ class AccordanceSource(BibleSource):
             import applescript
             script_lib_path = Path(__file__, "../accordance.applescript").resolve()
             self.script_lib = applescript.AppleScript(path=str(script_lib_path))
-            print(self.script_lib)
 
     def new_bible_version(self, version_id=None, name=None, lang=None, abbrev=None):
         '''Overridden from BibleVersion.
@@ -198,6 +197,10 @@ class AccordanceSource(BibleSource):
         Subclasses may override to clean up any resources that were allocated during bible_content_loading().
         '''
         pass
+
+    def get_ui_text_names(self):
+        '''Returns the list of Accordance texts as displayed in the Get Verses dialog.'''
+        return [str(name) for name in self.script_lib.call("get_ui_text_names")]
 
 
 class AccordanceVersion(BibleVersion):
