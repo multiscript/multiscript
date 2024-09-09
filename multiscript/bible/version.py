@@ -89,9 +89,10 @@ class BibleVersion:
         '''Sets the user and native version languages string from an IETF language code'''
         vers_lang_obj = langcodes.Language.get(lang_code)
         user_locale = locale.getlocale()
+        user_lang_code = None
         if user_locale is not None and len(user_locale) > 0:
             user_lang_code = user_locale[0]
-        else:
+        if user_lang_code is None:
             user_lang_code = 'en' # Use English if we can't determine local language
         self.user_labels.lang = vers_lang_obj.display_name(user_lang_code).title()
         autonym = vers_lang_obj.autonym().title()

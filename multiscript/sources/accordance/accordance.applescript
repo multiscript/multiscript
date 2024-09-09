@@ -24,8 +24,8 @@ on get_text_via_accessibility(module_name, bible_ref)
 			end tell
 			click button "Copy to Clipboard"
 		end tell
+		set visible of it to false
 	end tell
-	activate me
 	return the clipboard as Unicode text
 end get_text_via_accessibility
 
@@ -46,8 +46,8 @@ on get_ui_text_names()
 			end tell
 			tell (first button whose subrole is "AXCloseButton") to click
 		end tell
+		set visible of it to false
 	end tell
-	activate me
 	set ui_module_names to {}
 	repeat with menu_title in menu_titles
 		if length of menu_title is greater than 0 then

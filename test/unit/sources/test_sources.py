@@ -28,7 +28,7 @@ class TestAccordanceSource(MultiscriptAppTestCase):
     
     def test_ui_text_names(self):
         source = TEST_APP.source('multiscript-builtin/accordancebible.com')
-        names = source.get_ui_text_names()
+        names = source.platform.get_ui_text_names()
         print(names)
 
 

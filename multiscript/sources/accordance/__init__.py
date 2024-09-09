@@ -14,10 +14,6 @@ from multiscript.plan.runner import PlanRunner
 
 _logger = logging.getLogger(__name__)
 
-DEFAULT_ACCORDANCE_DATA_PATH = None
-if platform.system() == "Darwin":
-    DEFAULT_ACCORDANCE_DATA_PATH = "~/Library/Application Support/Accordance"
-
 
 class AccordanceSource(BibleSource):
     def __init__(self, plugin):
@@ -26,9 +22,10 @@ class AccordanceSource(BibleSource):
         self.name = "Accordance"
 
         if platform.system() == "Darwin":
-            import applescript
-            script_lib_path = Path(__file__, "../accordance.applescript").resolve()
-            self.script_lib = applescript.AppleScript(path=str(script_lib_path))
+            from multiscript.sources.accordance.mac import AccordanceMacPlatform
+            self.platform = AccordanceMacPlatform(self)
+        else:
+            self.platform = None
 
     def new_bible_version(self, version_id=None, name=None, lang=None, abbrev=None):
         '''Overridden from BibleVersion.
@@ -61,8 +58,8 @@ class AccordanceSource(BibleSource):
         Return all of the BibleVersions available for this BibleSource.
         '''
         versions = []
-        if DEFAULT_ACCORDANCE_DATA_PATH is not None:
-            data_path = Path(DEFAULT_ACCORDANCE_DATA_PATH).expanduser().resolve()
+        if self.platform is not None and self.platform.DEFAULT_ACCORDANCE_DATA_PATH is not None:
+            data_path = Path(self.platform.DEFAULT_ACCORDANCE_DATA_PATH).expanduser().resolve()
             texts_path = data_path / "Modules" / "Texts"
             if texts_path.exists():
                 for text_path in texts_path.glob('*.atext'):
@@ -198,10 +195,6 @@ class AccordanceSource(BibleSource):
         '''
         pass
 
-    def get_ui_text_names(self):
-        '''Returns the list of Accordance texts as displayed in the Get Verses dialog.'''
-        return [str(name) for name in self.script_lib.call("get_ui_text_names")]
-
 
 class AccordanceVersion(BibleVersion):
     book_codes = {BibleBook.Gen:        "Gen",
@@ -276,7 +269,8 @@ class AccordanceVersion(BibleVersion):
         super().__init__(source, id, name, lang, abbrev)
 
     def load_content(self, bible_range: BibleRange, bible_content, plan_runner: PlanRunner):
-        data_path = Path(DEFAULT_ACCORDANCE_DATA_PATH).expanduser().resolve()
+        self.bible_source: AccordanceSource = self.bible_source
+        data_path = Path(self.bible_source.platform.DEFAULT_ACCORDANCE_DATA_PATH).expanduser().resolve()
         text_path = data_path / "Modules" / "Texts" / f"{self.id}.atext"
         if not text_path.exists() or not text_path.is_dir():
             _logger.info(f"Accordance module {self.id} not found.")
@@ -290,9 +284,8 @@ class AccordanceVersion(BibleVersion):
 
         bible_ranges = bible_range.split(by_chap=True, num_verses=None)
         for indiv_range in bible_ranges:
-            if platform.system() == "Darwin":
-                script_lib = self.bible_source.script_lib
-                accordance_text = script_lib.call("get_text_via_api", self.id, str(indiv_range), False)
+            if self.bible_source.platform is not None:
+                accordance_text = self.bible_source.platform.get_bible_text(self.id, str(indiv_range))
                 linebreak_before_accord_lines = False
                 for accordance_line in str(accordance_text).splitlines():
                     first_space = accordance_line.find(' ')
@@ -341,3 +334,16 @@ class AccordanceVersion(BibleVersion):
         #             content_body.add_text(str(verse_num))
         #             content_body.add_end_verse_num()
         #             content_body.add_text(verse_dict['text'])
+
+
+class AccordancePlatform:
+    def __init__(self, bible_source: BibleSource):
+        self.bible_source = bible_source
+        self.DEFAULT_ACCORDANCE_DATA_PATH = None
+
+    def get_ui_text_names(self):
+        '''Returns the list of Accordance texts as displayed in the Get Verses dialog.'''
+        return []
+    
+    def get_bible_text(self, accordance_module_id: str, bible_range_str: str):
+        return ""
