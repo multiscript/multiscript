@@ -7,6 +7,8 @@ import plistlib
 from bibleref import BibleBook, BibleRange, BibleVerse
 from bibleref.ref import BibleRefParsingError
 
+import dotstrings
+
 from multiscript.sources.base import BibleSource, VersionProgressReporter
 from multiscript.bible.version import BibleVersion
 from multiscript.plan.runner import PlanRunner
@@ -20,12 +22,38 @@ class AccordanceSource(BibleSource):
         super().__init__(plugin)
         self.id = "accordancebible.com"
         self.name = "Accordance"
+        self._module_metadata: dict[str, dict] = None # Keys: module id str, Vals: dict from module plist file
+        self._module_ui_names: list[str] = None # List of module names as they appear in Get Verses dialog
+        self._module_name_db: dict[str, str] = None # Keys: module id str, Vals: Names from modNameDB.strings file
 
         if platform.system() == "Darwin":
             from multiscript.sources.accordance.mac import AccordanceMacPlatform
             self.platform = AccordanceMacPlatform(self)
         else:
             self.platform = None
+        
+    @property
+    def module_metadata(self) -> dict[str, str]:
+        if self._module_metadata is None:
+            self._module_metadata = self.get_module_metadata()
+        return self._module_metadata
+    
+    @property
+    def module_ui_names(self) -> list[str]:
+        if self._module_ui_names is None:
+            self._module_ui_names = self.platform.get_module_ui_names()
+        return self._module_ui_names
+
+    @property
+    def module_name_db(self) -> dict[str, str]:
+        if self._module_name_db is None:
+            self._module_name_db = self.get_module_name_db()
+        return self._module_name_db
+
+    def reset_module_data(self):
+        self._module_ui_names = None
+        self._module_metadata = None
+        self._module_name_db = None
 
     def new_bible_version(self, version_id=None, name=None, lang=None, abbrev=None):
         '''Overridden from BibleVersion.
@@ -52,12 +80,8 @@ class AccordanceSource(BibleSource):
         '''
         return None
 
-    def get_all_versions(self, progress_reporter: VersionProgressReporter):
-        '''Overridden from BibleVersion.
-        
-        Return all of the BibleVersions available for this BibleSource.
-        '''
-        versions = []
+    def get_module_metadata(self):
+        module_metadata = {}
         if self.platform is not None and self.platform.DEFAULT_ACCORDANCE_DATA_PATH is not None:
             data_path = Path(self.platform.DEFAULT_ACCORDANCE_DATA_PATH).expanduser().resolve()
             texts_path = data_path / "Modules" / "Texts"
@@ -74,105 +98,126 @@ class AccordanceSource(BibleSource):
                     with open(info_path, 'rb') as file:
                         info_dict = plistlib.load(file)
                     id = text_path.stem
-                    version = self.new_bible_version(id)
-                    
-                    version.user_labels.abbrev = info_dict.get('com.oaktree.module.textabbr', '').strip()
-                    if version.user_labels.abbrev == "":
-                        version.user_labels.abbrev = id
-                    
-                    version.user_labels.name = info_dict.get('com.oaktree.module.fullmodulename', '').strip()
-                    if version.user_labels.name == "":
-                        version.user_labels.name = info_dict.get('com.oaktree.module.humanreadablename', '').strip()
-                        if version.user_labels.name == "":
-                            version.user_labels.name = version.user_labels.abbrev
-                    
-                    version.copyright = info_dict.get('com.oaktree.module.copyriteinfo', '').strip()
-                    vers_lang_code = info_dict.get('com.oaktree.module.textlanguage', None)
-                    
-                    if vers_lang_code is None:
-                        # Handle missing language codes.
-                        version_user_labels_name_casefold = version.user_labels.name.casefold()
-                        # First, try 'com.oaktree.module.language' key, which is an older Accordance
-                        # numeric language code:
-                        #   1 = Usually English, but not always
-                        #   2 = Greek
-                        #   3 = Hebrew
-                        numeric_lang_code = info_dict.get('com.oaktree.module.language', 0)
-                        if numeric_lang_code == 2:
-                            vers_lang_code = 'el'
-                        elif numeric_lang_code == 3:
-                            vers_lang_code = 'he'
-                        # If still no language code, look for languages in the module name.
-                        # The languages searched for here are derived from the list of Accordance modules
-                        # at https://www.accordancebible.com/wp-content/uploads/2021/06/CompModList21_05.pdf
-                        elif 'Afrikaans'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'af'
-                        elif 'Arabic'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'ar'
-                        elif 'Chinese'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'zh'
-                        elif 'Dutch'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'nl'
-                        elif 'Finnish'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'fi'
-                        elif 'French'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'fr'
-                        elif 'German'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'de'
-                        elif 'Italian'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'it'
-                        elif 'Japanese'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'ja'
-                        elif 'Korean'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'ko'
-                        elif 'Latvian'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'lv'
-                        elif 'Greek'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'el'
-                        elif 'Bokmål'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'nb'
-                        elif 'Nynorsk'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'nn'
-                        elif 'Norwegian'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'no'
-                        elif 'Polish'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'pl'
-                        elif 'Portuguese'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'pt'
-                        elif 'Romanian'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'ro'
-                        elif 'Russian'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'ru'
-                        elif 'Spanish'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'es'
-                        elif 'Swedish'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'sv'
-                        elif 'Tagalog'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'tl'
-                        elif 'Thai'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'th'
-                        elif 'Ethiopic (Ge'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'gez'
-                        elif 'Coptic'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'cop'
-                        elif 'Latin'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'la'
-                        elif 'Aramaic'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'arc'
-                        elif 'Samaritan Targum'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'sam'
-                        elif 'Vetus Latina'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'la'
-                        elif 'Peshitta'.casefold() in version_user_labels_name_casefold:
-                            vers_lang_code = 'syc'
-                        elif numeric_lang_code == 1:
-                            # At this point it's likely to be English
-                            vers_lang_code = 'en'
+                    module_metadata[id] = info_dict
+        return module_metadata
 
-                    if vers_lang_code is not None:
-                        version.set_lang_from_code(vers_lang_code)
+    def get_module_name_db(self):
+        module_name_db = {}
+        db_path = Path(self.platform.DEFAULT_MOD_NAME_DB_PATH).expanduser().resolve()
+        with open(db_path, 'r', encoding="utf-16-le") as file:
+            contents = file.read()
+        # The file contains a UTF-16 byte-order mark (BOM) as the first character, which the dotstrings
+        # library chokes on, so we have to skip it.
+        entries = dotstrings.loads(contents[1:])
+        for entry in entries:
+            module_name_db[entry.key] = entry.value
+        return module_name_db
 
-                    versions.append(version)
+    def get_all_versions(self, progress_reporter: VersionProgressReporter):
+        '''Overridden from BibleVersion.
+        
+        Return all of the BibleVersions available for this BibleSource.
+        '''
+        versions = []
+        for id, metadata in self.module_metadata.items():
+            version = self.new_bible_version(id)
+            version.user_labels.abbrev = metadata.get('com.oaktree.module.textabbr', '').strip()
+            if version.user_labels.abbrev == "":
+                version.user_labels.abbrev = id
+            
+            version.user_labels.name = metadata.get('com.oaktree.module.fullmodulename', '').strip()
+            if version.user_labels.name == "":
+                version.user_labels.name = metadata.get('com.oaktree.module.humanreadablename', '').strip()
+                if version.user_labels.name == "":
+                    version.user_labels.name = version.user_labels.abbrev
+            
+            version.copyright = metadata.get('com.oaktree.module.copyriteinfo', '').strip()
+            vers_lang_code = metadata.get('com.oaktree.module.textlanguage', None)
+            
+            if vers_lang_code is None:
+                # Handle missing language codes.
+                version_user_labels_name_casefold = version.user_labels.name.casefold()
+                # First, try 'com.oaktree.module.language' key, which is an older Accordance
+                # numeric language code:
+                #   1 = Usually English, but not always
+                #   2 = Greek
+                #   3 = Hebrew
+                numeric_lang_code = metadata.get('com.oaktree.module.language', 0)
+                if numeric_lang_code == 2:
+                    vers_lang_code = 'el'
+                elif numeric_lang_code == 3:
+                    vers_lang_code = 'he'
+                # If still no language code, look for languages in the module name.
+                # The languages searched for here are derived from the list of Accordance modules
+                # at https://www.accordancebible.com/wp-content/uploads/2021/06/CompModList21_05.pdf
+                elif 'Afrikaans'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'af'
+                elif 'Arabic'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'ar'
+                elif 'Chinese'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'zh'
+                elif 'Dutch'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'nl'
+                elif 'Finnish'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'fi'
+                elif 'French'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'fr'
+                elif 'German'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'de'
+                elif 'Italian'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'it'
+                elif 'Japanese'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'ja'
+                elif 'Korean'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'ko'
+                elif 'Latvian'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'lv'
+                elif 'Greek'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'el'
+                elif 'Bokmål'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'nb'
+                elif 'Nynorsk'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'nn'
+                elif 'Norwegian'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'no'
+                elif 'Polish'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'pl'
+                elif 'Portuguese'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'pt'
+                elif 'Romanian'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'ro'
+                elif 'Russian'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'ru'
+                elif 'Spanish'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'es'
+                elif 'Swedish'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'sv'
+                elif 'Tagalog'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'tl'
+                elif 'Thai'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'th'
+                elif 'Ethiopic (Ge'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'gez'
+                elif 'Coptic'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'cop'
+                elif 'Latin'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'la'
+                elif 'Aramaic'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'arc'
+                elif 'Samaritan Targum'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'sam'
+                elif 'Vetus Latina'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'la'
+                elif 'Peshitta'.casefold() in version_user_labels_name_casefold:
+                    vers_lang_code = 'syc'
+                elif numeric_lang_code == 1:
+                    # At this point it's likely to be English
+                    vers_lang_code = 'en'
+
+            if vers_lang_code is not None:
+                version.set_lang_from_code(vers_lang_code)
+
+            versions.append(version)
         return versions
 
     def bible_content_loading(self, runner):
@@ -340,9 +385,10 @@ class AccordancePlatform:
     def __init__(self, bible_source: BibleSource):
         self.bible_source = bible_source
         self.DEFAULT_ACCORDANCE_DATA_PATH = None
+        self.DEFAULT_MOD_NAME_DB_PATH = None
 
-    def get_ui_text_names(self):
-        '''Returns the list of Accordance texts as displayed in the Get Verses dialog.'''
+    def get_module_ui_names(self):
+        '''Returns the list of Accordance text modules as displayed in the Get Verses dialog.'''
         return []
     
     def get_bible_text(self, accordance_module_id: str, bible_range_str: str):

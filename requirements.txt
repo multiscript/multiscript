@@ -4,6 +4,7 @@ PySide6-Essentials==6.6.3
 beautifulsoup4==4.12.3
 bibleref==0.16.0
 dmgbuild==1.6.1
+dotstrings==3.0.0
 fontfinder==0.14.0
 langcodes[data]==3.4.0
 py-applescript==1.0.3;platform_system=='Darwin'

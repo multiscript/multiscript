@@ -29,7 +29,7 @@ on get_text_via_accessibility(module_name, bible_ref)
 	return the clipboard as Unicode text
 end get_text_via_accessibility
 
-on get_ui_text_names()
+on get_module_ui_names()
 	tell application "Accordance"
 		activate
 	end tell
@@ -48,11 +48,11 @@ on get_ui_text_names()
 		end tell
 		set visible of it to false
 	end tell
-	set ui_module_names to {}
+	set module_ui_names to {}
 	repeat with menu_title in menu_titles
 		if length of menu_title is greater than 0 then
-			set end of ui_module_names to menu_title as Unicode text
+			set end of module_ui_names to menu_title as Unicode text
 		end if
 	end repeat
-	return ui_module_names
-end get_ui_text_names
+	return module_ui_names
+end get_module_ui_names
