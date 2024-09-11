@@ -23,8 +23,8 @@ class AccordanceSource(BibleSource):
         self.id = "accordancebible.com"
         self.name = "Accordance"
         self._module_metadata: dict[str, dict] = None # Keys: module id str, Vals: dict from module plist file
-        self._module_ui_names: list[str] = None # List of module names as they appear in Get Verses dialog
         self._module_name_db: dict[str, str] = None # Keys: module id str, Vals: Names from modNameDB.strings file
+        self._module_ui_names: list[str] = None # List of module names as they appear in Get Verses dialog
 
         if platform.system() == "Darwin":
             from multiscript.sources.accordance.mac import AccordanceMacPlatform
@@ -32,28 +32,79 @@ class AccordanceSource(BibleSource):
         else:
             self.platform = None
         
+    def reset_module_data(self):
+        '''Forces module data to be reloaded next time it is accessed.'''
+        self._module_metadata = None
+        self._module_name_db = None
+        self._module_ui_names = None
+
     @property
     def module_metadata(self) -> dict[str, str]:
         if self._module_metadata is None:
-            self._module_metadata = self.get_module_metadata()
+            self._module_metadata = self._load_module_metadata()
         return self._module_metadata
     
-    @property
-    def module_ui_names(self) -> list[str]:
-        if self._module_ui_names is None:
-            self._module_ui_names = self.platform.get_module_ui_names()
-        return self._module_ui_names
+    def _load_module_metadata(self):
+        module_metadata = {}
+        if self.platform is not None and self.platform.DEFAULT_ACCORDANCE_DATA_PATH is not None:
+            data_path = Path(self.platform.DEFAULT_ACCORDANCE_DATA_PATH).expanduser().resolve()
+            texts_path = data_path / "Modules" / "Texts"
+            if texts_path.exists():
+                for text_path in texts_path.glob('*.atext'):
+                    if not text_path.is_dir():
+                        continue
+                    info_path = text_path / "Info.plist"
+                    if not info_path.exists():
+                        info_path = text_path / "ExtraInfo.plist"
+                        if not info_path.exists():
+                            _logger.warn(f"plist not found for {text_path}")
+                            continue
+                    with open(info_path, 'rb') as file:
+                        info_dict = plistlib.load(file)
+                    id = text_path.stem
+                    module_metadata[id] = info_dict
+        return module_metadata
 
     @property
     def module_name_db(self) -> dict[str, str]:
         if self._module_name_db is None:
-            self._module_name_db = self.get_module_name_db()
+            self._module_name_db = self._load_module_name_db()
         return self._module_name_db
 
-    def reset_module_data(self):
-        self._module_ui_names = None
-        self._module_metadata = None
-        self._module_name_db = None
+    def _load_module_name_db(self):
+        module_name_db = {}
+        db_path = Path(self.platform.DEFAULT_MOD_NAME_DB_PATH).expanduser().resolve()
+        with open(db_path, 'r', encoding="utf-16") as file:
+            contents = file.read()
+        # If a byte-order mark (BOM, U+FEFF) comes through as the first character, the dotstrings parser
+        # chokes on it (as least as of dotstring v3.0.0), so we have to skip it.
+        if len(contents) > 0 and contents[0] == '\uFEFF':
+            contents = contents[1:]
+        entries = dotstrings.loads(contents)
+        for entry in entries:
+            module_name_db[entry.key] = entry.value
+        return module_name_db
+
+    @property
+    def module_ui_names(self) -> list[str]:
+        if self._module_ui_names is None:
+            self._module_ui_names = self.platform.load_module_ui_names()
+        return self._module_ui_names
+
+    def get_module_ui_name(self, module_id: str) -> str:
+        '''Given the Accordance text module id, return the name of the module used in the Get Verses dialog.'''
+        module_ui_names = self.module_ui_names
+
+        human_name = self.module_metadata[module_id].get('com.oaktree.module.humanreadablename', None)
+        if human_name is not None and human_name in module_ui_names:
+            return human_name
+        
+        db_name = self.module_name_db.get(module_id, None)
+        if db_name is not None and db_name in module_ui_names:
+            return db_name
+        
+        if module_id in module_ui_names:
+            return module_id
 
     def new_bible_version(self, version_id=None, name=None, lang=None, abbrev=None):
         '''Overridden from BibleVersion.
@@ -79,39 +130,6 @@ class AccordanceSource(BibleSource):
         plan config.
         '''
         return None
-
-    def get_module_metadata(self):
-        module_metadata = {}
-        if self.platform is not None and self.platform.DEFAULT_ACCORDANCE_DATA_PATH is not None:
-            data_path = Path(self.platform.DEFAULT_ACCORDANCE_DATA_PATH).expanduser().resolve()
-            texts_path = data_path / "Modules" / "Texts"
-            if texts_path.exists():
-                for text_path in texts_path.glob('*.atext'):
-                    if not text_path.is_dir():
-                        continue
-                    info_path = text_path / "Info.plist"
-                    if not info_path.exists():
-                        info_path = text_path / "ExtraInfo.plist"
-                        if not info_path.exists():
-                            _logger.warn(f"plist not found for {text_path}")
-                            continue
-                    with open(info_path, 'rb') as file:
-                        info_dict = plistlib.load(file)
-                    id = text_path.stem
-                    module_metadata[id] = info_dict
-        return module_metadata
-
-    def get_module_name_db(self):
-        module_name_db = {}
-        db_path = Path(self.platform.DEFAULT_MOD_NAME_DB_PATH).expanduser().resolve()
-        with open(db_path, 'r', encoding="utf-16-le") as file:
-            contents = file.read()
-        # The file contains a UTF-16 byte-order mark (BOM) as the first character, which the dotstrings
-        # library chokes on, so we have to skip it.
-        entries = dotstrings.loads(contents[1:])
-        for entry in entries:
-            module_name_db[entry.key] = entry.value
-        return module_name_db
 
     def get_all_versions(self, progress_reporter: VersionProgressReporter):
         '''Overridden from BibleVersion.
@@ -367,27 +385,13 @@ class AccordanceVersion(BibleVersion):
                             linebreak_before_accord_lines = False
 
 
-        #     url = f'https://api.getbible.net/v2/{self.id}/{book_code}/{indiv_range.start.chap_num}.json'
-        #     response = requests.get(url, timeout=15)
-        #     resp_dict = response.json()
-        #     for verse_dict in resp_dict['verses']:
-        #         verse_num = int(verse_dict['verse'])
-        #         verse_ref = BibleVerse(indiv_range.start.book, indiv_range.start.chap_num, verse_num)
-        #         if bible_range.contains(verse_ref):
-        #             content_body.current_verse = verse_ref
-        #             content_body.add_start_verse_num()
-        #             content_body.add_text(str(verse_num))
-        #             content_body.add_end_verse_num()
-        #             content_body.add_text(verse_dict['text'])
-
-
 class AccordancePlatform:
     def __init__(self, bible_source: BibleSource):
         self.bible_source = bible_source
         self.DEFAULT_ACCORDANCE_DATA_PATH = None
         self.DEFAULT_MOD_NAME_DB_PATH = None
 
-    def get_module_ui_names(self):
+    def load_module_ui_names(self):
         '''Returns the list of Accordance text modules as displayed in the Get Verses dialog.'''
         return []
     

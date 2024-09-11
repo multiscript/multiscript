@@ -17,7 +17,7 @@ class AccordanceMacPlatform(AccordancePlatform):
         script_lib_path = Path(__file__, "../accordance.applescript").resolve()
         self.script_lib = applescript.AppleScript(path=str(script_lib_path))
 
-    def get_module_ui_names(self):
+    def load_module_ui_names(self):
         '''Returns the list of Accordance text modules as displayed in the Get Verses dialog.'''
         return [str(name) for name in self.script_lib.call("get_module_ui_names")]
     
