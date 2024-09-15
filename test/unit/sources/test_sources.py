@@ -52,29 +52,39 @@ class TestAccordanceSource(MultiscriptAppTestCase):
             ui_names.remove(ui_name) # Will fail if ui_name not in ui_names
 
     @unittest.skip
-    def test_explore_module_naming(self):
+    def test_explore_module_naming(self, show_all=True,
+                                   show_human_name_not_in_ui=False,
+                                   show_unequal_names=False,
+                                   show_no_ui_name=False):
         source = TEST_APP.source('multiscript-builtin/accordancebible.com')
         all_metadata = source.module_metadata
         db = source.module_name_db
         ui_names = source.module_ui_names
         ui_names_remaining = set(ui_names)
 
+        print()
         for id, metadata in all_metadata.items():
             human_name = metadata.get('com.oaktree.module.humanreadablename', None)
             db_name = db.get(id, None)
+            names_equal = human_name is not None and db_name is not None and human_name == db_name
+            names_unequal = human_name is not None and db_name is not None and human_name != db_name
             
             human_name_in_ui = (human_name in ui_names)
             db_name_in_ui = (db_name in ui_names)
             id_in_ui = (id in ui_names)
-            print()
-            print(f"Human name: {human_name}")
-            print(f"DB name: {db_name}")
-            print(f"ID: {id}")
-            print(f"In UI: {human_name_in_ui}, {db_name_in_ui}, {id_in_ui}")
+            if show_all or \
+                (show_human_name_not_in_ui and human_name is not None and not human_name_in_ui) or \
+                (show_unequal_names and names_unequal) or \
+                (show_no_ui_name and not human_name_in_ui and not db_name_in_ui and not id_in_ui):
+                print(f"Human name: {human_name}")
+                print(f"DB name{' (same)' if names_equal else ''}: {db_name}")
+                print(f"ID: {id}")
+                print(f"In UI: {human_name_in_ui}, {db_name_in_ui}, {id_in_ui}")
+                print()
 
             ui_names_remaining -= set([id, human_name, db_name])
 
             self.assertTrue(human_name_in_ui or db_name_in_ui or id_in_ui)            
         
         print()
-        print(f"Remaining UI names: {ui_names_remaining}")
+        print(f"UI names without module found: {ui_names_remaining}")

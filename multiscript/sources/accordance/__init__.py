@@ -105,6 +105,8 @@ class AccordanceSource(BibleSource):
         
         if module_id in module_ui_names:
             return module_id
+        
+        # TODO: Raise exception here for no UI name found.
 
     def new_bible_version(self, version_id=None, name=None, lang=None, abbrev=None):
         '''Overridden from BibleVersion.
