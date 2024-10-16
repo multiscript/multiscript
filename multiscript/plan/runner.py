@@ -105,8 +105,19 @@ class PlanRunner:
                 self.temp_dir_path = Path(temp_dir)
                 self.calc_total_progress_steps()
                 self.load_bible_content()
-                self.select_auto_fonts()
-                self.download_and_install_fonts()
+
+                try:
+                    self.select_auto_fonts()
+                except Exception as exception:
+                    _logger.exception(exception)
+                    self.monitors.request_confirmation("There was a problem selecting fonts.")
+
+                try:
+                    self.download_and_install_fonts()
+                except Exception as exception:
+                    _logger.exception(exception)
+                    self.monitors.request_confirmation("There was a problem downloading and installing fonts.")
+
                 self.create_bible_outputs()
             self.temp_dir_path = None
         finally:
