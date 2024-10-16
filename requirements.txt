@@ -4,7 +4,7 @@ PySide6-Essentials==6.6.3
 beautifulsoup4==4.12.3
 bibleref==0.16.0
 dmgbuild==1.6.1
-fontfinder==0.13.0
+fontfinder==0.15.0
 pluginlib==0.9.2
 pyinstaller==6.6.0
 python-docx @ git+https://github.com/multiscript/python-docx.git@for-multiscript

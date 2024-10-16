@@ -1,3 +1,5 @@
+- 0.19.0
+    - Upgrade to fontfinder v0.15.0 to fix font selection bug on macOS.
 - 0.18.0
     - Fix bug where output folder name didn't appear if it was the same as the folder containing the plan.
 - 0.17.0
